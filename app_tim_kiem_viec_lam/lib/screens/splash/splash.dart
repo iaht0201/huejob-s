@@ -16,6 +16,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   String? session;
+  String? id;
   @override
   void initState() {
     getSession().whenComplete(() async {
@@ -35,7 +36,9 @@ class _SplashScreenState extends State<SplashScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       session = prefs.getString('session');
+      id = prefs.getString('id');
     });
+    print("id: ${id}");
     print("session: ${session}");
   }
 

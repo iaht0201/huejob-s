@@ -9,7 +9,7 @@ class PostModel {
     required this.createAt,
     required this.caption,
     required this.imageurl,
-    required this.likes,
+    required this.like_count,
     required this.users,
     
   });
@@ -19,7 +19,7 @@ class PostModel {
   DateTime createAt;
   String caption;
   String imageurl;
-  int likes;
+  int like_count;
   UserModel users;
   Duration calculateDuration(DateTime now, DateTime createAt) {
     return now.difference(createAt);
@@ -51,7 +51,7 @@ class PostModel {
         createAt: DateTime.parse(json["create_at"]),
         caption: json["caption"],
         imageurl: json["imageurl"],
-        likes: json["likes"],
+        like_count: json["like_count"],
         users: UserModel.fromMap(json["users"]),
       );
 }

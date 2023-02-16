@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/job_provider.dart';
+import 'package:app_tim_kiem_viec_lam/core/supabase/supabase.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/tag_list.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/home_app_bar.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/job_hot.dart';
@@ -18,7 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/models/post_model.dart';
 import '../../core/providers/authenciation_provider.dart';
 import '../../data/data.dart';
-import 'widgets/post_feed.dart';
+import 'widgets/post_widgets/post_feed.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -39,6 +40,8 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AuthenciationNotifier>(context);
@@ -52,10 +55,10 @@ class _HomePageState extends State<HomePage>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FutureBuilder(
-                future: provider.getData(),
+                future: provider.getData(provider.user.user_id),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return HomeAppBar(user: provider.user);
+                    return HomeAppBar(user: snapshot.data);
                   } else if (snapshot.hasError) {
                     return Text("Error: ${snapshot.error}");
                   } else {

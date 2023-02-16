@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/post_model.dart';
 import '../supabase/supabase.dart';
 
 class JobProvider extends ChangeNotifier {
   List<PostModel> posts = [];
+  Future insertLike() async {
+    
+  }
   Future getPots() async {
     final response = await SupabaseBase.supabaseClient
         .from('posts')
@@ -20,9 +24,8 @@ class JobProvider extends ChangeNotifier {
         posts.add(PostModel.fromMap(data[i]));
       }
       return posts;
-      // posts = data ;
-
-      // print(user['username']);
     }
   }
+
+  
 }

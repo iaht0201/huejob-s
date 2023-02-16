@@ -11,6 +11,7 @@ import '../supabase/supabase.dart';
 
 class AuthenciationNotifier extends ChangeNotifier {
   String session = "";
+  String id = "";
   UserModel user = new UserModel();
   Future<void> sessionValue(String key, [String value = ""]) async {
     final prefs = await SharedPreferences.getInstance();
@@ -38,9 +39,11 @@ class AuthenciationNotifier extends ChangeNotifier {
           .signInWithPassword(email: email, password: password!);
 
       if (result.session != null) {
+        id = result.user!.id;
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('session', result.session!.accessToken);
-
+        await prefs.setString('id', result.user!.id);
+        print(result.user!.id);
         var snackBar = SnackBar(content: Text("Đăng nhập thành công !"));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
@@ -50,6 +53,7 @@ class AuthenciationNotifier extends ChangeNotifier {
     } catch (e) {
       print("Đăng nhập thất bại");
     }
+    notifyListeners();
   }
 
   // Đănng ký
@@ -78,8 +82,11 @@ class AuthenciationNotifier extends ChangeNotifier {
 
   Future<void> SignOut(context) async {
     try {
+      final prefs = await SharedPreferences.getInstance();
       await SupabaseBase.supabaseClient.auth.signOut();
+
       sessionValue("delete_session");
+      await prefs.remove('id');
       var snackBar = SnackBar(content: Text("Đã đăng xuất !"));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       Navigator.pushReplacement(
@@ -89,11 +96,14 @@ class AuthenciationNotifier extends ChangeNotifier {
     return;
   }
 
-  Future getData() async {
+  Future getData(String? user_id) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? id = await prefs.getString('id');
+
     final response = await SupabaseBase.supabaseClient
         .from('users')
         .select('*')
-        .eq('user_id', '50909e99-e69d-4382-bffa-fe65bbe8ab6d')
+        .eq('user_id', id)
         .execute();
 
     if (response.data != null) {
@@ -103,10 +113,6 @@ class AuthenciationNotifier extends ChangeNotifier {
       return user;
       // print(user['username']);
     }
-  }
-
-  AuthenciationNotifier() {
-    getData();
   }
 }
   // Đăng nhập

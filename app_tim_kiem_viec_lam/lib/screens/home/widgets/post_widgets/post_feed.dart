@@ -1,10 +1,15 @@
+import 'package:app_tim_kiem_viec_lam/core/models/like_model.dart';
+import 'package:app_tim_kiem_viec_lam/screens/home/widgets/post_widgets/postInteract._widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../core/models/post_model.dart';
+import '../../../../core/models/post_model.dart';
+import '../../../../core/supabase/supabase.dart';
 
 class PostItem extends StatefulWidget {
   PostItem({super.key, required this.post});
@@ -14,6 +19,10 @@ class PostItem extends StatefulWidget {
 }
 
 class _PostItemState extends State<PostItem> {
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -37,7 +46,9 @@ class _PostItemState extends State<PostItem> {
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Image.network(widget.post.imageurl))
                 : Container(),
-            _PostInteract()
+            PostInteract(
+              post: widget.post,
+            )
           ],
         ),
       ),
@@ -118,37 +129,5 @@ class _PostHeaderState extends State<_PostHeader> {
         ],
       ),
     );
-  }
-}
-
-class _PostInteract extends StatefulWidget {
-  const _PostInteract({super.key});
-
-  @override
-  State<_PostInteract> createState() => __PostInteractState();
-}
-
-class __PostInteractState extends State<_PostInteract> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          InteracIcon(context, "Thích", Icons.favorite_border),
-          InteracIcon(context, "Nhận xét", Icons.comment_outlined) , 
-          InteracIcon(context, "Nhận xét", Icons.bookmark_outline) , 
-          InteracIcon(context, "Nhận xét", Icons.share_outlined)
-        ],
-      ),
-    );
-  }
-
-  InteracIcon(BuildContext context, String text, IconData icon) {
-    return GestureDetector(
-        onTap: () {
-          print(text);
-        },
-        child: Icon(icon));
   }
 }

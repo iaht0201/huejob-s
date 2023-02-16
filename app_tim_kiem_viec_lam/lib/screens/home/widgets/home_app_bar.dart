@@ -39,7 +39,7 @@ class HomeAppBar extends StatelessWidget {
                   },
                   child: ClipOval(
                     child: Image.network(
-                      "${user!.imageUrl}",
+                      "${user!.imageUrl != null ? user!.imageUrl : "https://aydtlrzidnzvyfjztmzp.supabase.co/storage/v1/object/sign/avatar/327886315_604355051502737_3489330827643362741_n.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhdmF0YXIvMzI3ODg2MzE1XzYwNDM1NTA1MTUwMjczN18zNDg5MzMwODI3NjQzMzYyNzQxX24uanBnIiwiaWF0IjoxNjc2MzkxODYxLCJleHAiOjE3MDc5Mjc4NjF9.k-LxOQ2ceiMXzLH6tgNxiR_1o3BEwJpODEkKpveSDEk&t=2023-02-14T16%3A24%3A20.662Z"}",
                       width: 60,
                     ),
                   ),
