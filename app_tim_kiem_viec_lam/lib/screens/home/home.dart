@@ -19,7 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/models/post_model.dart';
 import '../../core/providers/authenciation_provider.dart';
 import '../../data/data.dart';
-import 'widgets/post_widgets/post_feed.dart';
+import 'widgets/post_widgets/post_feed_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

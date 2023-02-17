@@ -11,7 +11,8 @@ class PostModel {
     required this.imageurl,
     required this.like_count,
     required this.users,
-    
+    required this.category_job,
+    required this.location,
   });
 
   int postId;
@@ -21,6 +22,8 @@ class PostModel {
   String imageurl;
   int like_count;
   UserModel users;
+  String category_job;
+  String location;
   Duration calculateDuration(DateTime now, DateTime createAt) {
     return now.difference(createAt);
   }
@@ -46,12 +49,13 @@ class PostModel {
 
   factory PostModel.fromJson(String str) => PostModel.fromMap(json.decode(str));
   factory PostModel.fromMap(Map<String, dynamic> json) => PostModel(
-        postId: json["post_id"],
-        userId: json["user_id"],
-        createAt: DateTime.parse(json["create_at"]),
-        caption: json["caption"],
-        imageurl: json["imageurl"],
-        like_count: json["like_count"],
-        users: UserModel.fromMap(json["users"]),
-      );
+      postId: json["post_id"],
+      userId: json["user_id"],
+      createAt: DateTime.parse(json["create_at"]),
+      caption: json["caption"],
+      imageurl: json["imageurl"],
+      like_count: json["like_count"],
+      users: UserModel.fromMap(json["users"]),
+      category_job: json['category_job'],
+      location: json['location']);
 }

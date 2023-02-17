@@ -1,3 +1,4 @@
+import 'package:app_tim_kiem_viec_lam/core/models/bookmark_moder.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,6 +18,7 @@ class _PostInteractState extends State<PostInteract> {
   bool isLiked = false;
   bool isBookMarked = false;
   List listLike = [];
+  List listBookmark = [];
   @override
   void initState() {
     super.initState();
@@ -25,6 +27,17 @@ class _PostInteractState extends State<PostInteract> {
         if (like.postId == widget.post!.postId) {
           setState(() {
             isLiked = true;
+          });
+
+          break;
+        }
+      }
+    });
+    getBookMark().whenComplete(() {
+      for (BookMarkModel bookmark in listBookmark) {
+        if (bookmark.postId == widget.post!.postId) {
+          setState(() {
+            isBookMarked = true;
           });
 
           break;
@@ -45,6 +58,24 @@ class _PostInteractState extends State<PostInteract> {
       final data = response.data;
       for (var like in data) {
         listLike.add(LikesModel.fromMap(like));
+      }
+    }
+
+    print(response.data);
+  }
+
+  Future<void> getBookMark() async {
+    final prefs = await SharedPreferences.getInstance();
+    final response = await SupabaseBase.supabaseClient
+        .from('bookmarks')
+        .select("*")
+        .eq('user_id', prefs.getString('id'))
+        .execute();
+
+    if (response.data != null) {
+      final data = response.data;
+      for (var bookmark in data) {
+        listBookmark.add(BookMarkModel.fromMap(bookmark));
       }
     }
 
@@ -77,6 +108,32 @@ class _PostInteractState extends State<PostInteract> {
     });
   }
 
+  Future<void> addBookMark() async {
+    final prefs = await SharedPreferences.getInstance();
+    await SupabaseBase.supabaseClient.from('bookmarks').insert({
+      'post_id': widget.post!.postId,
+      'user_id': prefs.getString('id'),
+    }).execute();
+
+    setState(() {
+      isBookMarked = true;
+    });
+  }
+
+  Future<void> deleteBookMark() async {
+    final prefs = await SharedPreferences.getInstance();
+    await SupabaseBase.supabaseClient
+        .from('bookmarks')
+        .delete()
+        .eq('post_id', widget.post!.postId)
+        .eq('user_id', prefs.getString('id'))
+        .execute();
+
+    setState(() {
+      isBookMarked = false;
+    });
+  }
+
   Widget build(BuildContext context) {
     return Container(
       child: Row(
@@ -97,7 +154,11 @@ class _PostInteractState extends State<PostInteract> {
           _InteracIcon(context,
               !isBookMarked ? Icons.bookmark_outline : Icons.bookmark_sharp,
               () {
-            print("bookmark");
+            if (isBookMarked) {
+              deleteBookMark();
+            } else {
+              addBookMark();
+            }
           }),
           _InteracIcon(context, Icons.share, () {
             print("share");
@@ -122,4 +183,6 @@ class _PostInteractState extends State<PostInteract> {
       child: Icon(icon),
     );
   }
+
+  
 }

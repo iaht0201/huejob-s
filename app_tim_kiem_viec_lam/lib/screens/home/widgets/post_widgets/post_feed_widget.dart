@@ -1,5 +1,5 @@
 import 'package:app_tim_kiem_viec_lam/core/models/like_model.dart';
-import 'package:app_tim_kiem_viec_lam/screens/home/widgets/post_widgets/postInteract._widget.dart';
+import 'package:app_tim_kiem_viec_lam/screens/home/widgets/post_widgets/postInteract_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -40,18 +40,61 @@ class _PostItemState extends State<PostItem> {
             // widget.post.imageUrl != null
             //     ? Container()
             //     : const SizedBox(height: 6.0),
+            GestureDetector(
+              onTap: () {
+                _dialogBuilder(context);
+              },
+              child: widget.post.imageurl == null || widget.post.imageurl == ""
+                  ? Container(padding:EdgeInsets.symmetric(vertical: 10),)
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Image.network(widget.post.imageurl)),
+            ),
 
-            widget.post.imageurl != null
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Image.network(widget.post.imageurl))
-                : Container(),
             PostInteract(
               post: widget.post,
             )
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _dialogBuilder(BuildContext context) {
+    return showDialog<void>(
+      
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+        
+          title: Text('${widget.post!.caption}'),
+          content: widget.post.imageurl != null
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Image.network(widget.post.imageurl))
+              : Container(),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Disable'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Enable'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -90,11 +133,29 @@ class _PostHeaderState extends State<_PostHeader> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "${widget.post.users.name}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      "${widget.post.users.name}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 14,
+                    ),
+                    Text(
+                      '${widget.post.location} • ',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 12.0,
+                      ),
+                    ),
+                  ],
                 ),
                 Row(
                   children: [
@@ -106,7 +167,7 @@ class _PostHeaderState extends State<_PostHeader> {
                       ),
                     ),
                     Text(
-                      'Công nghệ thông tin',
+                      '${widget.post!.category_job}',
                       style: TextStyle(
                         color: Colors.grey[600],
                         fontSize: 12.0,

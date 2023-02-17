@@ -19,7 +19,7 @@ class HomeAppBar extends StatelessWidget {
     final devicePadding = MediaQuery.of(context).padding;
     return Container(
       padding: EdgeInsets.only(
-        top: devicePadding.top,
+        top: devicePadding.top + 20,
         left: 20,
         right: 20,
       ),
