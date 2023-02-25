@@ -96,14 +96,14 @@ class AuthenciationNotifier extends ChangeNotifier {
     return;
   }
 
-  Future getData(String? user_id) async {
+  Future getData() async {
     final prefs = await SharedPreferences.getInstance();
     String? id = await prefs.getString('id');
 
     final response = await SupabaseBase.supabaseClient
         .from('users')
         .select('*')
-        .eq('user_id', id)
+        .eq('userId', id)
         .execute();
 
     if (response.data != null) {

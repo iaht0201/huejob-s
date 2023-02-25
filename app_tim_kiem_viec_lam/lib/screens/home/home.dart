@@ -40,8 +40,6 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AuthenciationNotifier>(context);
@@ -55,7 +53,7 @@ class _HomePageState extends State<HomePage>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FutureBuilder(
-                future: provider.getData(provider.user.user_id),
+                future: provider.getData(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return HomeAppBar(user: snapshot.data);

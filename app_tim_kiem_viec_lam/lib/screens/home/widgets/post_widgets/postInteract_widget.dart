@@ -51,7 +51,7 @@ class _PostInteractState extends State<PostInteract> {
     final response = await SupabaseBase.supabaseClient
         .from('likes')
         .select("*")
-        .eq('user_id', prefs.getString('id'))
+        .eq('userId', prefs.getString('id'))
         .execute();
 
     if (response.data != null) {
@@ -69,7 +69,7 @@ class _PostInteractState extends State<PostInteract> {
     final response = await SupabaseBase.supabaseClient
         .from('bookmarks')
         .select("*")
-        .eq('user_id', prefs.getString('id'))
+        .eq('userId', prefs.getString('id'))
         .execute();
 
     if (response.data != null) {
@@ -86,7 +86,7 @@ class _PostInteractState extends State<PostInteract> {
     final prefs = await SharedPreferences.getInstance();
     await SupabaseBase.supabaseClient.from('likes').insert({
       'post_id': widget.post!.postId,
-      'user_id': prefs.getString('id'),
+      'userId': prefs.getString('id'),
     }).execute();
     widget.post!.like_count += 1;
     setState(() {
@@ -100,7 +100,7 @@ class _PostInteractState extends State<PostInteract> {
         .from('likes')
         .delete()
         .eq('post_id', widget.post!.postId)
-        .eq('user_id', prefs.getString('id'))
+        .eq('userId', prefs.getString('id'))
         .execute();
     widget.post!.like_count -= 1;
     setState(() {
@@ -112,7 +112,7 @@ class _PostInteractState extends State<PostInteract> {
     final prefs = await SharedPreferences.getInstance();
     await SupabaseBase.supabaseClient.from('bookmarks').insert({
       'post_id': widget.post!.postId,
-      'user_id': prefs.getString('id'),
+      'userId': prefs.getString('id'),
     }).execute();
 
     setState(() {
@@ -126,7 +126,7 @@ class _PostInteractState extends State<PostInteract> {
         .from('bookmarks')
         .delete()
         .eq('post_id', widget.post!.postId)
-        .eq('user_id', prefs.getString('id'))
+        .eq('userId', prefs.getString('id'))
         .execute();
 
     setState(() {

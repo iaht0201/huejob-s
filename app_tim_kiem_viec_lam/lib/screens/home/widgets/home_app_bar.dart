@@ -1,12 +1,16 @@
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/routes/routes.dart';
-import 'package:app_tim_kiem_viec_lam/screens/profile/profile.dart';
+import 'package:app_tim_kiem_viec_lam/screens/profile/profile_edit.dart';
+import 'package:app_tim_kiem_viec_lam/screens/profile/profile_setting.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
+
+import '../../profile/profile_screen.dart';
 
 class HomeAppBar extends StatelessWidget {
   const HomeAppBar({super.key, this.user});
@@ -37,12 +41,18 @@ class HomeAppBar extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => ProfileScreen()));
                   },
-                  child: ClipOval(
-                    child: Image.network(
-                      "${user!.imageUrl != null ? user!.imageUrl : "https://aydtlrzidnzvyfjztmzp.supabase.co/storage/v1/object/sign/avatar/327886315_604355051502737_3489330827643362741_n.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhdmF0YXIvMzI3ODg2MzE1XzYwNDM1NTA1MTUwMjczN18zNDg5MzMwODI3NjQzMzYyNzQxX24uanBnIiwiaWF0IjoxNjc2MzkxODYxLCJleHAiOjE3MDc5Mjc4NjF9.k-LxOQ2ceiMXzLH6tgNxiR_1o3BEwJpODEkKpveSDEk&t=2023-02-14T16%3A24%3A20.662Z"}",
-                      width: 60,
-                    ),
-                  ),
+                  child: user!.imageUrl == null
+                      ? (CircleAvatar(
+                          radius: 35,
+                          backgroundColor: HexColor("#BB2649"),
+                          child: Text(
+                              "${user?.name.toString().substring(0, 1).toUpperCase()}",
+                              style: TextStyle(fontSize: 40))))
+                      : CircleAvatar(
+                          radius: 35,
+                          backgroundColor: HexColor("#BB2649"),
+                          backgroundImage: NetworkImage("${user!.imageUrl}"),
+                        ),
                 ),
               ),
               Column(

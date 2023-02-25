@@ -1,18 +1,18 @@
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
+import 'package:app_tim_kiem_viec_lam/screens/profile/profile_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/providers/authenciation_provider.dart';
 
-
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class ProfileSettingScreen extends StatefulWidget {
+  const ProfileSettingScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<ProfileSettingScreen> createState() => _ProfileSettingScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
   final _supabaseClient = AuthenciationNotifier();
   // List<dynamic> data = [];
   var data = new Map();
@@ -23,7 +23,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget build(BuildContext context) {
     final provider = Provider.of<AuthenciationNotifier>(context);
-    UserModel user = provider.user ; 
+    UserModel user = provider.user;
     return Scaffold(
         appBar: AppBar(
           title: Text('Profile ${user.name}',
@@ -64,14 +64,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 SizedBox(
                   width: 200,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      // await provider.getData();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  EditProfile(user: provider.user)));
+                    },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                         side: BorderSide.none,
                         shape: const StadiumBorder()),
-                    child: const Text(
-                      'Edit Profile',
-                      style: TextStyle(color: Colors.white),
+                    child: GestureDetector(
+                      child: Text(
+                        'Edit Profile',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ),

@@ -6,9 +6,7 @@ import '../supabase/supabase.dart';
 
 class JobProvider extends ChangeNotifier {
   List<PostModel> posts = [];
-  Future insertLike() async {
-    
-  }
+  Future insertLike() async {}
   Future getPots() async {
     final response = await SupabaseBase.supabaseClient
         .from('posts')
@@ -27,5 +25,23 @@ class JobProvider extends ChangeNotifier {
     }
   }
 
-  
+  Future getPotsById(String id) async {
+    final response = await SupabaseBase.supabaseClient
+        .from('posts')
+        .select('*, users(*)')
+        .eq("userId", id)
+        .order('create_at', ascending: false)
+        .limit(10)
+        .execute();
+
+    if (response.data != null) {
+      List<PostModel> postById = [];
+      postById.clear();
+      var data = await response.data;
+      for (int i = 0; i < data.length; i++) {
+        postById.add(PostModel.fromMap(data[i]));
+      }
+      return postById;
+    }
+  }
 }

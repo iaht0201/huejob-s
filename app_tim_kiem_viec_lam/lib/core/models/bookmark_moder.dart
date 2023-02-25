@@ -17,7 +17,7 @@ class BookMarkModel {
   factory BookMarkModel.fromMap(Map<String, dynamic> json) => BookMarkModel(
         bookmark_id: json["bookmark_id"],
         postId: json["post_id"],
-        userId: json["user_id"],
+        userId: json["userId"],
         createAt: DateTime.parse(json["create_at"]),
       );
 }

@@ -17,7 +17,7 @@ class LikesModel {
   factory LikesModel.fromMap(Map<String, dynamic> json) => LikesModel(
         likeId: json["like_id"],
         postId: json["post_id"],
-        userId: json["user_id"],
+        userId: json["userId"],
         createAt: DateTime.parse(json["create_at"]),
       );
 }

@@ -1,7 +1,10 @@
+import 'package:app_tim_kiem_viec_lam/screens/profile/profile_edit.dart';
+
 import '../../screens/authentication/login/login.dart';
 import '../../screens/authentication/register/register.dart';
 import '../../screens/home/home.dart';
-import '../../screens/profile/profile.dart';
+import '../../screens/profile/profile_setting.dart';
+import '../../screens/profile/profile_screen.dart';
 import '../../screens/splash/splash.dart';
 
 class AppRoutes {
@@ -11,6 +14,7 @@ class AppRoutes {
   static const String ProfileRoutes = "/profile";
   static const String ChamThiDuaRoutes = "/thidua";
   static const String SplashRoutes = "/splash";
+  static const String EditProfileRoutes = "/edit";
   static final routes = {
     LoginRoute: (context) => LoginView(),
     HomeRoutes: (context) => HomePage(),
@@ -21,7 +25,9 @@ class AppRoutes {
     SignupRoutes: (context) => SignupView(),
     //   ChamThiDuaRoutes: (context) => const ChamThiDua(),
     SplashRoutes: (context) => SplashScreen(),
-    // ProfileRoutes: (context) => ProfileScreen(),
+    EditProfileRoutes: (context) => EditProfile(),
+    // ProfileRoutes: (context) => ProfileScreen(
+    // ),
     // ListBookmarkRoutes: (context) => ListBookmarkScreen()
 
 /*    SignupRoutes: (context) => SignupView(),
