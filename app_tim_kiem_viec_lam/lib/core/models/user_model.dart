@@ -7,12 +7,12 @@ class UserModel {
   final String? name;
   final String? imageUrl;
   final String? email;
-  final DateTime? birthday;
+  final String? birthday;
   final int? gender;
   final String? address;
   final int? phone_number;
   final String? experience;
-  final String? education;
+  final String? job;
   final String? fullname;
   final String? status;
   const UserModel(
@@ -25,7 +25,7 @@ class UserModel {
       this.address,
       this.phone_number,
       this.experience,
-      this.education,
+      this.job,
       this.fullname,
       this.status});
   factory UserModel.fromJson(String str) => UserModel.fromMap(json.decode(str));
@@ -39,7 +39,7 @@ class UserModel {
       address: json['address'],
       phone_number: json['phone_number'],
       experience: json['experience'],
-      education: json['education'],
+      job: json['job'],
       status: json['status'],
       fullname: json['fullname']);
   get getGender {
@@ -50,5 +50,21 @@ class UserModel {
     } else {
       return "Khác";
     }
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'userId': userId,
+      'name': name,
+      'imageUrl': imageUrl,
+      'email': email,
+      'birthday': birthday,
+      'gender': gender,
+      'address': address,
+      'phone_number': phone_number,
+      'job': job,
+      'fullname': fullname,
+      'status': status,
+    };
   }
 }

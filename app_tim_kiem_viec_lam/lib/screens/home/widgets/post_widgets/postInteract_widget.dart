@@ -1,5 +1,6 @@
 import 'package:app_tim_kiem_viec_lam/core/models/bookmark_moder.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/models/like_model.dart';
@@ -21,7 +22,6 @@ class _PostInteractState extends State<PostInteract> {
   List listBookmark = [];
   @override
   void initState() {
-    super.initState();
     getLike().whenComplete(() {
       for (LikesModel like in listLike) {
         if (like.postId == widget.post!.postId) {
@@ -44,6 +44,7 @@ class _PostInteractState extends State<PostInteract> {
         }
       }
     });
+    super.initState();
   }
 
   Future<void> getLike() async {
@@ -140,7 +141,7 @@ class _PostInteractState extends State<PostInteract> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _InteracLikeIcon(context, widget.post!.like_count.toString(),
-              isLiked ? Icons.favorite : Icons.favorite_border, () {
+              isLiked ? Icons.thumb_up_outlined : Icons.thumb_up, () {
             if (isLiked) {
               deleteLike();
             } else {
@@ -173,7 +174,15 @@ class _PostInteractState extends State<PostInteract> {
     return GestureDetector(
         onTap: onTap,
         child: Row(
-          children: [Icon(icon), Text("${text} lượt thích")],
+          children: [
+            Icon(
+              icon,
+              color: icon == Icons.thumb_up
+                  ? HexColor("#BB2649")
+                  : Colors.black,
+            ),
+            Text("${text} lượt thích")
+          ],
         ));
   }
 
@@ -183,6 +192,4 @@ class _PostInteractState extends State<PostInteract> {
       child: Icon(icon),
     );
   }
-
-  
 }

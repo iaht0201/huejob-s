@@ -5,11 +5,13 @@ import 'package:app_tim_kiem_viec_lam/core/supabase/supabase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/models/user_model.dart';
+import '../../core/providers/userProvider.dart';
 import '../../widgets/Profile_widget.dart';
 import '../../widgets/Textfiled_widget.dart';
 
@@ -23,20 +25,23 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final _formKey = GlobalKey<FormState>();
   String? _fullname;
-  int _gender = 0;
+  int? _gender;
   DateTime _birthday = DateTime.now();
   String? _address;
   int? _phoneNumber;
   String? _experience;
-  String? _education;
+  String? _job;
   String? _status;
   String? _imageUrl;
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  late UserProvider userProvider;
+
   @override
   void initState() {
     super.initState();
+    userProvider = Provider.of<UserProvider>(context, listen: false);
     emailController = TextEditingController();
     passwordController = TextEditingController();
   }
@@ -54,41 +59,252 @@ class _EditProfileState extends State<EditProfile> {
       });
   }
 
-  void updateImageUrl(String url) {
-    setState(() {
-      _imageUrl = url;
-      print(_imageUrl);
-    });
-  }
-
   Widget build(BuildContext context) {
     final imageProvider = Provider.of<JobProvider>(context);
+    final provider = Provider.of<AuthenciationNotifier>(context);
 
     return Scaffold(
-      body: Form(
-        key: _formKey,
-        child: Stack(
-          children: [
-            SizedBox(
-              width: double.infinity,
-              child: Image.network(
-                  "https://scontent.fhan14-2.fna.fbcdn.net/v/t1.6435-9/186108637_2905919732980317_6630388559144209132_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=e3f864&_nc_ohc=12h0bSodmTgAX-5Pw4u&_nc_ht=scontent.fhan14-2.fna&oh=00_AfA8vAiCrvQxMvVpj8DNl0ml4EQe7S4JCEC6Bsg3e4ixhg&oe=641FA289"),
-            ),
-            Positioned(
-                top: 150, // căn giữa theo chiều dọc
-                bottom: 0, // căn giữa theo chiều dọc
-                left: 25, // căn giữa theo chiều ngang
-                right: 25, // căn giữa theo chiều ngang
+      body: CustomScrollView(
+        slivers: [
+          SliverPersistentHeader(
+              pinned: true,
+              floating: false,
+              delegate: _MyHeader(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: buttonArrow(context),
+                  ),
+                  Expanded(
+                    flex: 10,
+                    child: Center(
+                      child: Text(
+                        "Chỉnh sửa thông tin",
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge!
+                            .copyWith(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Container(),
+                  ),
+                ],
+              ))),
+          SliverList(
+              delegate: SliverChildListDelegate([
+            Consumer<UserProvider>(
+              builder: (context, userProvider, _) {
+                return Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20))),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 24),
+                        TextFieldWidget(
+                          label: 'Tên tài khoản',
+                          text: "${userProvider.user?.name}",
+                          enbled: false,
+                          onChanged: (name) {
+                            // Không thể thay đổi
+                          },
+                        ),
+                        const SizedBox(height: 24),
+                        TextFieldWidget(
+                          enbled: false,
+                          label: 'Email',
+                          text: "${userProvider.user?.email}",
+                          onChanged: (email) {
+                            // Không thể thay đổi
+                          },
+                        ),
+                        TextFieldWidget(
+                          enbled: true,
+                          label: 'Họ và tên',
+                          text: "${userProvider.user?.fullname ?? ""} ",
+                          onChanged: (fullname) {
+                            fullname == ""
+                                ? _fullname = userProvider.user?.fullname
+                                : _fullname = fullname;
+                            print(fullname);
+                          },
+                        ),
+                        TextFieldWidget(
+                          enbled: true,
+                          label: 'Giới tính',
+                          text: "${userProvider.user?.gender ?? ""} ",
+                          onChanged: (gender) {
+                            gender != 0 || gender != 1 || gender != 2
+                                ? _gender = userProvider.user!.gender!
+                                : _gender = gender as int;
+                            print(gender);
+                          },
+                        ),
+                        Row(
+                          children: [
+                            Text("Ngày sinh"),
+                            Text(
+                              '${_birthday.day}/${_birthday.month}/${_birthday.year}',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            TextButton(
+                                onPressed: () => _selectDate(context),
+                                child: Text("Lựa chọn")),
+                          ],
+                        ),
+                        TextFieldWidget(
+                          enbled: true,
+                          label: 'Số điện thoại',
+                          text: "${userProvider.user?.phone_number ?? ""} ",
+                          onChanged: (phone_number) {
+                            // _phoneNumber = phone_number as int?;
+                          
+                          },
+                        ),
+                        TextFieldWidget(
+                          enbled: true,
+                          label: 'Kinh nghiệm',
+                          text: "${userProvider.user?.experience ?? ""} ",
+                          onChanged: (experience) {
+                            experience == ""
+                                ? _experience = userProvider.user?.experience
+                                : _experience = experience;
+                          },
+                        ),
+                        TextFieldWidget(
+                          enbled: true,
+                          label: 'Nghề nghiệp',
+                          text: "${userProvider.user?.job ?? ""} ",
+                          onChanged: (job) {
+                            print(job);
+                            job == ""
+                                ? _job = userProvider.user?.job
+                                : _job = job;
+                          },
+                        ),
+                        const SizedBox(height: 24),
+                        TextFieldWidget(
+                          enbled: true,
+                          label: 'Ghi chú',
+                          text: "sdasdasdasdasdasdasdasdasd",
+                          maxLines: 5,
+                          onChanged: (status) {
+                            status == null
+                                ? _status = userProvider.user?.status
+                                : _status = status;
+                          },
+                        ),
+                        Container(
+                          width: double.infinity,
+                          // height: MediaQuery.of(context).size.height * 0.012,
+                          margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.012,
+                          ),
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                // Future<void> updateUser(
+                                //     BuildContext context) async {
+                                //   final prefs =
+                                //       await SharedPreferences.getInstance();
+                                //   try {
+                                final newUser = UserModel(
+                                  userId: userProvider.user!.userId,
+                                  name: userProvider.user!.name,
+                                  address:
+                                      _address ?? userProvider.user.address,
+                                  birthday: _birthday.toIso8601String(),
+                                  job: _job ?? userProvider.user.address,
+                                  email: userProvider.user!.email,
+                                  experience: _experience ??
+                                      userProvider.user.experience,
+                                  fullname:
+                                      _fullname ?? userProvider.user.fullname,
+                                  gender: _gender,
+                                  phone_number: _phoneNumber  ,
+                                  status: _status ?? userProvider.user.status,
+                                  imageUrl: userProvider.user!.imageUrl,
+                                );
+                                userProvider.updateUser(context, newUser);
+                                //   print(_birthday.toIso8601String());
+                                //   final updates = {
+                                //     'userId': prefs.getString('id'),
+                                //     'fullname': _fullname,
+                                //     "address": _address,
+                                //     "job": _job,
+                                //     "email": userProvider.user!.email,
+                                //     "imageUrl": userProvider.user!.imageUrl,
+                                //     "birthday": _birthday.toIso8601String(),
+                                //     "gender": _gender,
+                                //     "experience": _experience,
+                                //     "phone_number": _phoneNumber,
+                                //     "status": _status,
+                                //   };
+                                //   final response = await SupabaseBase
+                                //       .supabaseClient
+                                //       .from('users')
+                                //       .update(newUser.toMap())
+                                //       .eq('userId', prefs.getString('id'))
+                                //       .execute();
+                                //   if (response != null) {
+                                //     Fluttertoast.showToast(
+                                //       msg: 'Cập nhật thông tin thành công!',
+                                //       gravity: ToastGravity.BOTTOM,
+                                //       backgroundColor: Colors.green,
+                                //       textColor: Colors.white,
+                                //     );
 
-                child: ProfileWidget(
-                    onImageUrlChanged: updateImageUrl,
-                    initials:
-                        "${widget.user!.name.toString().substring(0, 1).toUpperCase()}")),
-            Positioned(child: Container()),
-            buttonArrow(context),
-            _scroll(context)
-          ],
-        ),
+                                //     Navigator.of(context).pop();
+                                //   }
+                                // } catch (e) {
+                                //   Fluttertoast.showToast(
+                                //     msg:
+                                //         'Đã xảy ra lỗi, Vui lòng thử lại sau!',
+                                //     gravity: ToastGravity.BOTTOM,
+                                //     backgroundColor: Colors.red,
+                                //     textColor: Colors.white,
+                                //   );
+                                // }
+                                // }
+
+                                // updateUser(context);
+
+                                // updateUser();
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(
+                                  15,
+                                ),
+                                child: Text('Hoàn tất',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 22)),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                  primary: Colors.red,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(16)))),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            )
+          ]))
+        ],
       ),
     );
   }
@@ -109,143 +325,30 @@ class _EditProfileState extends State<EditProfile> {
               child: Icon(Icons.arrow_back_ios)),
         ));
   }
+}
 
-  _scroll(BuildContext context) {
-    final provider = Provider.of<AuthenciationNotifier>(context);
-    return DraggableScrollableSheet(
-      initialChildSize: 0.5,
-      maxChildSize: 0.81,
-      minChildSize: 0.5,
-      builder: (context, scrollController) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-          child: SingleChildScrollView(
-            controller: scrollController,
-            child: Column(
-              children: [
-                const SizedBox(height: 24),
-                TextFieldWidget(
-                  label: 'Tên tài khoản',
-                  text: "${widget.user?.name}",
-                  enbled: false,
-                  onChanged: (name) {
-                    // _name = name;
-                    // print(_name);
-                  },
-                ),
-                const SizedBox(height: 24),
-                TextFieldWidget(
-                  enbled: false,
-                  label: 'Email',
-                  text: "${widget.user?.email}",
-                  onChanged: (email) {},
-                ),
-                TextFieldWidget(
-                  enbled: true,
-                  label: 'Họ và tên',
-                  text:
-                      "${widget.user?.fullname != null ? widget.user?.fullname : ""} ",
-                  onChanged: (fullname) {
-                    _fullname = fullname;
-                  },
-                ),
-                TextFieldWidget(
-                  enbled: true,
-                  label: 'Giới tính',
-                  text:
-                      "${widget.user?.gender != null ? widget.user?.gender : ""} ",
-                  onChanged: (email) {},
-                ),
-                Row(
-                  children: [
-                    Text("Ngày sinh"),
-                    TextButton(
-                        onPressed: () => _selectDate(context),
-                        child: Text("Lựa chọn")),
-                  ],
-                ),
-                TextFieldWidget(
-                  enbled: true,
-                  label: 'Số điện thoại',
-                  text:
-                      "${widget.user?.phone_number != null ? widget.user?.phone_number : ""} ",
-                  onChanged: (email) {},
-                ),
-                TextFieldWidget(
-                  enbled: true,
-                  label: 'Kinh nghiệm',
-                  text:
-                      "${widget.user?.experience != null ? widget.user?.experience : ""} ",
-                  onChanged: (email) {},
-                ),
-                TextFieldWidget(
-                  enbled: true,
-                  label: 'Học vấn',
-                  text:
-                      "${widget.user?.education != null ? widget.user?.education : ""} ",
-                  onChanged: (email) {},
-                ),
-                const SizedBox(height: 24),
-                TextFieldWidget(
-                  enbled: true,
-                  label: 'Ghi chú',
-                  text: "sdasdasdasdasdasdasdasdasd",
-                  maxLines: 5,
-                  onChanged: (about) {},
-                ),
-                Container(
-                  width: double.infinity,
-                  // height: MediaQuery.of(context).size.height * 0.012,
-                  margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.012,
-                  ),
-                  child: ElevatedButton(
-                      onPressed: () {
-                        Future<void> updateUser() async {
-                          final prefs = await SharedPreferences.getInstance();
-                          final updates = {
-                           
-                            'userId': prefs.getString('id'),
-                            'fullname': _fullname,
-                            "imageUrl" : _imageUrl
-                          };
-                          try {
-                            await SupabaseBase.supabaseClient
-                                .from('users')
-                                .update(updates)
-                                .eq('userId', prefs.getString('id'))
-                                .execute();
-                            await provider.getData();
-                          } catch (e) {
-                            print(e);
-                          }
-                        }
+class _MyHeader extends SliverPersistentHeaderDelegate {
+  _MyHeader({required this.child});
 
-                        updateUser();
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(
-                          15,
-                        ),
-                        child: Text('Hoàn tất',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 22)),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16)))),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+  final Widget child;
+
+  @override
+  double get minExtent => 80.0;
+
+  @override
+  double get maxExtent => 80.0;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: Colors.white,
+      child: child,
     );
+  }
+
+  @override
+  bool shouldRebuild(_MyHeader oldDelegate) {
+    return false;
   }
 }

@@ -11,6 +11,11 @@ const List BottomNavigationData = [
     "text": "Files",
     "color": Colors.blue,
   },
+     {
+    "icon": Icons.add,
+    "text": "Files",
+    "color": Colors.orange,
+  },
   {
     "icon": Icons.notifications_none,
     "text": "Thông báo",
