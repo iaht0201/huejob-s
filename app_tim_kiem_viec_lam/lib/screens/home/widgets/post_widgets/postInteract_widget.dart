@@ -1,6 +1,8 @@
 import 'package:app_tim_kiem_viec_lam/core/models/bookmark_moder.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/job_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/models/like_model.dart';
@@ -18,12 +20,16 @@ class PostInteract extends StatefulWidget {
 class _PostInteractState extends State<PostInteract> {
   bool isLiked = false;
   bool isBookMarked = false;
-  List listLike = [];
   List listBookmark = [];
+  late JobProvider postProvider;
+  late List<PostModel> post;
+
   @override
   void initState() {
-    getLike().whenComplete(() {
-      for (LikesModel like in listLike) {
+    postProvider = Provider.of<JobProvider>(context, listen: false);
+    post = postProvider.posts;
+    postProvider.getLike().whenComplete(() {
+      for (LikesModel like in postProvider.listLike) {
         if (like.postId == widget.post!.postId) {
           setState(() {
             isLiked = true;
@@ -33,139 +39,132 @@ class _PostInteractState extends State<PostInteract> {
         }
       }
     });
-    getBookMark().whenComplete(() {
-      for (BookMarkModel bookmark in listBookmark) {
+    postProvider.getBookMark().whenComplete(() {
+      for (BookMarkModel bookmark in postProvider.listBookmark) {
         if (bookmark.postId == widget.post!.postId) {
           setState(() {
             isBookMarked = true;
           });
-
           break;
         }
       }
     });
+
     super.initState();
   }
 
-  Future<void> getLike() async {
-    final prefs = await SharedPreferences.getInstance();
-    final response = await SupabaseBase.supabaseClient
-        .from('likes')
-        .select("*")
-        .eq('userId', prefs.getString('id'))
-        .execute();
+  // Future<void> getBookMark() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final response = await SupabaseBase.supabaseClient
+  //       .from('bookmarks')
+  //       .select("*")
+  //       .eq('userId', prefs.getString('id'))
+  //       .execute();
 
-    if (response.data != null) {
-      final data = response.data;
-      for (var like in data) {
-        listLike.add(LikesModel.fromMap(like));
-      }
-    }
+  //   if (response.data != null) {
+  //     final data = response.data;
+  //     for (var bookmark in data) {
+  //       listBookmark.add(BookMarkModel.fromMap(bookmark));
+  //     }
+  //   }
 
-    print(response.data);
-  }
+  //   print(response.data);
+  // }
 
-  Future<void> getBookMark() async {
-    final prefs = await SharedPreferences.getInstance();
-    final response = await SupabaseBase.supabaseClient
-        .from('bookmarks')
-        .select("*")
-        .eq('userId', prefs.getString('id'))
-        .execute();
+  // Future<void> addLike() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await SupabaseBase.supabaseClient.from('likes').insert({
+  //     'post_id': widget.post!.postId,
+  //     'userId': prefs.getString('id'),
+  //   }).execute();
+  //   widget.post!.like_count += 1;
 
-    if (response.data != null) {
-      final data = response.data;
-      for (var bookmark in data) {
-        listBookmark.add(BookMarkModel.fromMap(bookmark));
-      }
-    }
+  //   // setState(() {
+  //   //   isLiked = true;
+  //   // });
+  // }
 
-    print(response.data);
-  }
+  // Future<void> deleteLike() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await SupabaseBase.supabaseClient
+  //       .from('likes')
+  //       .delete()
+  //       .eq('post_id', widget.post!.postId)
+  //       .eq('userId', prefs.getString('id'))
+  //       .execute();
+  //   widget.post!.like_count -= 1;
+  // }
 
-  Future<void> addLike() async {
-    final prefs = await SharedPreferences.getInstance();
-    await SupabaseBase.supabaseClient.from('likes').insert({
-      'post_id': widget.post!.postId,
-      'userId': prefs.getString('id'),
-    }).execute();
-    widget.post!.like_count += 1;
-    setState(() {
-      isLiked = true;
-    });
-  }
+  // Future<void> addBookMark() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await SupabaseBase.supabaseClient.from('bookmarks').insert({
+  //     'post_id': widget.post!.postId,
+  //     'userId': prefs.getString('id'),
+  //   }).execute();
 
-  Future<void> deleteLike() async {
-    final prefs = await SharedPreferences.getInstance();
-    await SupabaseBase.supabaseClient
-        .from('likes')
-        .delete()
-        .eq('post_id', widget.post!.postId)
-        .eq('userId', prefs.getString('id'))
-        .execute();
-    widget.post!.like_count -= 1;
-    setState(() {
-      isLiked = false;
-    });
-  }
+  //   setState(() {
+  //     isBookMarked = true;
+  //   });
+  // }
 
-  Future<void> addBookMark() async {
-    final prefs = await SharedPreferences.getInstance();
-    await SupabaseBase.supabaseClient.from('bookmarks').insert({
-      'post_id': widget.post!.postId,
-      'userId': prefs.getString('id'),
-    }).execute();
+  // Future<void> deleteBookMark() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await SupabaseBase.supabaseClient
+  //       .from('bookmarks')
+  //       .delete()
+  //       .eq('post_id', widget.post!.postId)
+  //       .eq('userId', prefs.getString('id'))
+  //       .execute();
 
-    setState(() {
-      isBookMarked = true;
-    });
-  }
-
-  Future<void> deleteBookMark() async {
-    final prefs = await SharedPreferences.getInstance();
-    await SupabaseBase.supabaseClient
-        .from('bookmarks')
-        .delete()
-        .eq('post_id', widget.post!.postId)
-        .eq('userId', prefs.getString('id'))
-        .execute();
-
-    setState(() {
-      isBookMarked = false;
-    });
-  }
+  //   setState(() {
+  //     isBookMarked = false;
+  //   });
+  // }
 
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _InteracLikeIcon(context, widget.post!.like_count.toString(),
-              isLiked ? Icons.thumb_up_outlined : Icons.thumb_up, () {
-            if (isLiked) {
-              deleteLike();
-            } else {
-              addLike();
-            }
-            ;
-          }),
-          _InteracIcon(context, Icons.message, () {
-            print("message");
-          }),
-          _InteracIcon(context,
-              !isBookMarked ? Icons.bookmark_outline : Icons.bookmark_sharp,
-              () {
-            if (isBookMarked) {
-              deleteBookMark();
-            } else {
-              addBookMark();
-            }
-          }),
-          _InteracIcon(context, Icons.share, () {
-            print("share");
-          }),
-        ],
-      ),
+    return Consumer<JobProvider>(
+      builder: (context, postProvider, _) {
+        return Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _InteracLikeIcon(context, widget.post!.like_count.toString(),
+                  isLiked == false ? Icons.thumb_up_outlined : Icons.thumb_up,
+                  () {
+                if (isLiked == true) {
+                  postProvider.deleteLike(widget.post);
+                  isLiked = !isLiked;
+                } else {
+                  postProvider.addLike(widget.post);
+                  isLiked = !isLiked;
+                }
+                ;
+              }),
+              _InteracIcon(context, Icons.message, () {
+                print("message");
+              }),
+              _InteracIcon(context,
+                  !isBookMarked ? Icons.bookmark_outline : Icons.bookmark_sharp,
+                  () {
+                if (isBookMarked) {
+                  postProvider.deleteBookMark(widget.post);
+                  setState(() {
+                    isBookMarked = false;
+                  });
+                } else {
+                  postProvider.addBookMark(widget.post);
+                  setState(() {
+                    isBookMarked = true;
+                  });
+                }
+              }),
+              _InteracIcon(context, Icons.share, () {
+                print("share");
+              }),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -177,9 +176,8 @@ class _PostInteractState extends State<PostInteract> {
           children: [
             Icon(
               icon,
-              color: icon == Icons.thumb_up
-                  ? HexColor("#BB2649")
-                  : Colors.black,
+              color:
+                  icon == Icons.thumb_up ? HexColor("#BB2649") : Colors.black,
             ),
             Text("${text} lượt thích")
           ],

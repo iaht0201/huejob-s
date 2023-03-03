@@ -1,12 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/bookmark_moder.dart';
+import '../models/like_model.dart';
 import '../models/post_model.dart';
 import '../supabase/supabase.dart';
 
 class JobProvider extends ChangeNotifier {
-  List<PostModel> posts = [];
-  Future insertLike() async {}
+  List<LikesModel> _listLike = [];
+  List<BookMarkModel> _listBookmark = [];
+  List<PostModel> _posts = [];
+  List<PostModel> _postById = [];
+  get posts => _posts;
+  get listBookmark => _listBookmark;
+  get listLike => _listLike;
+
   Future getPots() async {
     final response = await SupabaseBase.supabaseClient
         .from('posts')
@@ -16,32 +24,116 @@ class JobProvider extends ChangeNotifier {
         .execute();
 
     if (response.data != null) {
-      posts.clear();
+      _posts.clear();
       var data = await response.data;
+      //  _posts = await data ;
       for (int i = 0; i < data.length; i++) {
-        posts.add(PostModel.fromMap(data[i]));
+        _posts.add(PostModel.fromMap(data[i]));
       }
-      return posts;
+      notifyListeners();
+      // return _posts;
     }
   }
 
-  Future getPotsById(String id) async {
+  Future getPotsById() async {
+    final prefs = await SharedPreferences.getInstance();
     final response = await SupabaseBase.supabaseClient
         .from('posts')
         .select('*, users(*)')
-        .eq("userId", id)
+        .eq("userId", prefs.getString('id'))
         .order('create_at', ascending: false)
         .limit(10)
         .execute();
 
     if (response.data != null) {
-      List<PostModel> postById = [];
-      postById.clear();
+      // postById.clear();
       var data = await response.data;
       for (int i = 0; i < data.length; i++) {
-        postById.add(PostModel.fromMap(data[i]));
+        _postById.add(PostModel.fromMap(data[i]));
       }
-      return postById;
     }
+    notifyListeners();
+  }
+
+  get postById => _postById;
+
+  Future<void> getLike() async {
+    final prefs = await SharedPreferences.getInstance();
+    final response = await SupabaseBase.supabaseClient
+        .from('likes')
+        .select("*")
+        .eq('userId', prefs.getString('id'))
+        .execute();
+
+    if (response.data != null) {
+      final data = response.data;
+      for (var like in data) {
+        _listLike.add(LikesModel.fromMap(like));
+      }
+    }
+  }
+
+  Future<void> getBookMark() async {
+    final prefs = await SharedPreferences.getInstance();
+    final response = await SupabaseBase.supabaseClient
+        .from('bookmarks')
+        .select("*")
+        .eq('userId', prefs.getString('id'))
+        .execute();
+
+    if (response.data != null) {
+      final data = response.data;
+      for (var bookmark in data) {
+        _listBookmark.add(BookMarkModel.fromMap(bookmark));
+      }
+    }
+    notifyListeners();
+  }
+
+  Future<void> addLike(dynamic post) async {
+    final prefs = await SharedPreferences.getInstance();
+    await SupabaseBase.supabaseClient.from('likes').insert({
+      'post_id': post!.postId,
+      'userId': prefs.getString('id'),
+    }).execute();
+    post!.like_count += 1;
+
+    notifyListeners();
+  }
+
+  Future<void> deleteLike(dynamic post) async {
+    final prefs = await SharedPreferences.getInstance();
+    await SupabaseBase.supabaseClient
+        .from('likes')
+        .delete()
+        .eq('post_id', post!.postId)
+        .eq('userId', prefs.getString('id'))
+        .execute();
+    post!.like_count -= 1;
+
+    notifyListeners();
+    // setState(() {
+    //   isLiked = false;
+    // });
+  }
+
+  Future<void> addBookMark(dynamic post) async {
+    final prefs = await SharedPreferences.getInstance();
+    await SupabaseBase.supabaseClient.from('bookmarks').insert({
+      'post_id': post!.postId,
+      'userId': prefs.getString('id'),
+    }).execute();
+
+    notifyListeners();
+  }
+
+  Future<void> deleteBookMark(dynamic post) async {
+    final prefs = await SharedPreferences.getInstance();
+    await SupabaseBase.supabaseClient
+        .from('bookmarks')
+        .delete()
+        .eq('post_id', post!.postId)
+        .eq('userId', prefs.getString('id'))
+        .execute();
   }
 }

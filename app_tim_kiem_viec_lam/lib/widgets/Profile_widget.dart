@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../core/providers/jobProvider.dart';
 import '../core/providers/job_provider.dart';
 
 class ProfileWidget extends StatefulWidget {

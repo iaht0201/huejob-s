@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/models/user_model.dart';
+import '../../../core/providers/jobProvider.dart';
 import '../../../core/providers/job_provider.dart';
 import '../../../core/supabase/supabase.dart';
 import '../profile_edit.dart';

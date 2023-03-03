@@ -1,5 +1,5 @@
 import 'package:app_tim_kiem_viec_lam/core/providers/authenciation_provider.dart';
-import 'package:app_tim_kiem_viec_lam/core/providers/job_provider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/jobProvider.dart';
 import 'package:app_tim_kiem_viec_lam/core/routes/routes.dart';
 import 'package:app_tim_kiem_viec_lam/core/supabase/supabase.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/models/user_model.dart';
+import '../../core/providers/job_provider.dart';
 import '../../core/providers/userProvider.dart';
 import '../../widgets/Profile_widget.dart';
 import '../../widgets/Textfiled_widget.dart';
@@ -145,10 +146,9 @@ class _EditProfileState extends State<EditProfile> {
                           label: 'Giới tính',
                           text: "${userProvider.user?.gender ?? ""} ",
                           onChanged: (gender) {
-                            gender != 0 || gender != 1 || gender != 2
-                                ? _gender = userProvider.user!.gender!
-                                : _gender = gender as int;
-                            print(gender);
+                            gender == 0 || gender == 1
+                                ? _gender = int.parse(gender)
+                                : _gender = userProvider.user!.gender;
                           },
                         ),
                         Row(
@@ -169,8 +169,10 @@ class _EditProfileState extends State<EditProfile> {
                           label: 'Số điện thoại',
                           text: "${userProvider.user?.phone_number ?? ""} ",
                           onChanged: (phone_number) {
+                            phone_number == ""
+                                ? userProvider.user?.phone_number
+                                : _phoneNumber = int.parse(phone_number);
                             // _phoneNumber = phone_number as int?;
-                          
                           },
                         ),
                         TextFieldWidget(
@@ -198,7 +200,7 @@ class _EditProfileState extends State<EditProfile> {
                         TextFieldWidget(
                           enbled: true,
                           label: 'Ghi chú',
-                          text: "sdasdasdasdasdasdasdasdasd",
+                          text: "${userProvider.user?.status ?? ""}",
                           maxLines: 5,
                           onChanged: (status) {
                             status == null
@@ -232,7 +234,7 @@ class _EditProfileState extends State<EditProfile> {
                                   fullname:
                                       _fullname ?? userProvider.user.fullname,
                                   gender: _gender,
-                                  phone_number: _phoneNumber  ,
+                                  phone_number: _phoneNumber,
                                   status: _status ?? userProvider.user.status,
                                   imageUrl: userProvider.user!.imageUrl,
                                 );
