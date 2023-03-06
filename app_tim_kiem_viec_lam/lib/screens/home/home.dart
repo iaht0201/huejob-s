@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:app_tim_kiem_viec_lam/core/models/model.dart';
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
-import 'package:app_tim_kiem_viec_lam/core/providers/jobProvider.dart';
+
 import 'package:app_tim_kiem_viec_lam/core/providers/userProvider.dart';
+import 'package:app_tim_kiem_viec_lam/screens/addPost/addPost_Screen.dart';
 
 import 'package:app_tim_kiem_viec_lam/screens/authentication/login/login.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/tag_list.dart';
@@ -57,7 +58,10 @@ class _HomePageState extends State<HomePage>
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         backgroundColor: HexColor("#BB2649"),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddPostScreen()));
+        },
         elevation: 0,
         child: Icon(Icons.add, color: Colors.white),
       ),

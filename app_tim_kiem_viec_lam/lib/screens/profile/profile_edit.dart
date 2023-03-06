@@ -1,5 +1,5 @@
 import 'package:app_tim_kiem_viec_lam/core/providers/authenciation_provider.dart';
-import 'package:app_tim_kiem_viec_lam/core/providers/jobProvider.dart';
+
 import 'package:app_tim_kiem_viec_lam/core/routes/routes.dart';
 import 'package:app_tim_kiem_viec_lam/core/supabase/supabase.dart';
 import 'package:flutter/material.dart';
@@ -216,11 +216,6 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                           child: ElevatedButton(
                               onPressed: () async {
-                                // Future<void> updateUser(
-                                //     BuildContext context) async {
-                                //   final prefs =
-                                //       await SharedPreferences.getInstance();
-                                //   try {
                                 final newUser = UserModel(
                                   userId: userProvider.user!.userId,
                                   name: userProvider.user!.name,
@@ -239,50 +234,6 @@ class _EditProfileState extends State<EditProfile> {
                                   imageUrl: userProvider.user!.imageUrl,
                                 );
                                 userProvider.updateUser(context, newUser);
-                                //   print(_birthday.toIso8601String());
-                                //   final updates = {
-                                //     'userId': prefs.getString('id'),
-                                //     'fullname': _fullname,
-                                //     "address": _address,
-                                //     "job": _job,
-                                //     "email": userProvider.user!.email,
-                                //     "imageUrl": userProvider.user!.imageUrl,
-                                //     "birthday": _birthday.toIso8601String(),
-                                //     "gender": _gender,
-                                //     "experience": _experience,
-                                //     "phone_number": _phoneNumber,
-                                //     "status": _status,
-                                //   };
-                                //   final response = await SupabaseBase
-                                //       .supabaseClient
-                                //       .from('users')
-                                //       .update(newUser.toMap())
-                                //       .eq('userId', prefs.getString('id'))
-                                //       .execute();
-                                //   if (response != null) {
-                                //     Fluttertoast.showToast(
-                                //       msg: 'Cập nhật thông tin thành công!',
-                                //       gravity: ToastGravity.BOTTOM,
-                                //       backgroundColor: Colors.green,
-                                //       textColor: Colors.white,
-                                //     );
-
-                                //     Navigator.of(context).pop();
-                                //   }
-                                // } catch (e) {
-                                //   Fluttertoast.showToast(
-                                //     msg:
-                                //         'Đã xảy ra lỗi, Vui lòng thử lại sau!',
-                                //     gravity: ToastGravity.BOTTOM,
-                                //     backgroundColor: Colors.red,
-                                //     textColor: Colors.white,
-                                //   );
-                                // }
-                                // }
-
-                                // updateUser(context);
-
-                                // updateUser();
                               },
                               child: Container(
                                 padding: EdgeInsets.all(
@@ -305,7 +256,7 @@ class _EditProfileState extends State<EditProfile> {
                 );
               },
             )
-          ]))
+          ])),
         ],
       ),
     );

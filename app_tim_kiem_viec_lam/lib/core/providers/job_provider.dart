@@ -15,6 +15,12 @@ class JobProvider extends ChangeNotifier {
   get listBookmark => _listBookmark;
   get listLike => _listLike;
 
+  String? _selectedJob;
+  get selectedJob => _selectedJob;
+  set setSelectedJob(value) {
+    _selectedJob = value;
+  }
+
   Future getPots() async {
     final response = await SupabaseBase.supabaseClient
         .from('posts')
@@ -46,7 +52,7 @@ class JobProvider extends ChangeNotifier {
         .execute();
 
     if (response.data != null) {
-      // postById.clear();
+      postById.clear();
       var data = await response.data;
       for (int i = 0; i < data.length; i++) {
         _postById.add(PostModel.fromMap(data[i]));

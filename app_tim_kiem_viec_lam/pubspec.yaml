@@ -45,7 +45,7 @@ dependencies:
   image_picker: ^0.8.6+1
   image_cropper: ^3.0.1
   fluttertoast: ^8.2.1
-
+  open_street_map_search_and_pick: ^0.0.16
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -69,6 +69,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/icons/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
