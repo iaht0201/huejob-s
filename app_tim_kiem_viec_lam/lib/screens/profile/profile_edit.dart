@@ -1,19 +1,13 @@
 import 'package:app_tim_kiem_viec_lam/core/providers/authenciation_provider.dart';
 
-import 'package:app_tim_kiem_viec_lam/core/routes/routes.dart';
-import 'package:app_tim_kiem_viec_lam/core/supabase/supabase.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/models/user_model.dart';
 import '../../core/providers/job_provider.dart';
 import '../../core/providers/userProvider.dart';
-import '../../widgets/Profile_widget.dart';
+
 import '../../widgets/Textfiled_widget.dart';
 
 class EditProfile extends StatefulWidget {

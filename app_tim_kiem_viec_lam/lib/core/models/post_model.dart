@@ -4,24 +4,24 @@ import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
 
 class PostModel {
   PostModel({
-    required this.postId,
+    this.postId,
     required this.userId,
-    required this.createAt,
+    this.createAt,
     required this.caption,
     required this.imageurl,
-    required this.like_count,
-    required this.users,
+    this.like_count,
+    this.users,
     required this.category_job,
     required this.location,
   });
 
-  int postId;
+  int? postId;
   String userId;
-  DateTime createAt;
-  String caption;
+  DateTime? createAt;
+  String? caption;
   String imageurl;
-  int like_count;
-  UserModel users;
+  int? like_count;
+  UserModel? users;
   String category_job;
   String location;
   Duration calculateDuration(DateTime now, DateTime createAt) {
@@ -32,7 +32,7 @@ class PostModel {
   get agoTime {
     String result;
     DateTime now = DateTime.now();
-    Duration duration = calculateDuration(now, createAt);
+    Duration duration = calculateDuration(now, createAt!);
     int second = duration.inSeconds;
     if (second >= 0 && second <= 59) {
       result = "${duration.inSeconds}giây";
@@ -47,6 +47,15 @@ class PostModel {
     return result;
   }
 
+  get getCity {
+    List<String> parts = location.split(",");
+    if (parts.length > 2) {
+      return parts[1].trim();
+    } else {
+      return;
+    }
+  }
+
   factory PostModel.fromJson(String str) => PostModel.fromMap(json.decode(str));
   factory PostModel.fromMap(Map<String, dynamic> json) => PostModel(
       postId: json["post_id"],
@@ -58,4 +67,22 @@ class PostModel {
       users: UserModel.fromMap(json["users"]),
       category_job: json['category_job'],
       location: json['location']);
+  // Map<String, dynamic> toMapNoImage(PostModel newPost) {
+  //   return {
+  //     'userId': userId,
+  //     'caption': caption,
+  //     'category_job': category_job,
+  //     'location': location,
+  //   };
+  // }
+
+  Map<String, dynamic> toMapHaveImage(PostModel newPost) {
+    return {
+      'userId': userId,
+      'caption': caption,
+      'category_job': category_job,
+      'location': location,
+      'imageurl': imageurl,
+    };
+  }
 }

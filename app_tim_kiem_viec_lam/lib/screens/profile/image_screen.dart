@@ -26,7 +26,7 @@ class ImageScreen extends StatefulWidget {
 
 class _ImageScreenState extends State<ImageScreen> {
   late UserProvider userProvider;
-  late UserModel user;
+  // late UserModel user;
   void initState() {
     super.initState();
     userProvider = p.Provider.of<UserProvider>(context, listen: false);
@@ -34,7 +34,7 @@ class _ImageScreenState extends State<ImageScreen> {
     // user = userProvider.user;
   }
 
-  Future<void> updateUser(dynamic imageFile) async {
+  Future<void> updateUser(dynamic imageFile, UserModel user) async {
     final prefs = await SharedPreferences.getInstance();
 
     if (imageFile == null) {
@@ -119,23 +119,29 @@ class _ImageScreenState extends State<ImageScreen> {
       appBar: AppBar(
         title: Text('Lựa chọn hình ảnh'),
         actions: [
-          GestureDetector(
-              onTap: () {
-                updateUser(widget.imageFile);
-              },
-              child: Text("Lưu"))
+          p.Consumer<UserProvider>(
+            builder: (context, userPorvider, child) {
+              return GestureDetector(
+                  onTap: () {
+                    updateUser(widget.imageFile, userPorvider.user);
+                  },
+                  child: Text("Lưu"));
+            },
+          )
         ],
       ),
       body: Container(
         width: MediaQuery.of(context).size.width * 1,
         child: Center(
-          child: Image.file(
-            new File(widget.imageFile.path),
+          child:
+              //  Image.network("${File(widget.imageFile.path)}")
+              Image.file(
+            File(widget.imageFile.path),
             width: MediaQuery.of(context).size.width * 1,
           ),
         ),
       ),
-    );
+    ); 
   }
 
   // Hiển thị Dialog

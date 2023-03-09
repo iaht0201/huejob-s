@@ -11,6 +11,6 @@ class AppProvider {
     ChangeNotifierProvider(create: (_) => AuthenciationNotifier()),
     ChangeNotifierProvider(create: (_) => JobProvider()),
     ChangeNotifierProvider(create: (_) => UserProvider()),
-    ChangeNotifierProvider(create: (_) => JobCategory())
+    // ChangeNotifierProvider(create: (_) => JobCategory())
   ];
 }

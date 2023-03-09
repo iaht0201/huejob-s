@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/bookmark_moder.dart';
+import '../models/jobCategory_model.dart';
 import '../models/like_model.dart';
 import '../models/post_model.dart';
 import '../supabase/supabase.dart';
@@ -11,14 +14,43 @@ class JobProvider extends ChangeNotifier {
   List<BookMarkModel> _listBookmark = [];
   List<PostModel> _posts = [];
   List<PostModel> _postById = [];
-  get posts => _posts;
+  List<JobCategoryModel> _jobs = [];
+  JobCategoryModel? _selectedOption;
+  // String? _selectedJob;
+  String? _address;
+  String? _longitude;
+  String? _latitude;
+  get longitude => _longitude;
+  get latitude => _latitude;
+  get address => _address;
+  set setAddress(value) {
+    _address = value;
+  }
+
+  List<PostModel> get posts => _posts;
   get listBookmark => _listBookmark;
   get listLike => _listLike;
+  set setLatitude(value) {
+    _latitude = value;
+    notifyListeners();
+  }
 
-  String? _selectedJob;
-  get selectedJob => _selectedJob;
-  set setSelectedJob(value) {
-    _selectedJob = value;
+  set setLongtitude(value) {
+    _longitude = value;
+    notifyListeners();
+  }
+  // get selectedJob => _selectedJob;
+  // set setSelectedJob(value) {
+  //   _selectedJob = value;
+  //   notifyListeners();
+  // }
+
+  List<JobCategoryModel> get jobs => _jobs;
+
+  JobCategoryModel? get selectedOption => _selectedOption;
+  set setSelectedOption(value) {
+    _selectedOption = value;
+    notifyListeners();
   }
 
   Future getPots() async {
@@ -141,5 +173,54 @@ class JobProvider extends ChangeNotifier {
         .eq('post_id', post!.postId)
         .eq('userId', prefs.getString('id'))
         .execute();
+  }
+
+  Future getJobCategory() async {
+    final response = await SupabaseBase.supabaseClient
+        .from('jobcategory')
+        .select('*')
+        .order("jobcategoryid", ascending: true)
+        .execute();
+
+    if (response.data != null) {
+      _jobs.clear();
+      var data = await response.data;
+      for (int i = 0; i < data.length; i++) {
+        _jobs.add(JobCategoryModel.fromMap(data[i]));
+      }
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> insertPost(BuildContext context, PostModel newPost) async {
+    final prefs = await SharedPreferences.getInstance();
+    try {
+      final response = await SupabaseBase.supabaseClient
+          .from("posts")
+          .insert(newPost.toMapHaveImage(newPost))
+          .execute();
+      if (response != null) {
+        Fluttertoast.showToast(
+          msg: 'Đăng bài viết thành công!',
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+        );
+        _posts.add(newPost) ;
+        print(_posts) ;
+        // _posts = [..._posts, newPost];
+
+        Navigator.of(context).pop();
+        notifyListeners();
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: 'Đăng bài viết thất bại, vui lòng thử lại sau!',
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+    }
   }
 }

@@ -282,7 +282,7 @@ class __ContentHomeState extends State<_ContentHome> {
                 return Container(
                   child: Column(
                     children: [
-                      ...posts.map((e) {
+                      ...postProvider.posts.map((e) {
                         return PostItem(post: e);
                       })
                     ],

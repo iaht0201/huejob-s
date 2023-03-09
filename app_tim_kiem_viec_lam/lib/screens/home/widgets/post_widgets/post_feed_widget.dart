@@ -28,7 +28,7 @@ class _PostItemState extends State<PostItem> {
             const SizedBox(height: 4.0),
             Container(
                 margin: EdgeInsets.symmetric(horizontal: 20),
-                child: Text(widget.post.caption)),
+                child: Text(widget.post.caption.toString())),
             GestureDetector(
               onTap: () {
                 _dialogBuilder(context);
@@ -39,7 +39,10 @@ class _PostItemState extends State<PostItem> {
                     )
                   : Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Image.network(widget.post.imageurl)),
+                      child: Image.network(
+                        widget.post.imageurl.toString(),
+                        fit: BoxFit.cover,
+                      )),
             ),
             PostInteract(
               post: widget.post,
@@ -59,7 +62,7 @@ class _PostItemState extends State<PostItem> {
           content: widget.post.imageurl != null
               ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Image.network(widget.post.imageurl))
+                  child: Image.network(widget.post.imageurl.toString()))
               : Container(),
           actions: <Widget>[
             TextButton(
@@ -108,8 +111,8 @@ class _PostHeaderState extends State<_PostHeader> {
                 child: CircleAvatar(
                   radius: 18.0,
                   backgroundColor: Colors.grey[200],
-                  backgroundImage: widget.post.users.imageUrl != ""
-                      ? NetworkImage("${widget.post.users.imageUrl}")
+                  backgroundImage: widget.post.users?.imageUrl != ""
+                      ? NetworkImage("${widget.post.users?.imageUrl}")
                       : NetworkImage(
                           "https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg"),
                 ),
@@ -124,7 +127,7 @@ class _PostHeaderState extends State<_PostHeader> {
                 Row(
                   children: [
                     Text(
-                      "${widget.post.users.name}",
+                      "${widget.post.users?.name}",
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                       ),
@@ -137,7 +140,7 @@ class _PostHeaderState extends State<_PostHeader> {
                       size: 14,
                     ),
                     Text(
-                      '${widget.post.location} • ',
+                      '${widget.post.getCity} • ',
                       style: TextStyle(
                         color: Colors.grey[600],
                         fontSize: 12.0,

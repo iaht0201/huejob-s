@@ -1,8 +1,11 @@
+import 'package:app_tim_kiem_viec_lam/core/providers/job_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 import 'package:hexcolor/hexcolor.dart';
+
 import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.dart';
+import 'package:provider/provider.dart';
+import "package:geolocator/geolocator.dart";
 
 class OpenStreetMap extends StatefulWidget {
   const OpenStreetMap({super.key});
@@ -12,20 +15,55 @@ class OpenStreetMap extends StatefulWidget {
 }
 
 class _OpenStreetMapState extends State<OpenStreetMap> {
+  late JobProvider jobProvider;
+  Position? _position;
+  bool isLoaded = false;
+  void initState() {
+    super.initState();
+    jobProvider = Provider.of<JobProvider>(context, listen: false);
+    getCurrentPosition();
+    // getCurrentPosition();
+  }
+
+  void getCurrentPosition() async {
+    await Geolocator.requestPermission();
+    Geolocator.getCurrentPosition().then((value) => setState(() {
+          _position = value;
+          isLoaded = true;
+        }));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: OpenStreetMapSearchAndPick(
-
-          center: LatLong(16.4639321, 107.5863388),
-          buttonColor: HexColor("#BB2649"),
-          buttonText: 'Lấy địa chỉ',
-          onPicked: (pickedData) {
-            print(pickedData.latLong.latitude);
-            print(pickedData.latLong.longitude);
-            print(pickedData.address);
-          }),
+      body: Consumer<JobProvider>(
+        builder: (context, jobProvider, _) {
+          return isLoaded == true
+              ? OpenStreetMapSearchAndPick(
+                  center: LatLong(_position!.latitude, _position!.longitude),
+                  buttonColor: HexColor("#BB2649"),
+                  buttonText: 'Lấy địa chỉ',
+                  onPicked: (pickedData) {
+                    jobProvider.setAddress = pickedData.address;
+                    Navigator.of(context).pop();
+                    // print(pickedData.latLong.latitude);
+                    // print(pickedData.latLong.longitude);
+                    // print(pickedData.address);
+                  })
+              : Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: Center(child: CircularProgressIndicator()));
+          // Column(
+          //   children: [
+          //     ElevatedButton(
+          //         onPressed: () async {}, child: Text("Get location")),
+          //     Text(
+          //         "latitude: ${_position?.latitude},longtitude : ${_position?.longitude}")
+          //   ],
+          // );
+        },
+      ),
     );
   }
 }

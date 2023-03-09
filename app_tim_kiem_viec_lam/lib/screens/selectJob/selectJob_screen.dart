@@ -25,7 +25,7 @@ class SelectJobScreen extends StatefulWidget {
 }
 
 class _SelectJobScreenState extends State<SelectJobScreen> {
-  late JobCategory jobCategoryProvider;
+  late JobProvider jobCategoryProvider;
 
   bool isLoading = false;
 
@@ -36,7 +36,7 @@ class _SelectJobScreenState extends State<SelectJobScreen> {
   @override
   void initState() {
     super.initState();
-    jobCategoryProvider = Provider.of<JobCategory>(context, listen: false);
+    jobCategoryProvider = Provider.of<JobProvider>(context, listen: false);
     jobCategoryProvider.getJobCategory();
     jobCategorytList = jobCategoryProvider.jobs;
   }
@@ -124,7 +124,7 @@ class _SelectJobScreenState extends State<SelectJobScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Consumer<JobCategory>(
+                    Consumer<JobProvider>(
                       builder: (context, jobCategoryProvider, _) {
                         return Container(
                           height: MediaQuery.of(context).size.height * 0.68,
