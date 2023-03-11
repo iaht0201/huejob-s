@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../authentication/login/login.dart';
 import '../home/home.dart';
+import '../onboaring/onboaring_one_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -25,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    session == null ? LoginView() : HomePage()));
+                    session == null ? OnBoaring() : HomePage()));
       });
     });
 
@@ -48,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
         body: Container(
       width: double.infinity,
       height: double.infinity,
-      decoration: const BoxDecoration(
+      decoration:const BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.center,
               end: Alignment.center,

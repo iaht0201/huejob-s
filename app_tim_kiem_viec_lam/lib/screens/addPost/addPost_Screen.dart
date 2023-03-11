@@ -30,6 +30,27 @@ class AddPostScreen extends StatefulWidget {
   State<AddPostScreen> createState() => _AddPostScreenState();
 }
 
+final ImagePicker _picker = ImagePicker();
+final List<XFile> images1 = [];
+
+// Future<void> _getImagesFromGallery(AppLocalizations appLocalization) async {
+//   try {
+//     final List<XFile>? pickedPhotos = await _picker.pickMultiImage();
+
+//     if (pickedPhotos != null && canAttachImage()) {
+//       setState(() {
+//         images.addAll((pickedPhotos.length + getImageCount()) > maxImages
+//             ? pickedPhotos.take(maxImages - getImageCount())
+//             : pickedPhotos);
+
+//         mainImageId ??= pickedPhotos[0].name;
+//       });
+//     }
+//   } catch (error) {
+//     context.showErrorSnackBar(message: appLocalization.unexpected_error);
+//   }
+// }
+
 class _AddPostScreenState extends State<AddPostScreen> {
   final _formKey = GlobalKey<FormState>();
 
@@ -56,9 +77,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
           caption: _descriptionController.text.toString(),
           category_job: jobProvider.selectedOption!.jobName.toString(),
           location: jobProvider.address,
-
-          imageurl: "" , 
-           users: userProvider.user);
+          imageurl: "",
+          users: userProvider.user);
       jobProvider.insertPost(context, newPost);
     }
 
@@ -272,7 +292,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                               },
                                               child: Container(
                                                 decoration: BoxDecoration(
-                                                    border: Border.all(
+                                                  border: Border.all(
                                                       width: 1,
                                                       color:
                                                           HexColor("#BB2649"),
@@ -349,11 +369,12 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         ),
                       ),
                       _imageFile != null
-                          ? Image.network(
-                              "http://hanoimoi.com.vn/Uploads/tuandiep/2018/4/8/1(1).jpg")
-                          // Image.file(File(_file!.path),
-                          //     fit: BoxFit.cover,
-                          //     width: MediaQuery.of(context).size.width * 1)
+                          ? 
+                          // Image.network(
+                          //     "http://hanoimoi.com.vn/Uploads/tuandiep/2018/4/8/1(1).jpg")
+                          Image.file(File(_imageFile!.path),
+                              fit: BoxFit.cover,
+                              width: MediaQuery.of(context).size.width * 1)
                           : Container()
                     ],
                   ),
@@ -429,11 +450,24 @@ class _AddPostScreenState extends State<AddPostScreen> {
                   ),
                   GestureDetector(
                     onTap: () async {
+                      // final picker = ImagePicker();
+                      // final imageFile = await picker.pickMultiImage(
+                      //   maxWidth: 1200,
+                      //   maxHeight: 1200,
+                      //   // imageQuality: 100
+                      // );
+                      // setState(() {
+                      //   images1.addAll(imageFile);
+                      //   print(images1.map((e) => e.name));
+                      //   // _file = File(imageFile!.path);
+                      //   // _file = File(imageFile);
+                      // });
+
                       final picker = ImagePicker();
                       final imageFile = await picker.pickImage(
                         source: ImageSource.gallery,
-                        maxWidth: 300,
-                        maxHeight: 300,
+                        maxWidth: 1200,
+                        maxHeight: 1200,
                       );
 
                       setState(() {
@@ -465,8 +499,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       final picker = ImagePicker();
                       final imageFile = await picker.pickImage(
                         source: ImageSource.camera,
-                        maxWidth: 300,
-                        maxHeight: 300,
+                        maxWidth: 1200,
+                        maxHeight: 1200,
                       );
 
                       setState(() {

@@ -1,3 +1,4 @@
+import 'package:app_tim_kiem_viec_lam/screens/home/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -72,6 +73,53 @@ class JobProvider extends ChangeNotifier {
       // return _posts;
     }
   }
+
+  Future fetchPostMore(int page, int pageSize) async {
+    final response = await SupabaseBase.supabaseClient
+        .from('posts')
+        .select('*, users(*)')
+        .order('create_at', ascending: false)
+        .range(page * page, (page + 1) * pageSize - 1)
+        .execute();
+    posts.clear();
+    if (response.data != null) {
+      var data = await response.data;
+      //  _posts = await data ;
+      for (int i = 0; i < data.length; i++) {
+        _posts.add(PostModel.fromMap(data[i]));
+      }
+
+      // notifyListeners();
+      return _posts;
+      // return _posts;
+    }
+  }
+  // bool _hasMorePosts = false;
+  // get hasMorePosts => _hasMorePosts;
+  // Future<void> fetchPostMore(int page, int pageSize) async {
+  //   final response = await SupabaseBase.supabaseClient
+  //       .from('posts')
+  //       .select('*, users(*)')
+  //       .order('create_at', ascending: false)
+  //       .range(page * pageSize, (page + 1) * pageSize - 1)
+  //       .execute();
+
+  //   if (response.data != null) {
+  //     _posts.clear();
+  //     var data = await response.data;
+  //     for (int i = 0; i < data.length; i++) {
+  //       _posts.add(PostModel.fromMap(data[i]));
+  //     }
+  //     notifyListeners();
+
+  //     // Tính toán giá trị của hasMorePosts
+  //     if (data.length < pageSize) {
+  //       _hasMorePosts = false;
+  //     } else {
+  //       _hasMorePosts = true;
+  //     }
+  //   }
+  // }
 
   Future getPotsById() async {
     final prefs = await SharedPreferences.getInstance();
@@ -207,11 +255,14 @@ class JobProvider extends ChangeNotifier {
           backgroundColor: Colors.green,
           textColor: Colors.white,
         );
-        _posts.add(newPost) ;
-        print(_posts) ;
+        _posts.add(newPost);
+        print(_posts);
         // _posts = [..._posts, newPost];
 
-        Navigator.of(context).pop();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+        );
         notifyListeners();
       }
     } catch (e) {

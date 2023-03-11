@@ -237,8 +237,8 @@ class _ProfileInformationState extends State<ProfileInformation> {
                       final picker = ImagePicker();
                       final imageFile = await picker.pickImage(
                         source: ImageSource.gallery,
-                        maxWidth: 300,
-                        maxHeight: 300,
+                        maxWidth: 1200,
+                        maxHeight: 1200,
                       );
                       if (imageFile != null) {
                         Navigator.push(

@@ -21,9 +21,10 @@ class HomeAppBar extends StatelessWidget {
     final devicePadding = MediaQuery.of(context).padding;
     return Container(
         padding: EdgeInsets.only(
-          top: devicePadding.top + 20,
+          top: devicePadding.top + 5,
           left: 20,
           right: 20,
+          bottom: 10,
         ),
         child: Consumer<UserProvider>(
           builder: (context, userProvider, _) {
@@ -57,14 +58,16 @@ class HomeAppBar extends StatelessWidget {
                       ),
                     ),
                     Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                        
                           children: [
                             Text(
                               'Xin chào ${userProvider.user!.fullname == null ? userProvider.user!.name : userProvider.user!.fullname}',
                               style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 17),
+                                  fontWeight: FontWeight.bold, fontSize: 17, color: Colors.white),
                             ),
                             const SizedBox(
                               height: 5,
@@ -72,7 +75,7 @@ class HomeAppBar extends StatelessWidget {
                             Text(
                               "HueJob's",
                               style: TextStyle(
-                                  color: Colors.grey[400],
+                                  color: Colors.grey[300],
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -93,14 +96,19 @@ class HomeAppBar extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      child: const Badge(
-                        // show daaus cham
-                        showBadge: true,
-                        child: Icon(
-                          Icons.notifications_none,
-                          size: 35,
-                        ),
-                      ),
+                      child: Badge(
+                          // show daaus cham
+                          showBadge: true,
+                          child: Image(
+                            image: AssetImage("assets/icons/noti.png"),
+                            width: 35,
+                            height: 35,
+                          )
+                          // Icon(
+                          //   Icons.notifications_none,
+                          //   size: 35,
+                          // ),
+                          ),
                     ),
                     const SizedBox(
                       width: 10,
