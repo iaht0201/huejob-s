@@ -48,7 +48,7 @@ class _JobHotState extends State<JobHot> {
         padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: HexColor("#BB2649"),
+          color: HexColor("#006400"),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,

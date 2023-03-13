@@ -11,15 +11,16 @@ import 'package:provider/provider.dart';
 import '../../profile/profile_screen.dart';
 
 class HomeAppBar extends StatelessWidget {
-  const HomeAppBar({super.key, this.user});
+  const HomeAppBar({super.key, this.user, required this.isScroll});
   final UserModel? user;
-
+  final bool isScroll;
   @override
   Widget build(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
     final deviceWidth = MediaQuery.of(context).size.width;
     final devicePadding = MediaQuery.of(context).padding;
     return Container(
+        width: deviceWidth * 1,
         padding: EdgeInsets.only(
           top: devicePadding.top + 5,
           left: 20,
@@ -32,9 +33,11 @@ class HomeAppBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Container(
-                      margin: EdgeInsets.only(right: 10),
+                      margin:
+                          EdgeInsets.only(right: isScroll == false ? 10 : 0),
                       child: GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -57,40 +60,45 @@ class HomeAppBar extends StatelessWidget {
                               ),
                       ),
                     ),
-                    Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                        
-                          children: [
-                            Text(
-                              'Xin chào ${userProvider.user!.fullname == null ? userProvider.user!.name : userProvider.user!.fullname}',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 17, color: Colors.white),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "HueJob's",
-                              style: TextStyle(
-                                  color: Colors.grey[300],
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              height: 4,
-                            ),
-                            Text(
-                              "Luôn đồng hành cùng bạn!",
-                              style: TextStyle(
-                                  color: Colors.grey[400], fontSize: 14),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
+                    isScroll == false
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Xin chào ${userProvider.user!.fullname == null ? userProvider.user!.name : userProvider.user!.fullname}',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17,
+                                    color: Colors.white),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "HueJob's",
+                                style: TextStyle(
+                                    color: Colors.grey[300],
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              Text(
+                                "Luôn đồng hành cùng bạn!",
+                                style: TextStyle(
+                                    color: Colors.grey[400], fontSize: 14),
+                              )
+                            ],
+                          )
+                        : Text(
+                            ' ${userProvider.user!.fullname == null ? userProvider.user!.name : userProvider.user!.fullname}',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.white),
+                          ),
                   ],
                 ),
                 Row(

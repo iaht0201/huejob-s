@@ -89,8 +89,9 @@ class AuthenciationNotifier extends ChangeNotifier {
       await prefs.remove('id');
       var snackBar = SnackBar(content: Text("Đã đăng xuất !"));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginView()));
+       Navigator.pushReplacementNamed(context, '${AppRoutes.LoginRoute}');
+      // Navigator.pushReplacement(
+      //     context, MaterialPageRoute(builder: (context) => LoginView()));
     } catch (e) {}
 
     return;

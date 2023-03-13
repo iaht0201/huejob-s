@@ -1,3 +1,4 @@
+import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,13 +20,14 @@ class JobProvider extends ChangeNotifier {
   JobCategoryModel? _selectedOption;
   // String? _selectedJob;
   String? _address;
-  String? _longitude;
-  String? _latitude;
-  get longitude => _longitude;
-  get latitude => _latitude;
+  double? _longitude;
+  double? _latitude;
+  double? get longitude => _longitude;
+  double? get latitude => _latitude;
   get address => _address;
   set setAddress(value) {
     _address = value;
+    notifyListeners();
   }
 
   List<PostModel> get posts => _posts;
@@ -121,12 +123,12 @@ class JobProvider extends ChangeNotifier {
   //   }
   // }
 
-  Future getPotsById() async {
+  Future getPotsById(String id) async {
     final prefs = await SharedPreferences.getInstance();
     final response = await SupabaseBase.supabaseClient
         .from('posts')
         .select('*, users(*)')
-        .eq("userId", prefs.getString('id'))
+        .eq("userId", id)
         .order('create_at', ascending: false)
         .limit(10)
         .execute();
@@ -175,6 +177,9 @@ class JobProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  // add follow
+
 
   Future<void> addLike(dynamic post) async {
     final prefs = await SharedPreferences.getInstance();

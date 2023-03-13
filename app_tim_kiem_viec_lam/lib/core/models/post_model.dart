@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
+import 'package:flutter/foundation.dart';
 
 class PostModel {
   PostModel({
@@ -13,6 +14,8 @@ class PostModel {
     this.users,
     required this.category_job,
     required this.location,
+    required this.latitude,
+    required this.longitude,
   });
 
   int? postId;
@@ -24,6 +27,8 @@ class PostModel {
   UserModel? users;
   String category_job;
   String location;
+  double latitude;
+  double longitude;
   Duration calculateDuration(DateTime now, DateTime createAt) {
     return now.difference(createAt);
   }
@@ -66,7 +71,10 @@ class PostModel {
       like_count: json["like_count"],
       users: UserModel.fromMap(json["users"]),
       category_job: json['category_job'],
-      location: json['location']);
+      location: json['location'],
+      longitude: json['longitude'],
+      latitude: json['latitude']);
+
   // Map<String, dynamic> toMapNoImage(PostModel newPost) {
   //   return {
   //     'userId': userId,
@@ -83,6 +91,8 @@ class PostModel {
       'category_job': category_job,
       'location': location,
       'imageurl': imageurl,
+      'longitude': longitude,
+      'latitude': latitude
     };
   }
 }

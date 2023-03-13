@@ -18,10 +18,10 @@ import '../image_screen.dart';
 
 class ProfileInformation extends StatefulWidget {
   ProfileInformation(
-      {super.key, this.user, this.initials, this.onImageUrlChanged});
-  final String? initials;
+      {super.key, required this.user, this.onImageUrlChanged, this.clientID});
+  final String? clientID;
   final ValueChanged<String>? onImageUrlChanged;
-  final UserModel? user;
+  final UserModel user;
 
   @override
   State<ProfileInformation> createState() => _ProfileInformationState();
@@ -34,11 +34,15 @@ class _ProfileInformationState extends State<ProfileInformation> {
   String _id = "";
   File? _image;
   late UserProvider userProvider;
-
+  bool isFollowed = false;
   void initState() {
     super.initState();
     userProvider = p.Provider.of<UserProvider>(context, listen: false);
-    // userProvider.fetchUser();
+    userProvider
+        .getFollow(widget.user.userId.toString(), widget.clientID.toString())
+        .whenComplete(() => setState(() {
+              _isLoading = true;
+            }));
   }
 
   Future<void> _upload(dynamic imageFile) async {
@@ -82,28 +86,73 @@ class _ProfileInformationState extends State<ProfileInformation> {
           child: Container(
             padding: EdgeInsets.only(bottom: 25),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 p.Consumer<UserProvider>(
                   builder: (context, userProvider, _) {
-                    return GestureDetector(
-                        onTap: () {
-                          _bottomSheetChangeAvatar(context);
-                        },
-                        child: userProvider.user!.imageUrl == null
-                            ? (CircleAvatar(
-                                foregroundImage:
-                                    _image != null ? FileImage(_image!) : null,
-                                radius: 50,
-                                backgroundColor: HexColor("#BB2649"),
-                                child: Text(
-                                    "${userProvider.user?.name.toString().substring(0, 1).toUpperCase()}",
-                                    style: TextStyle(fontSize: 40))))
-                            : CircleAvatar(
-                                radius: 50,
-                                backgroundColor: HexColor("#BB2649"),
-                                backgroundImage: NetworkImage(
-                                    "${userProvider.user!.imageUrl}"),
-                              ));
+                    final user = widget.clientID == null
+                        ? userProvider.user
+                        : userProvider.userByID;
+                    return Stack(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            _bottomSheetChangeAvatar(context);
+                          },
+                          child: user.imageUrl == null
+                              ? (CircleAvatar(
+                                  foregroundImage: _image != null
+                                      ? FileImage(_image!)
+                                      : null,
+                                  radius: 50,
+                                  backgroundColor: HexColor("#BB2649"),
+                                  child: Text(
+                                      "${user.name.toString().substring(0, 1).toUpperCase()}",
+                                      style: TextStyle(fontSize: 40))))
+                              : CircleAvatar(
+                                  radius: 50,
+                                  backgroundColor: HexColor("#BB2649"),
+                                  backgroundImage:
+                                      NetworkImage("${user.imageUrl}"),
+                                ),
+                        ),
+                        Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child:
+                                widget.clientID == null || _isLoading == false
+                                    ? Container()
+                                    : Container(
+                                        width: 30,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: userProvider.isFollow == false
+                                              ? HexColor("#BB2649")
+                                              : Colors.green,
+                                        ),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            userProvider.isFollow == false
+                                                ? userProvider.addFollow(
+                                                    userProvider.user.userId
+                                                        .toString(),
+                                                    widget.clientID.toString())
+                                                : userProvider.deleteFollow(
+                                                    userProvider.user.userId
+                                                        .toString(),
+                                                    widget.clientID.toString());
+                                          },
+                                          child: Icon(
+                                            userProvider.isFollow == false
+                                                ? Icons.add
+                                                : Icons.check,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ))
+                      ],
+                    );
                   },
                 ),
                 SizedBox(

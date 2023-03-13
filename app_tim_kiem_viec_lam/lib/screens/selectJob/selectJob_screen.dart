@@ -184,7 +184,7 @@ class _SelectJobScreenState extends State<SelectJobScreen> {
             },
             child: Container(
               padding: EdgeInsets.all(
-                15,
+                10,
               ),
               child: Text('Hoàn tất',
                   style: TextStyle(

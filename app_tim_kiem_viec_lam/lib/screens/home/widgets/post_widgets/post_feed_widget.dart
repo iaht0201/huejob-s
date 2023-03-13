@@ -1,7 +1,11 @@
 // import 'package:app_tim_kiem_viec_lam/screens/home/widgets/post_widgets/postInteract_widget.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/post_widgets/postInteract_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import '../../../../core/models/post_model.dart';
+import '../../../addPost/map.dart';
+import '../../../profile/profile_screen.dart';
+import '../../../profile/widgets/profile_information.dart';
 
 class PostItem extends StatefulWidget {
   PostItem({super.key, required this.post});
@@ -18,9 +22,11 @@ class _PostItemState extends State<PostItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      shadowColor: Colors.lightGreenAccent,
+      elevation: 8,
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 5),
-        margin: EdgeInsets.symmetric(vertical: 5),
+        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -30,20 +36,36 @@ class _PostItemState extends State<PostItem> {
                 margin: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(widget.post.caption.toString())),
             GestureDetector(
-              onTap: () {
-                _dialogBuilder(context);
-              },
-              child: widget.post.imageurl == null || widget.post.imageurl == ""
-                  ? Container(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Image.network(
-                        widget.post.imageurl.toString(),
-                        fit: BoxFit.cover,
+                onTap: () {
+                  _dialogBuilder(context);
+                },
+                child: widget.post.imageurl == null ||
+                        widget.post.imageurl == ""
+                    ? Container(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                      )
+                    : Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        decoration: BoxDecoration(
+
+                            // image: DecorationImage(
+                            //   fit: BoxFit.fitWidth,
+                            //   image: NetworkImage(
+                            //     '${widget.post.imageurl.toString()}',
+                            //   ),
+                            // ),
+                            ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: FadeInImage(
+                              placeholder: AssetImage(
+                                  "assets/images/no-image-width.png"),
+                              image:
+                                  NetworkImage(widget.post.imageurl.toString()),
+                              fit: BoxFit.contain,
+                              width: MediaQuery.of(context).size.width * 1),
+                        ),
                       )),
-            ),
             PostInteract(
               post: widget.post,
             )
@@ -98,6 +120,14 @@ class _PostHeader extends StatefulWidget {
 }
 
 class _PostHeaderState extends State<_PostHeader> {
+  String? _imageUrl;
+  void updateImageUrl(String url) {
+    setState(() {
+      _imageUrl = url;
+      print(_imageUrl);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -106,17 +136,26 @@ class _PostHeaderState extends State<_PostHeader> {
         children: [
           Stack(
             children: [
-              CircleAvatar(
-                radius: 20.0,
-                child: CircleAvatar(
-                  radius: 18.0,
-                  backgroundColor: Colors.grey[200],
-                  backgroundImage: widget.post.users?.imageUrl != ""
-                      ? NetworkImage("${widget.post.users?.imageUrl}")
-                      : NetworkImage(
-                          "https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg"),
-                ),
-              ),
+              GestureDetector(
+                onTap: () {
+                  print(widget.post.userId);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ProfileScreen(clientID: widget.post.userId,)));
+                },
+                child: widget.post.users!.imageUrl == null
+                    ? CircleAvatar(
+                        radius: 20,
+                        backgroundColor: HexColor("#BB2649"),
+                        child: Text(
+                            "${widget.post.users?.name.toString().substring(0, 1).toUpperCase()}",
+                            style: TextStyle(fontSize: 40)))
+                    : CircleAvatar(
+                        radius: 20,
+                        backgroundColor: HexColor("#BB2649"),
+                        backgroundImage:
+                            NetworkImage("${widget.post.users!.imageUrl}"),
+                      ),
+              )
             ],
           ),
           const SizedBox(width: 8.0),
@@ -139,11 +178,23 @@ class _PostHeaderState extends State<_PostHeader> {
                       Icons.location_on_outlined,
                       size: 14,
                     ),
-                    Text(
-                      '${widget.post.getCity} • ',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 12.0,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => OpenStreetMap(
+                                      isSeen: true,
+                                      latitude: widget.post.latitude,
+                                      longitude: widget.post.longitude,
+                                    )));
+                      },
+                      child: Text(
+                        '${widget.post.getCity} • ',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 12.0,
+                        ),
                       ),
                     ),
                   ],

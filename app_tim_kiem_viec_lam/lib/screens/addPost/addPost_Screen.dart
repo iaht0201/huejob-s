@@ -10,16 +10,19 @@ import 'package:app_tim_kiem_viec_lam/screens/addPost/map.dart';
 import 'package:app_tim_kiem_viec_lam/screens/selectJob/selectJob_screen.dart';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:provider/provider.dart' as p;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/models/user_model.dart';
 import '../../core/providers/job_provider.dart';
 import '../../core/providers/userProvider.dart';
+import '../../utils/postValidator.dart';
 import '../../widgets/Profile_widget.dart';
 import '../../widgets/Textfiled_widget.dart';
 
@@ -70,15 +73,18 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
   Future<void> handlePostImage(dynamic imageFile) async {
     final prefs = await SharedPreferences.getInstance();
+
     PostModel newPost;
     if (imageFile == null) {
       PostModel newPost = PostModel(
-          userId: prefs.getString('id').toString(),
-          caption: _descriptionController.text.toString(),
-          category_job: jobProvider.selectedOption!.jobName.toString(),
-          location: jobProvider.address,
-          imageurl: "",
-          users: userProvider.user);
+        userId: prefs.getString('id').toString(),
+        caption: _descriptionController.text.toString(),
+        category_job: jobProvider.selectedOption!.jobName.toString(),
+        location: jobProvider.address,
+        imageurl: "",
+        latitude: jobProvider.latitude!.toDouble(),
+        longitude: jobProvider.longitude!.toDouble(),
+      );
       jobProvider.insertPost(context, newPost);
     }
 
@@ -100,12 +106,17 @@ class _AddPostScreenState extends State<AddPostScreen> {
           .createSignedUrl(filePath, 60 * 60 * 24 * 365 * 10);
       if (imageUrlResponse != null) {
         newPost = PostModel(
-            userId: prefs.getString('id').toString(),
-            caption: _descriptionController.text.toString(),
-            category_job: jobProvider.selectedOption!.jobName.toString(),
-            location: jobProvider.address,
-            imageurl: imageUrlResponse,
-            users: userProvider.user);
+          userId: prefs.getString('id').toString(),
+          caption: _descriptionController.text.toString(),
+          category_job: jobProvider.selectedOption!.jobName.toString(),
+          location: jobProvider.address,
+          imageurl: imageUrlResponse,
+          latitude: jobProvider.latitude!.toDouble(),
+          longitude: jobProvider.longitude!.toDouble(),
+          // longitude: double.parse(jobProvider.longitude),
+          // latitude: jobProvider.latitude,
+          // longitude: jobProvider.longitude,
+        );
         jobProvider.insertPost(context, newPost);
       }
     } on StorageException catch (error) {
@@ -179,50 +190,54 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 pinned: true,
                 floating: false,
                 delegate: _MyHeader(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Row(
-                            children: [
-                              buttonArrow(context),
-                              Text(
-                                "Thêm bài viết",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge!
-                                    .copyWith(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                          Spacer(),
-                          p.Consumer<JobProvider>(
-                            builder: (context, jobProvider, _) {
-                              return GestureDetector(
-                                onTap: () {
-                                  handlePostImage(_imageFile);
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: HexColor("#ffffff"),
-                                  ),
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 12, horizontal: 20),
-                                  child: Text(
-                                    "Đăng",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge!
-                                        .copyWith(color: Colors.black),
-                                  ),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Row(
+                          children: [
+                            buttonArrow(context),
+                            Text(
+                              "Thêm bài viết",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                        Spacer(),
+                        p.Consumer<JobProvider>(
+                          builder: (context, jobProvider, _) {
+                            return GestureDetector(
+                              onTap: () {
+                                if (jobProvider.address == null) {
+                                  PostValidator.validateJobAddress();
+                                  return;
+                                } else if (jobProvider.selectedOption == null) {
+                                  PostValidator.validateJobTarget("");
+                                  return;
+                                }
+                                handlePostImage(_imageFile);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: HexColor("#ffffff"),
                                 ),
-                              );
-                            },
-                          ),
-                        ]),
-                  ),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                child: Text(
+                                  "Đăng",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge!
+                                      .copyWith(color: Colors.black),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ]),
                 )),
             SliverList(
                 delegate: SliverChildListDelegate([
@@ -238,6 +253,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         topRight: Radius.circular(20))),
                 child: SingleChildScrollView(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       p.Consumer<UserProvider>(
@@ -292,7 +308,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                               },
                                               child: Container(
                                                 decoration: BoxDecoration(
-                                                  border: Border.all(
+                                                    border: Border.all(
                                                       width: 1,
                                                       color:
                                                           HexColor("#BB2649"),
@@ -358,6 +374,29 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       //           child: Image.network(_file!.path),
                       //         ),
                       // ),
+                      Consumer<JobProvider>(
+                        builder: (context, JobProvider, _) {
+                          return jobProvider.address != null
+                              ? Container(
+                                  child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Image.asset(
+                                      "assets/icons/location1.png",
+                                      width: 15,
+                                    ),
+                                    SizedBox(
+                                      width: 4,
+                                    ),
+                                    Text(
+                                      "${jobProvider.address}",
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ],
+                                ))
+                              : Container();
+                        },
+                      ),
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: 15),
                         child: TextField(
@@ -369,12 +408,16 @@ class _AddPostScreenState extends State<AddPostScreen> {
                         ),
                       ),
                       _imageFile != null
-                          ? 
+                          ?
+
                           // Image.network(
                           //     "http://hanoimoi.com.vn/Uploads/tuandiep/2018/4/8/1(1).jpg")
-                          Image.file(File(_imageFile!.path),
-                              fit: BoxFit.cover,
-                              width: MediaQuery.of(context).size.width * 1)
+                          ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Image.file(File(_imageFile!.path),
+                                  fit: BoxFit.cover,
+                                  width: MediaQuery.of(context).size.width * 1),
+                            )
                           : Container()
                     ],
                   ),
@@ -411,7 +454,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => OpenStreetMap()));
+                              builder: (context) => OpenStreetMap(
+                                    isSeen: false,
+                                  )));
                     },
                     child: Row(
                       children: [
@@ -563,15 +608,17 @@ class _MyHeader extends SliverPersistentHeaderDelegate {
   final Widget child;
 
   @override
-  double get minExtent => 70.0;
+  double get minExtent => 80.0;
 
   @override
-  double get maxExtent => 70.0;
+  double get maxExtent => 80.0;
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
+      padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+      // padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       color: HexColor("#BB2649").withOpacity(1),
       child: child,
     );

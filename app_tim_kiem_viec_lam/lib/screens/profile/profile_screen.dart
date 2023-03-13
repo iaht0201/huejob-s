@@ -15,7 +15,8 @@ import '../../core/providers/authenciation_provider.dart';
 import '../../core/providers/job_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  const ProfileScreen({super.key, this.clientID});
+  final String? clientID;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -28,6 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void updateImageUrl(String url) {
     setState(() {
       _imageUrl = url;
+
       print(_imageUrl);
     });
   }
@@ -39,8 +41,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     jobProvider = Provider.of<JobProvider>(context, listen: false);
     userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.fetchUser();
-    jobProvider.getPotsById();
+    if (widget.clientID == null) {
+      userProvider.fetchUser();
+      jobProvider.getPotsById(userProvider.user.userId.toString());
+
+      return;
+    } else {
+      userProvider.fetchUserByID(widget.clientID.toString());
+      jobProvider.getPotsById(widget.clientID.toString());
+      return;
+    }
 
     // user = userProvider.user;
   }
@@ -53,9 +63,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // }
 
   Widget build(BuildContext context) {
-    final provider = Provider.of<AuthenciationNotifier>(context);
-    final providerJob = Provider.of<JobProvider>(context);
-    UserModel user;
     return Scaffold(
         backgroundColor: Colors.white,
         body: CustomScrollView(
@@ -75,9 +82,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         flex: 10,
                         child: Consumer<UserProvider>(
                           builder: (context, userProvider, _) {
+                            final UserModel user = widget.clientID == null
+                                ? userProvider.user
+                                : userProvider.userByID;
                             return Center(
                               child: Text(
-                                "@${userProvider.user!.fullname == null ? userProvider.user!.name : userProvider.user!.fullname}",
+                                "@${user.fullname == null ? user.name : user.fullname}",
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleLarge!
@@ -100,10 +110,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     builder: (context, userProvider, _) {
                       return Column(
                         children: [
-                          ProfileInformation(
-                              user: userProvider.user,
-                              initials: "A",
-                              onImageUrlChanged: updateImageUrl),
+                          widget.clientID == null ||
+                                  widget.clientID == userProvider.user.userId
+                              ? ProfileInformation(
+                                  user: userProvider.user,
+                                  onImageUrlChanged: updateImageUrl)
+                              : ProfileInformation(
+                                  clientID: widget.clientID,
+                                  user: userProvider.user,
+                                  onImageUrlChanged: updateImageUrl),
                           ProfileDetailInformation(user: userProvider.user),
                         ],
                       );

@@ -125,6 +125,7 @@ class _PostInteractState extends State<PostInteract> {
     return Consumer<JobProvider>(
       builder: (context, postProvider, _) {
         return Container(
+          padding: EdgeInsets.symmetric(vertical: 4),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -140,7 +141,7 @@ class _PostInteractState extends State<PostInteract> {
                 }
                 ;
               }),
-              _InteracIcon(context, Icons.message, () {
+              _InteracIcon(context, Icons.comment, () {
                 print("message");
               }),
               _InteracIcon(context,
@@ -179,7 +180,8 @@ class _PostInteractState extends State<PostInteract> {
               color:
                   icon == Icons.thumb_up ? HexColor("#BB2649") : Colors.black,
             ),
-            Text("${text} lượt thích")
+            SizedBox(width: 2,) ,
+            Text("${text} ")
           ],
         ));
   }
@@ -187,7 +189,7 @@ class _PostInteractState extends State<PostInteract> {
   _InteracIcon(BuildContext context, IconData icon, Function() onTap) {
     return GestureDetector(
       onTap: onTap,
-      child: Icon(icon),
+      child: Icon(icon ),
     );
   }
 }
