@@ -7,6 +7,7 @@ import 'package:app_tim_kiem_viec_lam/core/providers/userProvider.dart';
 import 'package:app_tim_kiem_viec_lam/screens/addPost/addPost_Screen.dart';
 
 import 'package:app_tim_kiem_viec_lam/screens/authentication/login/login.dart';
+import 'package:app_tim_kiem_viec_lam/screens/chat/listChatScreen.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/tag_list.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/home_app_bar.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/job_hot.dart';
@@ -120,13 +121,13 @@ class _HomePageState extends State<HomePage>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.people_outlined,
+                            Icons.bookmark,
                             color: currentTab == 1
                                 ? HexColor("#BB2649")
                                 : Colors.grey,
                           ),
                           Text(
-                            'Hồ sơ',
+                            'Bookmark',
                             style: TextStyle(
                               color: currentTab == 1
                                   ? HexColor("#BB2649")
@@ -153,7 +154,7 @@ class _HomePageState extends State<HomePage>
                       minWidth: 40,
                       onPressed: () {
                         setState(() {
-                          currentScreen = HomePage();
+                          currentScreen = ListChatScreen();
                           currentTab = 3;
                         });
                       },
@@ -161,13 +162,13 @@ class _HomePageState extends State<HomePage>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.bookmark_sharp,
+                            Icons.message_outlined,
                             color: currentTab == 3
                                 ? HexColor("#BB2649")
                                 : Colors.grey,
                           ),
                           Text(
-                            'Bookmark',
+                            'Nhắn tin',
                             style: TextStyle(
                               color: currentTab == 3
                                   ? HexColor("#BB2649")
@@ -236,7 +237,6 @@ class __ContentHomeState extends State<_ContentHome> {
     jobProvider = Provider.of<JobProvider>(context, listen: false);
     userProvider = Provider.of<UserProvider>(context, listen: false);
     userProvider.fetchUser();
-
     jobProvider.getPots();
     // _loadPosts();
     _scrollController.addListener(_scrollListener);
@@ -434,20 +434,10 @@ class __ContentHomeState extends State<_ContentHome> {
                       TagList(),
                       Consumer<JobProvider>(
                         builder: (context, postProvider, _) {
-                          return
-                              // Container(
-                              //   height: 1000,
-                              //   child: ListView.builder(
-                              //     itemCount: providerJob.posts.length,
-                              //     itemBuilder: (context, index) {
-                              //       return PostItem(post: jobProvider.posts[index]);
-                              //     },
-                              //   ),
-                              // );
-                              Container(
+                          return Container(
                             child: Column(
                               children: [
-                                ...jobProvider.posts.map((e) {
+                                ...postProvider.posts.map((e) {
                                   return PostItem(post: e);
                                 }).toList(),
                                 _isLoading
@@ -585,3 +575,77 @@ class _MyHeader extends SliverPersistentHeaderDelegate {
     return false;
   }
 }
+
+// import 'package:app_tim_kiem_viec_lam/screens/chat/chatMessages.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter/src/widgets/container.dart';
+// import 'package:flutter/src/widgets/framework.dart';
+// import 'package:provider/provider.dart';
+
+// import '../../core/providers/chatMessagerProvider.dart';
+// import '../../core/providers/job_provider.dart';
+
+// class HomePage extends StatefulWidget {
+//   const HomePage({super.key});
+
+//   @override
+//   State<HomePage> createState() => _HomePageState();
+// }
+
+// class _HomePageState extends State<HomePage> {
+//   Future<void> _loginUser(
+//       ChatProvider appService, String _email, String _password) async {
+//     await appService.signIn(_email, _password);
+
+//     setState(() {});
+//   }
+
+//   Future<void> _signOut(ChatProvider appService) async {
+//     await appService.signOut();
+
+//     setState(() {});
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final appService = Provider.of<ChatProvider>(context, listen: false);
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(appService.isAuthentificated()
+//             ? appService.getCurrentUserEmail()
+//             : 'Chat'),
+//       ),
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+          
+//             const SizedBox(height: 10.0),
+//             ElevatedButton(
+//               onPressed: () =>
+//                   _loginUser(appService, "t123@gmail.com", '12345678'),
+//               child: const Text('Login User 1'),
+//             ),
+//             const SizedBox(height: 10.0),
+//             ElevatedButton(
+//               onPressed: () =>
+//                   _loginUser(appService, "test123@gmail.com", '12345678'),
+//               child: const Text('Login User 2'),
+//             ),
+//             const SizedBox(height: 10.0),
+//             ElevatedButton(
+//               onPressed: () => _signOut(appService),
+//               child: const Text('Sign out'),
+//             ),
+//             const SizedBox(height: 10.0),
+//             ElevatedButton(
+//               onPressed: () => Navigator.push(
+//                   context, MaterialPageRoute(builder: (context) => ChatPage())),
+//               child: const Text('Go To Chat'),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }

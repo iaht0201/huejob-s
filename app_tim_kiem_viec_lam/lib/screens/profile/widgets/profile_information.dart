@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:app_tim_kiem_viec_lam/core/providers/userProvider.dart';
+import 'package:app_tim_kiem_viec_lam/screens/chat/chatscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,6 +13,8 @@ import '../../../core/models/user_model.dart';
 
 import '../../../core/providers/job_provider.dart';
 import '../../../core/supabase/supabase.dart';
+import '../../chat/chatMessages.dart';
+import '../../chat/listChatScreen.dart';
 import '../profile_edit.dart';
 import '../profile_setting.dart';
 import '../image_screen.dart';
@@ -38,11 +41,13 @@ class _ProfileInformationState extends State<ProfileInformation> {
   void initState() {
     super.initState();
     userProvider = p.Provider.of<UserProvider>(context, listen: false);
-    userProvider
-        .getFollow(widget.user.userId.toString(), widget.clientID.toString())
-        .whenComplete(() => setState(() {
-              _isLoading = true;
-            }));
+    if (widget.clientID != null) {
+      userProvider
+          .getFollow(widget.user.userId.toString(), widget.clientID.toString())
+          .whenComplete(() => setState(() {
+                _isLoading = true;
+              }));
+    }
   }
 
   Future<void> _upload(dynamic imageFile) async {
@@ -176,18 +181,27 @@ class _ProfileInformationState extends State<ProfileInformation> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    EditProfile(user: widget.user)));
+                        widget.clientID == null
+                            ? Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        EditProfile(user: widget.user)))
+                            : Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ChatPage(
+                                        userTo: widget.clientID,
+                                        userFrom: userProvider.user.userId)));
                       },
-                      child: Row(
-                        children: [
-                          Icon(Icons.mode_edit_outlined),
-                          Text("Chỉnh sửa thông tin")
-                        ],
-                      ),
+                      child: widget.clientID == null
+                          ? Row(
+                              children: [
+                                Icon(Icons.mode_edit_outlined),
+                                Text("Chỉnh sửa thông tin")
+                              ],
+                            )
+                          : Text("Nhắn tin"),
                       style: ElevatedButton.styleFrom(
                           primary: HexColor("#BB2649"),
                           fixedSize: Size(200, 50)),

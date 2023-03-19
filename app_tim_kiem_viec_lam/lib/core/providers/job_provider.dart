@@ -146,6 +146,7 @@ class JobProvider extends ChangeNotifier {
   get postById => _postById;
 
   Future<void> getLike() async {
+    _listLike.clear() ;
     final prefs = await SharedPreferences.getInstance();
     final response = await SupabaseBase.supabaseClient
         .from('likes')
