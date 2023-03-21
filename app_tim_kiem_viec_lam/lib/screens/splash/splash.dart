@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app_tim_kiem_viec_lam/core/supabase/supabase.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../authentication/login/login.dart';
@@ -49,13 +50,14 @@ class _SplashScreenState extends State<SplashScreen> {
         body: Container(
       width: double.infinity,
       height: double.infinity,
-      decoration:const BoxDecoration(
+      decoration:  BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.center,
               end: Alignment.center,
               colors: [
-            Color(0xd0140),
-            Color(0xFF3B3A3A),
+            HexColor("#E94D71"),
+            HexColor("#BB2649")
+            ,
           ])),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

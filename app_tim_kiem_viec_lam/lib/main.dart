@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -22,12 +23,20 @@ class Core extends StatelessWidget {
 class MotChill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.SplashRoutes,
-      // color: HexColor("#B1B6B7"),
-      theme: ThemeData.light(),
-      routes: AppRoutes.routes,
+    return ScreenUtilInit(
+     
+      minTextAdapt: true,
+      splitScreenMode: true,
+      designSize: const Size(375, 812),
+      builder: (context, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          initialRoute: AppRoutes.SplashRoutes,
+          // color: HexColor("#B1B6B7"),
+          theme: ThemeData.light(),
+          routes: AppRoutes.routes,
+        );
+      },
     );
   }
 }

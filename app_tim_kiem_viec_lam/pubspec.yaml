@@ -49,6 +49,8 @@ dependencies:
   geolocator: ^9.0.2
   chat_bubbles: ^1.4.1
   flutter_chat_bubble: ^2.0.2
+  flutter_screenutil: ^5.7.0
+  google_fonts: ^4.0.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -72,6 +74,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/images/onboaring/
     - assets/icons/
   # To add assets to your application, add an assets section, like this:
   # assets:

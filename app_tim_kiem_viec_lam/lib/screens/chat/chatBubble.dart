@@ -86,7 +86,7 @@ _itemChat({int? chat, String? avatar, message, time, name}) {
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color:
-                    chat == 1 ? Colors.indigo.shade100 : Colors.indigo.shade300,
+                    chat == 1 ? Colors.indigo.shade100 : Colors.red.shade300,
                 borderRadius: chat == 1
                     ? BorderRadius.only(
                         topLeft: Radius.circular(30),
@@ -113,7 +113,7 @@ _itemChat({int? chat, String? avatar, message, time, name}) {
 }
 
 class Avatar extends StatelessWidget {
-  Avatar({this.image, this.size = 50, this.margin = const EdgeInsets.all(0)});
+  Avatar({this.image, this.size = 50, this.margin = const EdgeInsets.only(right: 10)});
   final double size;
   final image;
   final EdgeInsets margin;
