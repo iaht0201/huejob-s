@@ -8,17 +8,22 @@ import 'package:app_tim_kiem_viec_lam/screens/addPost/addPost_Screen.dart';
 
 import 'package:app_tim_kiem_viec_lam/screens/authentication/login/login.dart';
 import 'package:app_tim_kiem_viec_lam/screens/chat/listChatScreen.dart';
+import 'package:app_tim_kiem_viec_lam/screens/home/widgets/featuredJobs.dart';
+import 'package:app_tim_kiem_viec_lam/screens/home/widgets/otherJobs.dart';
+import 'package:app_tim_kiem_viec_lam/screens/home/widgets/recommendJobs.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/tag_list.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/home_app_bar.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/job_hot.dart';
 import 'package:app_tim_kiem_viec_lam/screens/profile/profile_screen.dart';
 import 'package:app_tim_kiem_viec_lam/screens/profile/profile_setting.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import '../../core/providers/authenciation_provider.dart';
 import '../../core/providers/job_provider.dart';
 import '../profile/widgets/button_arrow.dart';
+import '../social/socialScreen.dart';
 import 'widgets/post_widgets/post_feed_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -82,7 +87,7 @@ class _HomePageState extends State<HomePage>
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     MaterialButton(
-                      minWidth: 40,
+                      minWidth: 30.w,
                       onPressed: () {
                         setState(() {
                           currentScreen = _ContentHome();
@@ -93,7 +98,7 @@ class _HomePageState extends State<HomePage>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.dashboard,
+                            Icons.home_filled,
                             color: currentTab == 0
                                 ? HexColor("#BB2649")
                                 : Colors.grey,
@@ -110,7 +115,7 @@ class _HomePageState extends State<HomePage>
                       ),
                     ),
                     MaterialButton(
-                      minWidth: 40,
+                      minWidth: 30.w,
                       onPressed: () {
                         setState(() {
                           currentScreen = ProfileSettingScreen();
@@ -151,7 +156,7 @@ class _HomePageState extends State<HomePage>
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     MaterialButton(
-                      minWidth: 40,
+                      minWidth: 30.w,
                       onPressed: () {
                         setState(() {
                           currentScreen = ListChatScreen();
@@ -179,10 +184,10 @@ class _HomePageState extends State<HomePage>
                       ),
                     ),
                     MaterialButton(
-                      minWidth: 40,
+                      minWidth: 30.w,
                       onPressed: () {
                         setState(() {
-                          currentScreen = ProfileSettingScreen();
+                          currentScreen = SocialScreen();
                           currentTab = 4;
                         });
                       },
@@ -190,13 +195,13 @@ class _HomePageState extends State<HomePage>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.people_outlined,
+                            Icons.change_circle_outlined,
                             color: currentTab == 4
                                 ? HexColor("#BB2649")
                                 : Colors.grey,
                           ),
                           Text(
-                            'Hồ sơ',
+                            'Tương tác',
                             style: TextStyle(
                               color: currentTab == 4
                                   ? HexColor("#BB2649")
@@ -397,7 +402,7 @@ class __ContentHomeState extends State<_ContentHome> {
                 //     const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 clipBehavior: Clip.hardEdge,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: HexColor("#FAFAFD"),
                   // borderRadius: BorderRadius.only(
                   //     topLeft: Radius.circular(20),
                   //     topRight: Radius.circular(20))
@@ -407,47 +412,103 @@ class __ContentHomeState extends State<_ContentHome> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       SizedBox(
-                        height: 10,
+                        height: 25,
                       ),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: TextField(
-                            decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(vertical: 20.0),
-                          prefixIcon: const Icon(
-                            Icons.search_rounded,
-                            size: 35,
-                            color: Colors.black,
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: HexColor("#F0F2F1")),
-                              borderRadius: BorderRadius.circular(20)),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: HexColor("#F0F2F1")),
-                              borderRadius: BorderRadius.circular(20)),
-                          hintText: 'Bạn đang tìm kiếm loại công việc nào ?',
-                        )),
-                      ),
-                      JobHot(),
-                      TagList(),
-                      Consumer<JobProvider>(
-                        builder: (context, postProvider, _) {
-                          return Container(
-                            child: Column(
-                              children: [
-                                ...postProvider.posts.map((e) {
-                                  return PostItem(post: e);
-                                }).toList(),
-                                _isLoading
-                                    ? CircularProgressIndicator()
-                                    : SizedBox.shrink(),
-                              ],
+                        padding: EdgeInsets.symmetric(horizontal: 24.w),
+                        width: 1.sw,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 250.w,
+                              height: 55.h,
+                              decoration: BoxDecoration(
+                                  color: HexColor("#F2F2F3"),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 13.h, horizontal: 24.w),
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    "assets/icons/search.png",
+                                    width: 20.w,
+                                    height: 20.h,
+                                  ),
+                                  SizedBox(
+                                    width: 10.w,
+                                  ),
+                                  Text(
+                                    "Tìm kiếm công việc ",
+                                    style: TextStyle(
+                                        color: HexColor("#95969D"),
+                                        fontSize: 15),
+                                  ),
+                                ],
+                              ),
                             ),
-                          );
-                        },
+                            SizedBox(
+                              width: 12.w,
+                            ),
+                            Container(
+                                width: 55.w,
+                                height: 55.h,
+                                decoration: BoxDecoration(
+                                    color: HexColor("#F2F2F3"),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12))),
+                                padding: EdgeInsets.all(11),
+                                child: Image.asset(
+                                  "assets/icons/filter.png",
+                                  width: 26.w,
+                                  height: 26.h,
+                                )),
+                          ],
+                        ),
                       ),
+                      // Container(
+                      //   padding: EdgeInsets.symmetric(horizontal: 20),
+                      //   child: TextField(
+                      //       decoration: InputDecoration(
+                      //     contentPadding: EdgeInsets.symmetric(vertical: 20.0),
+                      //     prefixIcon: const Icon(
+                      //       Icons.search_rounded,
+                      //       size: 35,
+                      //       color: Colors.black,
+                      //     ),
+                      //     focusedBorder: OutlineInputBorder(
+                      //         borderSide:
+                      //             BorderSide(color: HexColor("#F0F2F1")),
+                      //         borderRadius: BorderRadius.circular(20)),
+                      //     enabledBorder: OutlineInputBorder(
+                      //         borderSide:
+                      //             BorderSide(color: HexColor("#F0F2F1")),
+                      //         borderRadius: BorderRadius.circular(20)),
+                      //     hintText: 'Bạn đang tìm kiếm loại công việc nào ?',
+                      //   )),
+                      // ),
+                      // JobHot(),
+                      FeaturedJobs(),
+                      RecommendJobs(),
+                      // TagList(),
+                      OtherJobs(),
+                      // posts
+                      // Consumer<JobProvider>(
+                      //   builder: (context, postProvider, _) {
+                      //     return Container(
+                      //       child: Column(
+                      //         children: [
+                      //           ...postProvider.posts.map((e) {
+                      //             return PostItem(post: e);
+                      //           }).toList(),
+                      //           _isLoading
+                      //               ? CircularProgressIndicator()
+                      //               : SizedBox.shrink(),
+                      //         ],
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
                     ],
                   ),
                 ),
@@ -619,7 +680,7 @@ class _MyHeader extends SliverPersistentHeaderDelegate {
 //         child: Column(
 //           mainAxisAlignment: MainAxisAlignment.center,
 //           children: [
-          
+
 //             const SizedBox(height: 10.0),
 //             ElevatedButton(
 //               onPressed: () =>

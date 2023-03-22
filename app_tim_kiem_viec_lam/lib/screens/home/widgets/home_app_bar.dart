@@ -1,7 +1,9 @@
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/userProvider.dart';
+import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
@@ -14,16 +16,14 @@ class HomeAppBar extends StatelessWidget {
   final bool isScroll;
   @override
   Widget build(BuildContext context) {
-    final deviceHeight = MediaQuery.of(context).size.height;
-    final deviceWidth = MediaQuery.of(context).size.width;
     final devicePadding = MediaQuery.of(context).padding;
     return Container(
-        width: deviceWidth * 1,
+        width: 1.sw,
         padding: EdgeInsets.only(
-          top: devicePadding.top + 5,
-          left: 20,
-          right: 20,
-          bottom: 10,
+          top: devicePadding.top.h + 5.h,
+          left: 20.w,
+          right: 20.w,
+          bottom: 10.h,
         ),
         child: Consumer<UserProvider>(
           builder: (context, userProvider, _) {
@@ -35,7 +35,7 @@ class HomeAppBar extends StatelessWidget {
                   children: [
                     Container(
                       margin:
-                          EdgeInsets.only(right: isScroll == false ? 10 : 0),
+                          EdgeInsets.only(right: isScroll == false ? 10.w : 0),
                       child: GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -45,13 +45,13 @@ class HomeAppBar extends StatelessWidget {
                         },
                         child: user!.imageUrl == null
                             ? (CircleAvatar(
-                                radius: 35,
+                                radius: 35.r,
                                 backgroundColor: HexColor("#BB2649"),
                                 child: Text(
                                     "${user?.name.toString().substring(0, 1).toUpperCase()}",
-                                    style: TextStyle(fontSize: 40))))
+                                    style:const  TextStyle(fontSize: 40))))
                             : CircleAvatar(
-                                radius: 35,
+                                radius: 35.r,
                                 backgroundColor: HexColor("#BB2649"),
                                 backgroundImage: NetworkImage(
                                     "${userProvider.user!.imageUrl}"),
@@ -63,39 +63,29 @@ class HomeAppBar extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                'Xin chào ${userProvider.user!.fullname == null ? userProvider.user!.name : userProvider.user!.fullname}',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 17,
-                                    color: Colors.white),
-                              ),
-                              const SizedBox(
-                                height: 5,
+                              Text("Xin chào",
+                                  style: textTheme.headline17(
+                                      color: "FFFFFF", )),
+                              SizedBox(
+                                height: 5.h,
                               ),
                               Text(
-                                "HueJob's",
-                                style: TextStyle(
-                                    color: Colors.grey[300],
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
+                                ' ${userProvider.user!.fullname == null ? userProvider.user!.name : userProvider.user!.fullname} 👋',
+                                style: textTheme.headline17(),
                               ),
-                              const SizedBox(
-                                height: 4,
+                              SizedBox(
+                                height: 5.h,
                               ),
                               Text(
-                                "Luôn đồng hành cùng bạn!",
-                                style: TextStyle(
-                                    color: Colors.grey[400], fontSize: 14),
+                                "HueJob's Luôn đồng hành cùng bạn!",
+                                style: textTheme.headline14(
+                                    color: "FFFFFF", opacity: 0.6),
                               )
                             ],
                           )
                         : Text(
-                            ' ${userProvider.user!.fullname == null ? userProvider.user!.name : userProvider.user!.fullname}',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                color: Colors.white),
+                            ' ${userProvider.user!.fullname ?? userProvider.user!.name}',
+                            style: textTheme.headline22(),
                           ),
                   ],
                 ),
@@ -107,14 +97,9 @@ class HomeAppBar extends StatelessWidget {
                           showBadge: true,
                           child: Image(
                             image: AssetImage("assets/icons/noti.png"),
-                            width: 35,
-                            height: 35,
-                          )
-                          // Icon(
-                          //   Icons.notifications_none,
-                          //   size: 35,
-                          // ),
-                          ),
+                            width: 28.w,
+                            height: 28.h,
+                          )),
                     ),
                     const SizedBox(
                       width: 10,
