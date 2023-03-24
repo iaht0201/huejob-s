@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/models/jobCategory_model.dart';
 import '../../core/models/user_model.dart';
-import '../../core/providers/job_provider.dart';
+import '../../core/providers/postProvider.dart';
 import '../../core/providers/userProvider.dart';
 import '../../widgets/Profile_widget.dart';
 import '../../widgets/Textfiled_widget.dart';
@@ -25,7 +25,7 @@ class SelectJobScreen extends StatefulWidget {
 }
 
 class _SelectJobScreenState extends State<SelectJobScreen> {
-  late JobProvider jobCategoryProvider;
+  late PostProvider jobCategoryProvider;
 
   bool isLoading = false;
 
@@ -36,7 +36,7 @@ class _SelectJobScreenState extends State<SelectJobScreen> {
   @override
   void initState() {
     super.initState();
-    jobCategoryProvider = Provider.of<JobProvider>(context, listen: false);
+    jobCategoryProvider = Provider.of<PostProvider>(context, listen: false);
     jobCategoryProvider.getJobCategory();
     jobCategorytList = jobCategoryProvider.jobs;
   }
@@ -53,7 +53,7 @@ class _SelectJobScreenState extends State<SelectJobScreen> {
   }
 
   Widget build(BuildContext context) {
-    final imageProvider = Provider.of<JobProvider>(context);
+    final imageProvider = Provider.of<PostProvider>(context);
     final provider = Provider.of<AuthenciationNotifier>(context);
 
     return Scaffold(
@@ -124,7 +124,7 @@ class _SelectJobScreenState extends State<SelectJobScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Consumer<JobProvider>(
+                    Consumer<PostProvider>(
                       builder: (context, jobCategoryProvider, _) {
                         return Container(
                           height: MediaQuery.of(context).size.height * 0.68,

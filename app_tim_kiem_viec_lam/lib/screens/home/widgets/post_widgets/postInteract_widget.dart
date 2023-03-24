@@ -1,5 +1,5 @@
 import 'package:app_tim_kiem_viec_lam/core/models/bookmark_moder.dart';
-import 'package:app_tim_kiem_viec_lam/core/providers/job_provider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/postProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
@@ -21,12 +21,12 @@ class _PostInteractState extends State<PostInteract> {
   bool isLiked = false;
   bool isBookMarked = false;
   List listBookmark = [];
-  late JobProvider postProvider;
+  late PostProvider postProvider;
   late List<PostModel> post;
 
   @override
   void initState() {
-    postProvider = Provider.of<JobProvider>(context, listen: false);
+    postProvider = Provider.of<PostProvider>(context, listen: false);
     post = postProvider.posts;
     postProvider.getLike().whenComplete(() {
       for (LikesModel like in postProvider.listLike) {
@@ -122,7 +122,7 @@ class _PostInteractState extends State<PostInteract> {
   // }
 
   Widget build(BuildContext context) {
-    return Consumer<JobProvider>(
+    return Consumer<PostProvider>(
       builder: (context, postProvider, _) {
         return Container(
           padding: EdgeInsets.symmetric(vertical: 4),

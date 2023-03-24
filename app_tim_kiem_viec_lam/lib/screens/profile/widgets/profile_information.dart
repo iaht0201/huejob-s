@@ -11,7 +11,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/models/user_model.dart';
 
-import '../../../core/providers/job_provider.dart';
+import '../../../core/providers/postProvider.dart';
 import '../../../core/supabase/supabase.dart';
 import '../../chat/chatMessages.dart';
 import '../../chat/listChatScreen.dart';
@@ -31,7 +31,7 @@ class ProfileInformation extends StatefulWidget {
 }
 
 class _ProfileInformationState extends State<ProfileInformation> {
-  final JobProvider _imageProvider = JobProvider();
+  final PostProvider _imageProvider = PostProvider();
 
   bool _isLoading = false;
   String _id = "";

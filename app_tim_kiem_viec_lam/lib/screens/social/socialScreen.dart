@@ -19,7 +19,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import '../../core/providers/authenciation_provider.dart';
-import '../../core/providers/job_provider.dart';
+import '../../core/providers/postProvider.dart';
 import '../home/widgets/post_widgets/post_feed_widget.dart';
 
 class SocialScreen extends StatefulWidget {
@@ -32,14 +32,14 @@ class SocialScreen extends StatefulWidget {
 class _SocialScreenState extends State<SocialScreen> {
   late UserProvider userProvider;
   late UserModel user;
-  late JobProvider jobProvider;
+  late PostProvider jobProvider;
   List<PostModel> posts = [];
   int _page = 1;
   int _pageSize = 2;
   bool _isLoading = false;
   ScrollController _scrollController = ScrollController();
   void initState() {
-    jobProvider = Provider.of<JobProvider>(context, listen: false);
+    jobProvider = Provider.of<PostProvider>(context, listen: false);
     userProvider = Provider.of<UserProvider>(context, listen: false);
     userProvider.fetchUser();
     jobProvider.getPots();
@@ -84,7 +84,7 @@ class _SocialScreenState extends State<SocialScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AuthenciationNotifier>(context);
-    final providerJob = Provider.of<JobProvider>(context);
+    final providerJob = Provider.of<PostProvider>(context);
     return Scaffold(
       body: Stack(children: [
         CustomScrollView(
@@ -202,7 +202,7 @@ class _SocialScreenState extends State<SocialScreen> {
                       // ),
 
                       // posts
-                      Consumer<JobProvider>(
+                      Consumer<PostProvider>(
                         builder: (context, postProvider, _) {
                           return Container(
                             child: Column(

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/models/user_model.dart';
-import '../../core/providers/job_provider.dart';
+import '../../core/providers/postProvider.dart';
 import '../../core/providers/userProvider.dart';
 
 import '../../widgets/Textfiled_widget.dart';
@@ -55,7 +55,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Widget build(BuildContext context) {
-    final imageProvider = Provider.of<JobProvider>(context);
+    final imageProvider = Provider.of<PostProvider>(context);
     final provider = Provider.of<AuthenciationNotifier>(context);
 
     return Scaffold(

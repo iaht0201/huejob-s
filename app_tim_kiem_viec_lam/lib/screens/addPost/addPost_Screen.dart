@@ -20,7 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/models/user_model.dart';
-import '../../core/providers/job_provider.dart';
+import '../../core/providers/postProvider.dart';
 import '../../core/providers/userProvider.dart';
 import '../../utils/postValidator.dart';
 import '../../widgets/Profile_widget.dart';
@@ -58,7 +58,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   final _formKey = GlobalKey<FormState>();
 
   late UserProvider userProvider;
-  late JobProvider jobProvider;
+  late PostProvider jobProvider;
   // File? _file;
   String? _pathFile;
   XFile? _imageFile;
@@ -68,7 +68,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   void initState() {
     super.initState();
     userProvider = p.Provider.of<UserProvider>(context, listen: false);
-    jobProvider = p.Provider.of<JobProvider>(context, listen: false);
+    jobProvider = p.Provider.of<PostProvider>(context, listen: false);
   }
 
   Future<void> handlePostImage(dynamic imageFile) async {
@@ -179,7 +179,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   // }
 
   Widget build(BuildContext context) {
-    final imageProvider = p.Provider.of<JobProvider>(context);
+    final imageProvider = p.Provider.of<PostProvider>(context);
     final provider = p.Provider.of<AuthenciationNotifier>(context);
 
     return Scaffold(
@@ -206,7 +206,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           ],
                         ),
                         Spacer(),
-                        p.Consumer<JobProvider>(
+                        p.Consumer<PostProvider>(
                           builder: (context, jobProvider, _) {
                             return GestureDetector(
                               onTap: () {
@@ -295,7 +295,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                                         SizedBox(
                                           height: 8,
                                         ),
-                                        p.Consumer<JobProvider>(
+                                        p.Consumer<PostProvider>(
                                           builder: (context,
                                               jobCategoryProvider, _) {
                                             return GestureDetector(
@@ -374,8 +374,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       //           child: Image.network(_file!.path),
                       //         ),
                       // ),
-                      Consumer<JobProvider>(
-                        builder: (context, JobProvider, _) {
+                      Consumer<PostProvider>(
+                        builder: (context, PostProvider, _) {
                           return jobProvider.address != null
                               ? Container(
                                   child: Row(
@@ -579,8 +579,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
   }
 
   buttonArrow(BuildContext context) {
-    JobProvider jobCategory =
-        p.Provider.of<JobProvider>(context, listen: false);
+    PostProvider jobCategory =
+        p.Provider.of<PostProvider>(context, listen: false);
     return Padding(
         padding: const EdgeInsets.only(right: 5, top: 20, bottom: 20),
         child: InkWell(

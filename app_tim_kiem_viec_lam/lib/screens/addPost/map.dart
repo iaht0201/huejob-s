@@ -1,4 +1,4 @@
-import 'package:app_tim_kiem_viec_lam/core/providers/job_provider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/postProvider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hexcolor/hexcolor.dart';
@@ -18,12 +18,12 @@ class OpenStreetMap extends StatefulWidget {
 }
 
 class _OpenStreetMapState extends State<OpenStreetMap> {
-  late JobProvider jobProvider;
+  late PostProvider jobProvider;
   Position? _position;
   bool isLoaded = false;
   void initState() {
     super.initState();
-    jobProvider = Provider.of<JobProvider>(context, listen: false);
+    jobProvider = Provider.of<PostProvider>(context, listen: false);
     getCurrentPosition();
     // getCurrentPosition();
   }
@@ -39,7 +39,7 @@ class _OpenStreetMapState extends State<OpenStreetMap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Consumer<JobProvider>(
+      body: Consumer<PostProvider>(
         builder: (context, jobProvider, _) {
           return isLoaded == true
               ? widget.isSeen == false

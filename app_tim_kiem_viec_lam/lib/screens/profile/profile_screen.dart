@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/providers/authenciation_provider.dart';
-import '../../core/providers/job_provider.dart';
+import '../../core/providers/postProvider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, this.clientID});
@@ -34,12 +34,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  late JobProvider jobProvider;
+  late PostProvider jobProvider;
   late UserProvider userProvider;
   @override
   void initState() {
     super.initState();
-    jobProvider = Provider.of<JobProvider>(context, listen: false);
+    jobProvider = Provider.of<PostProvider>(context, listen: false);
     userProvider = Provider.of<UserProvider>(context, listen: false);
     if (widget.clientID == null) {
       userProvider.fetchUser();
@@ -56,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
   // void iniState() {
   //   final provider = Provider.of<UserProvider>(context);
-  //   final providerJob = Provider.of<JobProvider>(context);
+  //   final providerJob = Provider.of<PostProvider>(context);
   //   providerJob.getPotsById();
   //   super.initState();
   //   // provider.fetchUser() ;
@@ -125,7 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                   ),
 
-                  Consumer<JobProvider>(
+                  Consumer<PostProvider>(
                     builder: (context, postProvider, _) {
                       posts = postProvider.postById;
                       return Container(

@@ -23,7 +23,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import '../../core/providers/authenciation_provider.dart';
-import '../../core/providers/job_provider.dart';
+import '../../core/providers/postProvider.dart';
 import '../profile/widgets/button_arrow.dart';
 import '../social/socialScreen.dart';
 import 'widgets/post_widgets/post_feed_widget.dart';
@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage>
   ];
   final PageStorageBucket bucket = PageStorageBucket();
   Widget currentScreen = _ContentHome();
-  late JobProvider jobProvider;
+  late PostProvider jobProvider;
   late UserModel user;
   void initState() {
     super.initState();
@@ -378,14 +378,14 @@ class _ContentHome extends StatefulWidget {
 class __ContentHomeState extends State<_ContentHome> {
   late UserProvider userProvider;
   late UserModel user;
-  late JobProvider jobProvider;
+  late PostProvider jobProvider;
   List<PostModel> posts = [];
   int _page = 1;
   int _pageSize = 2;
   bool _isLoading = false;
   ScrollController _scrollController = ScrollController();
   void initState() {
-    jobProvider = Provider.of<JobProvider>(context, listen: false);
+    jobProvider = Provider.of<PostProvider>(context, listen: false);
     userProvider = Provider.of<UserProvider>(context, listen: false);
     userProvider.fetchUser();
     jobProvider.getPots();
@@ -438,7 +438,7 @@ class __ContentHomeState extends State<_ContentHome> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AuthenciationNotifier>(context);
-    final providerJob = Provider.of<JobProvider>(context);
+    final providerJob = Provider.of<PostProvider>(context);
     return Scaffold(
       body: Stack(children: [
         CustomScrollView(
@@ -642,7 +642,7 @@ class __ContentHomeState extends State<_ContentHome> {
                       // TagList(),
                       OtherJobs(),
                       // posts
-                      // Consumer<JobProvider>(
+                      // Consumer<PostProvider>(
                       //   builder: (context, postProvider, _) {
                       //     return Container(
                       //       child: Column(
@@ -703,7 +703,7 @@ class __ContentHomeState extends State<_ContentHome> {
     //         // CategorList(),
     //         JobHot(),
     //         TagList(),
-    //         Consumer<JobProvider>(
+    //         Consumer<PostProvider>(
     //           builder: (context, postProvider, _) {
     //             return
     //                 // Container(
