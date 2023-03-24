@@ -59,13 +59,17 @@ class AuthenciationNotifier extends ChangeNotifier {
   // Đănng ký
   Future<void> SignupUser(
     context, {
+    String? userType,
     String? email,
     String? password,
     required String username,
   }) async {
     try {
-      final result = await SupabaseBase.supabaseClient.auth
-          .signUp(email: email, password: password!, data: {"name": username});
+      final prefs = await SharedPreferences.getInstance();
+      final result = await SupabaseBase.supabaseClient.auth.signUp(
+          email: email,
+          password: password!,
+          data: {"name": username, 'usertype': userType});
       if (result.session != null) {
         print("Đăng ký thành công ");
         var snackBar = SnackBar(content: Text("Xin chào, ${username}"));
@@ -89,7 +93,7 @@ class AuthenciationNotifier extends ChangeNotifier {
       await prefs.remove('id');
       var snackBar = SnackBar(content: Text("Đã đăng xuất !"));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-       Navigator.pushReplacementNamed(context, '${AppRoutes.LoginRoute}');
+      Navigator.pushReplacementNamed(context, '${AppRoutes.LoginRoute}');
       // Navigator.pushReplacement(
       //     context, MaterialPageRoute(builder: (context) => LoginView()));
     } catch (e) {}

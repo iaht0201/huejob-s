@@ -60,19 +60,21 @@ class _ImageScreenState extends State<ImageScreen> {
       if (imageUrlResponse != null) {
         //
         final newUser = UserModel(
-          userId: user.userId,
-          name: user.name,
-          address: user.address,
-          birthday: user.birthday,
-          job: user.job,
-          email: user.email,
-          experience: user.experience,
-          fullname: user.fullname,
-          gender: user.gender,
-          phone_number: user.phone_number,
-          status: user.status,
-          imageUrl: imageUrlResponse, // Giữ nguyên giá trị của trường imageUrl
-        );
+            userId: user.userId,
+            name: user.name,
+            address: user.address,
+            birthday: user.birthday,
+            job: user.job,
+            email: user.email,
+            experience: user.experience,
+            fullname: user.fullname,
+            gender: user.gender,
+            phone_number: user.phone_number,
+            status: user.status,
+            imageUrl: imageUrlResponse,
+            usertype:
+                user.usertype // usertypeGiữ nguyên giá trị của trường imageUrl
+            );
         userProvider.updateImage(context, newUser);
 
 //
@@ -141,7 +143,7 @@ class _ImageScreenState extends State<ImageScreen> {
           ),
         ),
       ),
-    ); 
+    );
   }
 
   // Hiển thị Dialog

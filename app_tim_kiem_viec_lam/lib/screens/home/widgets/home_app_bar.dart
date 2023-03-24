@@ -38,6 +38,8 @@ class HomeAppBar extends StatelessWidget {
                           EdgeInsets.only(right: isScroll == false ? 10.w : 0),
                       child: GestureDetector(
                         onTap: () {
+                          // _navigatorDrawer(context);
+                          // Scaffold.of(context).openDrawer();
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -49,7 +51,7 @@ class HomeAppBar extends StatelessWidget {
                                 backgroundColor: HexColor("#BB2649"),
                                 child: Text(
                                     "${user?.name.toString().substring(0, 1).toUpperCase()}",
-                                    style:const  TextStyle(fontSize: 40))))
+                                    style: const TextStyle(fontSize: 40))))
                             : CircleAvatar(
                                 radius: 35.r,
                                 backgroundColor: HexColor("#BB2649"),
@@ -65,7 +67,8 @@ class HomeAppBar extends StatelessWidget {
                             children: [
                               Text("Xin chào",
                                   style: textTheme.headline17(
-                                      color: "FFFFFF", )),
+                                    color: "FFFFFF",
+                                  )),
                               SizedBox(
                                 height: 5.h,
                               ),
@@ -110,5 +113,9 @@ class HomeAppBar extends StatelessWidget {
             );
           },
         ));
+  }
+
+  _navigatorDrawer(BuildContext context) {
+    return Drawer();
   }
 }

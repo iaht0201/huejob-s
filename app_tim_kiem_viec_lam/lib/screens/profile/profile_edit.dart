@@ -226,6 +226,7 @@ class _EditProfileState extends State<EditProfile> {
                                   phone_number: _phoneNumber,
                                   status: _status ?? userProvider.user.status,
                                   imageUrl: userProvider.user!.imageUrl,
+                                  usertype: userProvider.user.usertype
                                 );
                                 userProvider.updateUser(context, newUser);
                               },

@@ -1,7 +1,9 @@
 import "package:flutter/material.dart";
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../models/useTypeModel.dart';
 import '../models/user_model.dart';
 import '../supabase/supabase.dart';
 
@@ -10,6 +12,9 @@ class UserProvider extends ChangeNotifier {
   UserModel _userByID = new UserModel();
   UserModel get user => _user;
   UserModel get userByID => _userByID;
+  List<UserTypeModel> _userTye = [];
+  List<UserTypeModel>? get userType => _userTye;
+
 // Fetch User
   Future<void> fetchUser() async {
     final prefs = await SharedPreferences.getInstance();
@@ -152,8 +157,20 @@ class UserProvider extends ChangeNotifier {
     _isFollow = false;
     notifyListeners();
   }
+
+  SupabaseClient _supabase = SupabaseBase.supabaseClient;
+  Future fetchUseType() async {
+    var respon = await _supabase.from("usertypes").select().execute();
+    if (respon.data != null) {
+      var data = respon.data;
+      for (int i = 0; i < data.length; i++) {
+        _userTye.add(UserTypeModel.fromMap(data[i]));
+      }
+      print(_userTye);
+      notifyListeners();
+    }
+  }
   // setState(() {
   //   isLiked = false;
   // });
-
 }

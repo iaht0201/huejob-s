@@ -7,6 +7,7 @@ import 'package:app_tim_kiem_viec_lam/core/providers/userProvider.dart';
 import 'package:app_tim_kiem_viec_lam/screens/addPost/addPost_Screen.dart';
 
 import 'package:app_tim_kiem_viec_lam/screens/authentication/login/login.dart';
+import 'package:app_tim_kiem_viec_lam/screens/chat/chatMessages.dart';
 import 'package:app_tim_kiem_viec_lam/screens/chat/listChatScreen.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/featuredJobs.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/otherJobs.dart';
@@ -16,6 +17,7 @@ import 'package:app_tim_kiem_viec_lam/screens/home/widgets/home_app_bar.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/job_hot.dart';
 import 'package:app_tim_kiem_viec_lam/screens/profile/profile_screen.dart';
 import 'package:app_tim_kiem_viec_lam/screens/profile/profile_setting.dart';
+import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -58,9 +60,14 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
+  GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _globalKey,
+      endDrawer: Drawer(
+        child: _drawerCustom(context),
+      ),
       body: PageStorage(bucket: bucket, child: currentScreen),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
@@ -99,6 +106,7 @@ class _HomePageState extends State<HomePage>
                         children: [
                           Icon(
                             Icons.home_filled,
+                            size: 20,
                             color: currentTab == 0
                                 ? HexColor("#BB2649")
                                 : Colors.grey,
@@ -106,6 +114,7 @@ class _HomePageState extends State<HomePage>
                           Text(
                             'Trang chủ',
                             style: TextStyle(
+                              fontSize: 10.sp,
                               color: currentTab == 0
                                   ? HexColor("#BB2649")
                                   : Colors.grey,
@@ -118,7 +127,7 @@ class _HomePageState extends State<HomePage>
                       minWidth: 30.w,
                       onPressed: () {
                         setState(() {
-                          currentScreen = ProfileSettingScreen();
+                          currentScreen = SocialScreen();
                           currentTab = 1;
                         });
                       },
@@ -126,15 +135,17 @@ class _HomePageState extends State<HomePage>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.bookmark,
-                            color: currentTab == 1
+                            Icons.change_circle_outlined,
+                            size: 20,
+                            color: currentTab == 4
                                 ? HexColor("#BB2649")
                                 : Colors.grey,
                           ),
                           Text(
-                            'Bookmark',
+                            'Tương tác',
                             style: TextStyle(
-                              color: currentTab == 1
+                              fontSize: 10.sp,
+                              color: currentTab == 4
                                   ? HexColor("#BB2649")
                                   : Colors.grey,
                             ),
@@ -168,6 +179,7 @@ class _HomePageState extends State<HomePage>
                         children: [
                           Icon(
                             Icons.message_outlined,
+                            size: 20,
                             color: currentTab == 3
                                 ? HexColor("#BB2649")
                                 : Colors.grey,
@@ -175,6 +187,7 @@ class _HomePageState extends State<HomePage>
                           Text(
                             'Nhắn tin',
                             style: TextStyle(
+                              fontSize: 10.sp,
                               color: currentTab == 3
                                   ? HexColor("#BB2649")
                                   : Colors.grey,
@@ -186,23 +199,26 @@ class _HomePageState extends State<HomePage>
                     MaterialButton(
                       minWidth: 30.w,
                       onPressed: () {
-                        setState(() {
-                          currentScreen = SocialScreen();
-                          currentTab = 4;
-                        });
+                        _globalKey.currentState?.openEndDrawer();
+                        // setState(() {
+                        //   currentScreen = SocialScreen();
+                        //   currentTab = 4;
+                        // });
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.change_circle_outlined,
+                            Icons.menu,
+                            size: 20,
                             color: currentTab == 4
                                 ? HexColor("#BB2649")
                                 : Colors.grey,
                           ),
                           Text(
-                            'Tương tác',
+                            'Lựa chọn',
                             style: TextStyle(
+                              fontSize: 10.sp,
                               color: currentTab == 4
                                   ? HexColor("#BB2649")
                                   : Colors.grey,
@@ -218,6 +234,136 @@ class _HomePageState extends State<HomePage>
           ),
         ),
       ),
+    );
+  }
+
+  _drawerCustom(BuildContext context) {
+    final _supabaseClient = AuthenciationNotifier();
+    return SafeArea(
+      child: Consumer<UserProvider>(
+        builder: (context, userProvider, child) {
+          return Container(
+            color: HexColor("#FFFFFF"),
+            width: 311.w, height: 812.h,
+            // margin: EdgeInsets.only(left: 41.w),
+            child: ListView(children: [
+              Container(
+                margin: EdgeInsets.only(top: 20),
+                child: Stack(
+                  children: [
+                    Container(
+                      // chua check hinh anh
+                      child: Center(
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 50.r,
+                              backgroundColor: HexColor("#BB2649"),
+                              backgroundImage: NetworkImage(
+                                  "https://www.elle.vn/wp-content/uploads/2017/07/25/hinh-anh-dep-1.jpg"),
+                            ),
+                            SizedBox(
+                              height: 12.h,
+                            ),
+                            Text(
+                              "Haley Jessica",
+                              style: textTheme.semibold20(),
+                            ),
+                            SizedBox(
+                              height: 4.h,
+                            ),
+                            Text(
+                              "${userProvider.user.usertype}",
+                              style: textTheme.regular11(color: "95969D"),
+                            ),
+                            SizedBox(
+                              height: 6.h,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ProfileScreen()));
+                              },
+                              child: Text(
+                                "View Profile",
+                                style: textTheme.medium14(),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 20.w,
+                      child: GestureDetector(
+                          onTap: () {
+                            _globalKey.currentState?.closeEndDrawer();
+                          },
+                          child: Icon(Icons.close)),
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 30.h,
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 20.w),
+                child: Column(children: [
+                  ListTile(
+                    title: _itemDrawer(
+                        context, Icons.info_outline, "Personal Info"),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    title:
+                        _itemDrawer(context, Icons.notifications, "Thông báo"),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    title: _itemDrawer(context, Icons.bookmark, "Đã lưu"),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    title: _itemDrawer(context, Icons.settings, "Cài đặt"),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    title: _itemDrawer(context, Icons.help_outline, "Trợ giúp"),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    title: _itemDrawer(context, Icons.logout, "Đăng xuất"),
+                    onTap: () {
+                      _supabaseClient.SignOut(context);
+                    },
+                  ),
+                ]),
+              )
+            ]),
+          );
+        },
+      ),
+    );
+  }
+
+  _itemDrawer(
+    BuildContext context,
+    IconData icon,
+    String title,
+  ) {
+    return Row(
+      children: [
+        Icon(icon),
+        SizedBox(
+          width: 16.w,
+        ),
+        Text('$title')
+      ],
     );
   }
 }
@@ -288,6 +434,7 @@ class __ContentHomeState extends State<_ContentHome> {
 
   double top = 0.0;
   double _opacity = 0;
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AuthenciationNotifier>(context);
@@ -319,7 +466,9 @@ class __ContentHomeState extends State<_ContentHome> {
                           expandedTitleScale: 1,
                           collapseMode: CollapseMode.pin,
                           background: HomeAppBar(
-                              user: userProvider.user, isScroll: false),
+                            user: userProvider.user,
+                            isScroll: false,
+                          ),
                           titlePadding: EdgeInsets.only(
                             left: 0,
                             right: 0,

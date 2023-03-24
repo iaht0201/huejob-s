@@ -24,7 +24,7 @@ class _FeaturedJobsState extends State<FeaturedJobs> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.symmetric(horizontal: 24.w, vertical: 40.h),
+        margin: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
         // height: 210.h,
         // width: 376.w,
         child: Column(
@@ -50,7 +50,7 @@ class _FeaturedJobsState extends State<FeaturedJobs> {
               Container(
                 // width: 327.w,
                 // height: 200.h,
-                margin: EdgeInsets.only(top:20.h),
+                margin: EdgeInsets.only(top: 20.h),
                 decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.cover,

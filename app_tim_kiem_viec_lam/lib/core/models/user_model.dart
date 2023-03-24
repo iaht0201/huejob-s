@@ -15,6 +15,7 @@ class UserModel {
   final String? job;
   final String? fullname;
   final String? status;
+  final String? usertype;
   const UserModel(
       {this.userId,
       this.name,
@@ -27,7 +28,8 @@ class UserModel {
       this.experience,
       this.job,
       this.fullname,
-      this.status});
+      this.status,
+      this.usertype});
   factory UserModel.fromJson(String str) => UserModel.fromMap(json.decode(str));
   factory UserModel.fromMap(Map<String, dynamic> json) => UserModel(
       userId: json['userId'],
@@ -41,6 +43,7 @@ class UserModel {
       experience: json['experience'],
       job: json['job'],
       status: json['status'],
+      usertype: json['usertype'],
       fullname: json['fullname']);
   get getGender {
     if (gender == 1) {
@@ -65,6 +68,7 @@ class UserModel {
       'job': job,
       'fullname': fullname,
       'status': status,
+      'usertype': usertype
     };
   }
 }
