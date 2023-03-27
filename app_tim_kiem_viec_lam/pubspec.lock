@@ -33,6 +33,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  carousel_indicator:
+    dependency: "direct main"
+    description:
+      name: carousel_indicator
+      sha256: "93019cfd05b40051663b92866d5037d98e7dffb005f6c8227c079d7e00ef152b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.6"
   carousel_slider:
     dependency: "direct main"
     description:
@@ -142,6 +150,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
+  flutter_custom_clippers:
+    dependency: "direct main"
+    description:
+      name: flutter_custom_clippers
+      sha256: "473e3daf61c2a6cee0ad137393259a25223239d519a131c7ec1cac04d06e5407"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -600,6 +616,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.5"
+  pull_to_refresh:
+    dependency: "direct main"
+    description:
+      name: pull_to_refresh
+      sha256: bbadd5a931837b57739cf08736bea63167e284e71fb23b218c8c9a6e042aad12
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   realtime_client:
     dependency: transitive
     description:

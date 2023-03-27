@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 
-buttonArrow(BuildContext context) {
+buttonArrow(BuildContext context, {String color = "000000"}) {
   return Padding(
       padding: const EdgeInsets.all(10.0),
       child: InkWell(
@@ -12,6 +13,9 @@ buttonArrow(BuildContext context) {
             height: 55,
             width: 55,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
-            child: Icon(Icons.arrow_back_ios)),
+            child: Icon(
+              Icons.arrow_back_ios,
+              color: HexColor("${color}"),
+            )),
       ));
 }

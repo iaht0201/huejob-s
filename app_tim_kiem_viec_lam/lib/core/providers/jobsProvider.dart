@@ -1,3 +1,5 @@
+import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/userProvider.dart';
 import 'package:app_tim_kiem_viec_lam/core/supabase/supabase.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -22,6 +24,63 @@ class JobsProvider extends ChangeNotifier {
         _listFeaturJob.add(JobModel.fromMap(data[i]));
       }
       return _listFeaturJob;
+    }
+    notifyListeners();
+  }
+
+  // Gợi ý theo nghề nghiệp và vị trí
+  Future fetchRecommendJobs(UserModel user) async {
+    var respon = await _supbase
+        .from("jobs")
+        .select("*,users(*)")
+        // .eq('category_job', 'Công nghệ thông tin')
+        // .eq('users.address', user.address)
+        .limit(10)
+        .order('created_at', ascending: true)
+        .execute();
+    if (respon.data != null) {
+      var data = respon.data;
+      List<JobModel> _listJobs = [];
+
+      for (int i = 0; i < data.length; i++) {
+        _listJobs.add(JobModel.fromMap(data[i]));
+      }
+      return _listJobs;
+    }
+    notifyListeners();
+  }
+
+  Future fetchJobother() async {
+    var respon = await _supbase
+        .from("jobs")
+        .select("*,users(*)")
+        .limit(15)
+        .order('created_at', ascending: true)
+        .execute();
+    if (respon.data != null) {
+      var data = respon.data;
+      List<JobModel> _listJobs = [];
+      for (int i = 0; i < data.length; i++) {
+        _listJobs.add(JobModel.fromMap(data[i]));
+      }
+      return _listJobs;
+    }
+    notifyListeners();
+  }
+
+  JobModel _jobById = JobModel();
+  JobModel get jobById => _jobById;
+  Future getJobById(String id) async {
+    _jobById = new JobModel();
+    var respon = await _supbase
+        .from("jobs")
+        .select("*,users(*)")
+        .eq('job_id', id)
+        .execute();
+    if (respon.data != null) {
+      var data = respon.data;
+      _jobById = JobModel.fromMap(data[0]);
+      print(_jobById);
     }
     notifyListeners();
   }

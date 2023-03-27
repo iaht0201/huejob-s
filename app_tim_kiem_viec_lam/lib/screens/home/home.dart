@@ -437,8 +437,6 @@ class __ContentHomeState extends State<_ContentHome> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<AuthenciationNotifier>(context);
-    final providerJob = Provider.of<PostProvider>(context);
     return Scaffold(
       body: Stack(children: [
         CustomScrollView(
@@ -615,49 +613,17 @@ class __ContentHomeState extends State<_ContentHome> {
                           ],
                         ),
                       ),
-                      // Container(
-                      //   padding: EdgeInsets.symmetric(horizontal: 20),
-                      //   child: TextField(
-                      //       decoration: InputDecoration(
-                      //     contentPadding: EdgeInsets.symmetric(vertical: 20.0),
-                      //     prefixIcon: const Icon(
-                      //       Icons.search_rounded,
-                      //       size: 35,
-                      //       color: Colors.black,
-                      //     ),
-                      //     focusedBorder: OutlineInputBorder(
-                      //         borderSide:
-                      //             BorderSide(color: HexColor("#F0F2F1")),
-                      //         borderRadius: BorderRadius.circular(20)),
-                      //     enabledBorder: OutlineInputBorder(
-                      //         borderSide:
-                      //             BorderSide(color: HexColor("#F0F2F1")),
-                      //         borderRadius: BorderRadius.circular(20)),
-                      //     hintText: 'Bạn đang tìm kiếm loại công việc nào ?',
-                      //   )),
-                      // ),
-                      // JobHot(),
-                      FeaturedJobs(),
-                      RecommendJobs(),
-                      // TagList(),
-                      OtherJobs(),
-                      // posts
-                      // Consumer<PostProvider>(
-                      //   builder: (context, postProvider, _) {
-                      //     return Container(
-                      //       child: Column(
-                      //         children: [
-                      //           ...postProvider.posts.map((e) {
-                      //             return PostItem(post: e);
-                      //           }).toList(),
-                      //           _isLoading
-                      //               ? CircularProgressIndicator()
-                      //               : SizedBox.shrink(),
-                      //         ],
-                      //       ),
-                      //     );
-                      //   },
-                      // ),
+                      Consumer<UserProvider>(
+                        builder: (context, userProvider, child) {
+                          return Column(
+                            children: [
+                              FeaturedJobs(),
+                              RecommendJobs(user: userProvider.user),
+                              OtherJobs(),
+                            ],
+                          );
+                        },
+                      )
                     ],
                   ),
                 ),

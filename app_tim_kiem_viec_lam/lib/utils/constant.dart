@@ -97,6 +97,15 @@ extension CustomTextTheme on TextTheme {
         letterSpacing: -0.01);
   }
 
+  TextStyle medium16({String? color = "0D0D26", double opacity = 1}) {
+    return poppins(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        color: color,
+        opacity: opacity,
+        letterSpacing: 1);
+  }
+
   TextStyle semibold16({String? color = "FFFFFF", double opacity = 1}) {
     return poppins(
         fontSize: 16,
@@ -144,6 +153,15 @@ extension CustomTextTheme on TextTheme {
     return poppins(
         fontSize: 22,
         fontWeight: FontWeight.w500,
+        color: color,
+        opacity: opacity,
+        letterSpacing: -0.01);
+  }
+
+  TextStyle headline20({String? color = "FFFFFF", double opacity = 1}) {
+    return poppins(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
         color: color,
         opacity: opacity,
         letterSpacing: -0.01);

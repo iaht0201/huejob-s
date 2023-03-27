@@ -3,9 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
-class OtherJobs extends StatelessWidget {
+import '../../../core/models/jobsModel.dart';
+import '../../../core/providers/jobsProvider.dart';
+import '../../../widgets/AvatarWidget.dart';
+
+class OtherJobs extends StatefulWidget {
   const OtherJobs({super.key});
+
+  @override
+  State<OtherJobs> createState() => _OtherJobsState();
+}
+
+class _OtherJobsState extends State<OtherJobs> {
+  late JobsProvider jobsProvider;
+  void initState() {
+    jobsProvider = Provider.of<JobsProvider>(context, listen: false);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,23 +49,26 @@ class OtherJobs extends StatelessWidget {
               ),
             ],
           ),
-          Column(
-            children: [
-              _itemOtherJob(context, "featuresJobs"),
-              _itemOtherJob(context, "featuresJobs"),
-              _itemOtherJob(context, "featuresJobs"),
-              _itemOtherJob(context, "featuresJobs"),
-              _itemOtherJob(context, "featuresJobs"),
-              _itemOtherJob(context, "featuresJobs"),
-              _itemOtherJob(context, "featuresJobs"),
-            ],
+          FutureBuilder(
+            future: jobsProvider.fetchJobother(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<JobModel> jobs = snapshot.data;
+                return Column(
+                  children: [...jobs.map((job) => _itemOtherJob(context, job))],
+                );
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              } else
+                return CircularProgressIndicator();
+            },
           )
         ],
       ),
     );
   }
 
-  _itemOtherJob(BuildContext context, String featuresJobs) {
+  _itemOtherJob(BuildContext context, JobModel job) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 25.w),
       margin: EdgeInsets.only(top: 17.h),
@@ -60,11 +79,7 @@ class OtherJobs extends StatelessWidget {
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: Row(children: [
-        Image(
-          image: AssetImage("assets/images/jobs/job1.png"),
-          width: 43.w,
-          height: 43.h,
-        ),
+        AvatarWidget(context, user: job.users, radius: 25),
         SizedBox(
           width: 16.5.w,
         ),
