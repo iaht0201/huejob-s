@@ -1,5 +1,6 @@
 import 'package:app_tim_kiem_viec_lam/core/models/jobsModel.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/jobsProvider.dart';
+import 'package:app_tim_kiem_viec_lam/screens/applyJob/apply_job.dart';
 import 'package:app_tim_kiem_viec_lam/screens/profile/widgets/button_arrow.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 import 'package:app_tim_kiem_viec_lam/widgets/AvatarWidget.dart';
@@ -12,21 +13,24 @@ import 'package:provider/provider.dart';
 
 import '../../core/providers/postProvider.dart';
 import '../../core/providers/userProvider.dart';
+import '../addPost/map.dart';
 import '../home/widgets/home_app_bar.dart';
 
-class DetailJob extends StatefulWidget {
-  DetailJob({super.key, required this.jobId});
+class DetailJobScreen extends StatefulWidget {
+  DetailJobScreen({super.key, required this.jobId});
   final String jobId;
   @override
-  State<DetailJob> createState() => _DetailJobState();
+  State<DetailJobScreen> createState() => _DetailJobScreenState();
 }
 
 late JobsProvider jobProvider;
+late UserProvider userProvider;
 
-class _DetailJobState extends State<DetailJob> {
+class _DetailJobScreenState extends State<DetailJobScreen> {
   late TabController _tabController;
   bool isLoad = false;
   void initState() {
+    userProvider = Provider.of<UserProvider>(context, listen: false);
     jobProvider = Provider.of<JobsProvider>(context, listen: false);
     jobProvider.getJobById(widget.jobId).whenComplete(() {
       setState(() {
@@ -65,26 +69,36 @@ class _DetailJobState extends State<DetailJob> {
                     child: CircularProgressIndicator(),
                   )),
       ),
-      bottomNavigationBar: BottomAppBar(
-          color: Colors.transparent,
-          elevation: 0.0,
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
-            // color: Colors.transparent,
-            height: 0.1.sh,
-            child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Container(
-                  child: Text('Apply Now',
-                      style: textTheme.medium16(color: "FFFFFF")),
-                ),
-                style: ElevatedButton.styleFrom(
-                    primary: HexColor("#BB2649"),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.r)))),
-          )),
+      bottomNavigationBar: Consumer<UserProvider>(
+        builder: (context, userProvider, child) {
+          return BottomAppBar(
+              color: Colors.transparent,
+              elevation: 0.0,
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
+                // color: Colors.transparent,
+                height: 0.1.sh,
+                child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ApplyJob(
+                                    job: jobProvider.jobById,
+                                    user: userProvider.user,
+                                  )));
+                    },
+                    child: Container(
+                      child: Text('Apply Now',
+                          style: textTheme.medium16(color: "FFFFFF")),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                        primary: HexColor("#BB2649"),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.r)))),
+              ));
+        },
+      ),
     );
   }
 
@@ -150,7 +164,7 @@ class _DetailJobState extends State<DetailJob> {
                       _itemHagTag(context, "${job.role}"),
                       _itemHagTag(context, "${job.categoryJob}"),
                       // _itemHagTag(context, "${job.wage}"),
-                      _itemHagTag(context, "${job.role}")
+                      _itemHagTag(context, "${job.wokringTime}")
                     ],
                   ),
                   SizedBox(height: 24.h),
@@ -161,10 +175,25 @@ class _DetailJobState extends State<DetailJob> {
                         "${job.wage}",
                         style: textTheme.semibold16(),
                       ),
-                      Text(
-                        "${job.location}",
-                        style: textTheme.semibold16(),
-                      )
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => OpenStreetMap(
+                                          isSeen: true,
+                                          latitude: job.latitude,
+                                          longitude: job.longitude,
+                                        )));
+                          },
+                          child: Text(
+                            "${job.location}",
+                            style: textTheme.semibold16(),
+                          )),
+                      // Text(
+                      //   "${job.location}",
+                      //   style: textTheme.semibold16(),
+                      // )
                     ],
                   )
                 ],
@@ -213,7 +242,7 @@ class _DetailJobState extends State<DetailJob> {
                 ),
                 Tab(
                   child: Text(
-                    "About",
+                    "Map",
                     style: textTheme.medium14(),
                   ),
                 ),
@@ -231,9 +260,10 @@ class _DetailJobState extends State<DetailJob> {
             child: TabBarView(
               children: [
                 _tabBarView('${job.description}'),
-                _tabBarView('${job.jobName}'),
-                _tabBarView('${job.description}'),
-                _tabBarView('${job.description}'),
+                _tabBarView('${job.requirement ?? ""}'),
+                _tabLocation(
+                    job.latitude!.toDouble(), job.longitude!.toDouble()),
+                _tabBarView('${job.location}'),
               ],
             ),
           ),
@@ -248,6 +278,15 @@ class _DetailJobState extends State<DetailJob> {
       child: Container(
         child: Text("${content}"),
       ),
+    );
+  }
+
+  Widget _tabLocation(double latitude, double longitude) {
+    return OpenStreetMap(
+      isBack: false,
+      isSeen: true,
+      latitude: latitude,
+      longitude: longitude,
     );
   }
 }

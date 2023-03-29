@@ -9,10 +9,15 @@ import "package:geolocator/geolocator.dart";
 
 class OpenStreetMap extends StatefulWidget {
   const OpenStreetMap(
-      {super.key, required this.isSeen, this.latitude, this.longitude});
+      {super.key,
+      required this.isSeen,
+      this.latitude,
+      this.longitude,
+      this.isBack});
   final bool isSeen;
   final double? latitude;
   final double? longitude;
+  final bool? isBack;
   @override
   State<OpenStreetMap> createState() => _OpenStreetMapState();
 }
@@ -25,6 +30,7 @@ class _OpenStreetMapState extends State<OpenStreetMap> {
     super.initState();
     jobProvider = Provider.of<PostProvider>(context, listen: false);
     getCurrentPosition();
+
     // getCurrentPosition();
   }
 
@@ -44,6 +50,7 @@ class _OpenStreetMapState extends State<OpenStreetMap> {
           return isLoaded == true
               ? widget.isSeen == false
                   ? OpenStreetMapSearchAndPick(
+                      locationPinIconColor: HexColor("#BB2649"),
                       center:
                           LatLong(_position!.latitude, _position!.longitude),
                       buttonColor: HexColor("#BB2649"),
@@ -54,18 +61,24 @@ class _OpenStreetMapState extends State<OpenStreetMap> {
                             pickedData.latLong.longitude;
                         jobProvider.setLatitude = pickedData.latLong.latitude;
                         Navigator.of(context).pop();
-                        // print(pickedData.latLong.latitude);
-                        // print(pickedData.latLong.longitude);
-                        // print(pickedData.address);
                       })
-                  : OpenStreetMapSearchAndPick(
-                      center: LatLong(widget.latitude!.toDouble(),
-                          widget.longitude!.toDouble()),
-                      buttonColor: HexColor("#BB2649"),
-                      buttonText: 'Trở về',
-                      onPicked: (pickedData) {
-                        Navigator.of(context).pop();
-                      })
+                  : (widget.isBack == true
+                      ? OpenStreetMapSearchAndPick(
+                          center: LatLong(widget.latitude!.toDouble(),
+                              widget.longitude!.toDouble()),
+                          buttonColor: HexColor("#BB2649"),
+                          locationPinIconColor: HexColor("#BB2649"),
+                          buttonText: 'Trở về',
+                          onPicked: (pickedData) {
+                            Navigator.of(context).pop();
+                          })
+                      : OpenStreetMapSearchAndPick(
+                          center: LatLong(widget.latitude!.toDouble(),
+                              widget.longitude!.toDouble()),
+                          buttonColor: HexColor("#BB2649").withOpacity(0),
+                          buttonText: '',
+                          locationPinIconColor: HexColor("#BB2649"),
+                          onPicked: (pickedData) {}))
               : Container(
                   width: double.infinity,
                   height: double.infinity,

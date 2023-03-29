@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../core/models/jobsModel.dart';
 import '../../../core/providers/jobsProvider.dart';
 import '../../../widgets/AvatarWidget.dart';
+import '../../detailJob/detailJob.dart';
 
 class OtherJobs extends StatefulWidget {
   const OtherJobs({super.key});
@@ -69,50 +70,59 @@ class _OtherJobsState extends State<OtherJobs> {
   }
 
   _itemOtherJob(BuildContext context, JobModel job) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 25.w),
-      margin: EdgeInsets.only(top: 17.h),
-      width: 1.sw,
-      height: 74.h,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    DetailJobScreen(jobId: job.jobId.toString())));
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 25.w),
+        margin: EdgeInsets.only(top: 17.h),
+        width: 1.sw,
+        height: 74.h,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        child: Row(children: [
+          AvatarWidget(context, user: job.users, radius: 25),
+          SizedBox(
+            width: 16.5.w,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "${job.jobName}",
+                style: textTheme.sub14(),
+              ),
+              Spacer(),
+              Text(
+                "${job.users!.name}",
+                style: textTheme.regular13(color: "#0D0D26", opacity: 0.6),
+              )
+            ],
+          ),
+          Spacer(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                "\$96,000/y",
+                style: textTheme.medium12(),
+              ),
+              Spacer(),
+              Text(
+                "Los Angels, US",
+                style: textTheme.regular13(color: "#0D0D26", opacity: 0.6),
+              )
+            ],
+          ),
+        ]),
       ),
-      child: Row(children: [
-        AvatarWidget(context, user: job.users, radius: 25),
-        SizedBox(
-          width: 16.5.w,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Jr Executive",
-              style: textTheme.sub14(),
-            ),
-            Spacer(),
-            Text(
-              "Burger King",
-              style: textTheme.regular13(color: "#0D0D26", opacity: 0.6),
-            )
-          ],
-        ),
-        Spacer(),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              "\$96,000/y",
-              style: textTheme.medium12(),
-            ),
-            Spacer(),
-            Text(
-              "Los Angels, US",
-              style: textTheme.regular13(color: "#0D0D26", opacity: 0.6),
-            )
-          ],
-        ),
-      ]),
     );
   }
 }

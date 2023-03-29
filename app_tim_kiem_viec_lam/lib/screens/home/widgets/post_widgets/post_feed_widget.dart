@@ -139,8 +139,12 @@ class _PostHeaderState extends State<_PostHeader> {
               GestureDetector(
                 onTap: () {
                   print(widget.post.userId);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ProfileScreen(clientID: widget.post.userId,)));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ProfileScreen(
+                                clientID: widget.post.userId,
+                              )));
                 },
                 child: widget.post.users!.imageUrl == null
                     ? CircleAvatar(
@@ -185,6 +189,7 @@ class _PostHeaderState extends State<_PostHeader> {
                             MaterialPageRoute(
                                 builder: (context) => OpenStreetMap(
                                       isSeen: true,
+                                      isBack: true,
                                       latitude: widget.post.latitude,
                                       longitude: widget.post.longitude,
                                     )));
