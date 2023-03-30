@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:shimmer/shimmer.dart';
 
 // const kPaddingMargin = EdgeInsets.all(28);
 TextTheme textTheme = TextTheme(
@@ -179,4 +180,21 @@ extension CustomTextTheme on TextTheme {
         letterSpacing: -1,
         color: HexColor("$color").withOpacity(opacity));
   }
+}
+
+Widget shimmerFromColor({double height = 20, double width = 30}) {
+  return Shimmer.fromColors(
+    baseColor: Colors.grey.withOpacity(0.3),
+    highlightColor: Colors.grey.withOpacity(0.1),
+    child: Card(
+      elevation: 1.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: SizedBox(
+        height: height,
+        width: width,
+      ),
+    ),
+  );
 }

@@ -9,7 +9,7 @@ import 'package:app_tim_kiem_viec_lam/screens/addPost/addPost_Screen.dart';
 import 'package:app_tim_kiem_viec_lam/screens/authentication/login/login.dart';
 import 'package:app_tim_kiem_viec_lam/screens/chat/chatMessages.dart';
 import 'package:app_tim_kiem_viec_lam/screens/chat/listChatScreen.dart';
-import 'package:app_tim_kiem_viec_lam/screens/home/widgets/featuredJobs.dart';
+import 'package:app_tim_kiem_viec_lam/screens/home/widgets/featured_jobs.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/otherJobs.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/recommendJobs.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/tag_list.dart';

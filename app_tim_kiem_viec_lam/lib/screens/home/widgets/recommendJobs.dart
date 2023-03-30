@@ -72,7 +72,24 @@ class _RecommendJobsState extends State<RecommendJobs> {
                 } else if (snapshot.hasError) {
                   return Text("${snapshot.error}");
                 } else
-                  return CircularProgressIndicator();
+                  return Container(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          shimmerFromColor(height: 164.h, width: 156.w),
+                          SizedBox(
+                            width: 15.w,
+                          ),
+                          shimmerFromColor(height: 164.h, width: 156.w),
+                          SizedBox(
+                            width: 15.w,
+                          ),
+                          shimmerFromColor(height: 164.h, width: 156.w),
+                        ],
+                      ),
+                    ),
+                  );
               },
             ),
           ),

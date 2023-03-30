@@ -61,7 +61,15 @@ class _OtherJobsState extends State<OtherJobs> {
               } else if (snapshot.hasError) {
                 return Text("${snapshot.error}");
               } else
-                return CircularProgressIndicator();
+                return Container(
+                  child: Column(
+                    children: [
+                      shimmerFromColor(height: 74.h, width: 1.sw),
+                      shimmerFromColor(height: 74.h, width: 1.sw),
+                      shimmerFromColor(height: 74.h, width: 1.sw),
+                    ],
+                  ),
+                );
             },
           )
         ],
@@ -111,12 +119,12 @@ class _OtherJobsState extends State<OtherJobs> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "\$96,000/y",
+                "${job.wage}",
                 style: textTheme.medium12(),
               ),
               Spacer(),
               Text(
-                "Los Angels, US",
+                "${job.location}",
                 style: textTheme.regular13(color: "#0D0D26", opacity: 0.6),
               )
             ],

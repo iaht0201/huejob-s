@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../core/providers/jobsProvider.dart';
 import '../../../data/home/featureJobsData.dart';
 import '../../../utils/constant.dart';
@@ -65,8 +66,9 @@ class _FeaturedJobsState extends State<FeaturedJobs> {
                 child: FutureBuilder(
                   future: jobsProvider.fetchFeaturedJobs("Công Nghệ Thông Tin"),
                   builder: (context, snapshot) {
+                    List<JobModel> jobs = [];
                     if (snapshot.hasData) {
-                      List<JobModel> jobs = snapshot.data;
+                      jobs = snapshot.data;
                       print(jobs);
                       return Column(
                         children: [
@@ -118,7 +120,16 @@ class _FeaturedJobsState extends State<FeaturedJobs> {
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
                     } else
-                      return CircularProgressIndicator();
+                      return Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            shimmerFromColor(height: 200.h, width: 30.w),
+                            shimmerFromColor(height: 200.h, width: 280.w),
+                            shimmerFromColor(height: 200.h, width: 30.w),
+                          ],
+                        ),
+                      );
                   },
                 ),
               ),

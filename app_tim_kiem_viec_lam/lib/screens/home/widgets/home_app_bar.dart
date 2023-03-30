@@ -1,6 +1,7 @@
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/userProvider.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
+import 'package:app_tim_kiem_viec_lam/widgets/AvatarWidget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,32 +34,9 @@ class HomeAppBar extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Container(
-                      margin:
-                          EdgeInsets.only(right: isScroll == false ? 10.w : 0),
-                      child: GestureDetector(
-                        onTap: () {
-                          // _navigatorDrawer(context);
-                          // Scaffold.of(context).openDrawer();
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ProfileScreen()));
-                        },
-                        child: user!.imageUrl == null
-                            ? (CircleAvatar(
-                                radius: 35.r,
-                                backgroundColor: HexColor("#BB2649"),
-                                child: Text(
-                                    "${user?.name.toString().substring(0, 1).toUpperCase()}",
-                                    style: const TextStyle(fontSize: 40))))
-                            : CircleAvatar(
-                                radius: 35.r,
-                                backgroundColor: HexColor("#BB2649"),
-                                backgroundImage: NetworkImage(
-                                    "${userProvider.user!.imageUrl}"),
-                              ),
-                      ),
+                    AvatarWidget(context, user: user, radius: 40.r),
+                    SizedBox(
+                      width: 8.w,
                     ),
                     isScroll == false
                         ? Column(
@@ -73,7 +51,7 @@ class HomeAppBar extends StatelessWidget {
                                 height: 5.h,
                               ),
                               Text(
-                                ' ${userProvider.user!.fullname == null ? userProvider.user!.name : userProvider.user!.fullname} 👋',
+                                ' ${userProvider.user.fullname ?? userProvider.user.name ?? ""} 👋',
                                 style: textTheme.headline17(),
                               ),
                               SizedBox(
