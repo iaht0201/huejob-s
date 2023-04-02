@@ -16,8 +16,8 @@ class JobModel {
   UserModel? users;
   final String? wokringTime;
   final String? requirement;
-  double? latitude;
-  double? longitude;
+  final double? latitude;
+  final double? longitude;
   JobModel({
     this.jobId,
     this.wage,

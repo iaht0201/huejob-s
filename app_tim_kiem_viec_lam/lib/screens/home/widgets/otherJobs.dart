@@ -9,6 +9,7 @@ import '../../../core/models/jobsModel.dart';
 import '../../../core/providers/jobsProvider.dart';
 import '../../../widgets/AvatarWidget.dart';
 import '../../detailJob/detailJob.dart';
+import '../../see_more_screen/see_all_scree.dart';
 
 class OtherJobs extends StatefulWidget {
   const OtherJobs({super.key});
@@ -42,7 +43,13 @@ class _OtherJobsState extends State<OtherJobs> {
                 style: textTheme.sub16(),
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              SeeAllScreen(styleJob: "Other Jobs")));
+                },
                 child: Text(
                   "See all",
                   style: textTheme.regular13(color: "95969D"),
@@ -124,7 +131,7 @@ class _OtherJobsState extends State<OtherJobs> {
               ),
               Spacer(),
               Text(
-                "${job.location}",
+                "${job.categoryJob} - ${job.location}",
                 style: textTheme.regular13(color: "#0D0D26", opacity: 0.6),
               )
             ],

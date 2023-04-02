@@ -228,10 +228,11 @@ class PostProvider extends ChangeNotifier {
         .execute();
   }
 
-  Future getJobCategory() async {
+  Future getJobCategory({int limit = 100}) async {
     final response = await SupabaseBase.supabaseClient
         .from('jobcategory')
         .select('*')
+        .limit(limit)
         .order("jobcategoryid", ascending: true)
         .execute();
 

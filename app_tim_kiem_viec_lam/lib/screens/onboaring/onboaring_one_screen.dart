@@ -396,11 +396,11 @@ class _OnBoaringState extends State<OnBoaring> {
 
   Container buildDot(int index, BuildContext context) {
     return Container(
-      height: 10,
-      width: currentIndex == index ? 25 : 10,
-      margin: EdgeInsets.only(right: 5),
+      height: 10.h,
+      width: currentIndex == index ? 25.w : 10.w,
+      margin: EdgeInsets.only(right: 5.w),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         color: HexColor("#BB2649"),
       ),
     );

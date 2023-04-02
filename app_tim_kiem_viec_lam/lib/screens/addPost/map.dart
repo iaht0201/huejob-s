@@ -1,5 +1,7 @@
 import 'package:app_tim_kiem_viec_lam/core/providers/postProvider.dart';
+import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:hexcolor/hexcolor.dart';
 
@@ -82,7 +84,8 @@ class _OpenStreetMapState extends State<OpenStreetMap> {
               : Container(
                   width: double.infinity,
                   height: double.infinity,
-                  child: Center(child: CircularProgressIndicator()));
+                  child: Center(
+                      child: shimmerFromColor(width: 1.sw, height: 1.sh)));
           // Column(
           //   children: [
           //     ElevatedButton(

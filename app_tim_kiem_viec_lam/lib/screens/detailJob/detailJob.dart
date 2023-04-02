@@ -65,40 +65,70 @@ class _DetailJobScreenState extends State<DetailJobScreen> {
                       );
                     },
                   )
-                : Center(
-                    child: CircularProgressIndicator(),
+                : Container(
+                    child: Column(
+                      children: [
+                        shimmerFromColor(height: 290.h, width: 1.sw),
+                        SizedBox(
+                          height: 26.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            shimmerFromColor(
+                                width: 1.sw / 4 - 10.w, height: 20.h),
+                            shimmerFromColor(
+                                width: 1.sw / 4 - 10.w, height: 20.h),
+                            shimmerFromColor(
+                                width: 1.sw / 4 - 10.w, height: 20.h),
+                            shimmerFromColor(
+                                width: 1.sw / 4 - 10.w, height: 20.h)
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        shimmerFromColor(width: 1.sw, height: 0.4.sh),
+                      ],
+                    ),
                   )),
       ),
-      bottomNavigationBar: Consumer<UserProvider>(
-        builder: (context, userProvider, child) {
-          return BottomAppBar(
-              color: Colors.transparent,
-              elevation: 0.0,
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
-                // color: Colors.transparent,
-                height: 0.1.sh,
-                child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ApplyJob(
-                                    job: jobProvider.jobById,
-                                    user: userProvider.user,
-                                  )));
-                    },
+      bottomNavigationBar: isLoad
+          ? Consumer<UserProvider>(
+              builder: (context, userProvider, child) {
+                return BottomAppBar(
+                    color: Colors.transparent,
+                    elevation: 0.0,
                     child: Container(
-                      child: Text('Apply Now',
-                          style: textTheme.medium16(color: "FFFFFF")),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                        primary: HexColor("#BB2649"),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16.r)))),
-              ));
-        },
-      ),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10.h, horizontal: 20.w),
+                      // color: Colors.transparent,
+                      height: 0.1.sh,
+                      child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ApplyJob(
+                                          job: jobProvider.jobById,
+                                          user: userProvider.user,
+                                        )));
+                          },
+                          child: Container(
+                            child: Text('Apply Now',
+                                style: textTheme.medium16(color: "FFFFFF")),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                              primary: HexColor("#BB2649"),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16.r)))),
+                    ));
+              },
+            )
+          : shimmerFromColor(
+              width: 0.8.sw,
+              height: 0.08.sh,
+            ),
     );
   }
 

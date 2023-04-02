@@ -1,5 +1,6 @@
 import 'package:app_tim_kiem_viec_lam/core/models/jobsModel.dart';
 import 'package:app_tim_kiem_viec_lam/screens/detailJob/detailJob.dart';
+import 'package:app_tim_kiem_viec_lam/screens/see_more_screen/see_all_scree.dart';
 import 'package:carousel_indicator/carousel_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -50,7 +51,13 @@ class _FeaturedJobsState extends State<FeaturedJobs> {
                       style: textTheme.sub16(),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    SeeAllScreen(styleJob: "Featured Jobs")));
+                      },
                       child: Text(
                         "See all",
                         style: textTheme.regular13(color: "95969D"),

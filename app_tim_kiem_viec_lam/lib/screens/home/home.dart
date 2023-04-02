@@ -17,6 +17,7 @@ import 'package:app_tim_kiem_viec_lam/screens/home/widgets/home_app_bar.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/job_hot.dart';
 import 'package:app_tim_kiem_viec_lam/screens/profile/profile_screen.dart';
 import 'package:app_tim_kiem_viec_lam/screens/profile/profile_setting.dart';
+import 'package:app_tim_kiem_viec_lam/screens/search/searchh_screen.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -566,32 +567,40 @@ class __ContentHomeState extends State<_ContentHome> {
                         width: 1.sw,
                         child: Row(
                           children: [
-                            Container(
-                              width: 250.w,
-                              height: 55.h,
-                              decoration: BoxDecoration(
-                                  color: HexColor("#F2F2F3"),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 13.h, horizontal: 24.w),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    "assets/icons/search.png",
-                                    width: 20.w,
-                                    height: 20.h,
-                                  ),
-                                  SizedBox(
-                                    width: 10.w,
-                                  ),
-                                  Text(
-                                    "Tìm kiếm công việc ",
-                                    style: TextStyle(
-                                        color: HexColor("#95969D"),
-                                        fontSize: 15),
-                                  ),
-                                ],
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SearchScreen()));
+                              },
+                              child: Container(
+                                width: 250.w,
+                                height: 55.h,
+                                decoration: BoxDecoration(
+                                    color: HexColor("#F2F2F3"),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12))),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 13.h, horizontal: 24.w),
+                                child: Row(
+                                  children: [
+                                    Image.asset(
+                                      "assets/icons/search.png",
+                                      width: 20.w,
+                                      height: 20.h,
+                                    ),
+                                    SizedBox(
+                                      width: 10.w,
+                                    ),
+                                    Text(
+                                      "Tìm kiếm công việc ",
+                                      style: TextStyle(
+                                          color: HexColor("#95969D"),
+                                          fontSize: 15),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             SizedBox(
