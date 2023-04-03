@@ -25,6 +25,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import '../../core/providers/authenciation_provider.dart';
 import '../../core/providers/postProvider.dart';
+import '../../widgets/AvatarWidget.dart';
 import '../profile/widgets/button_arrow.dart';
 import '../social/socialScreen.dart';
 import 'widgets/post_widgets/post_feed_widget.dart';
@@ -63,6 +64,67 @@ class _HomePageState extends State<HomePage>
 
   GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
   @override
+  Future<void> _dialogSelectAdd(BuildContext context, UserModel user) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Lựa chọn hình thức"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              user.usertype == "Nhà tuyển dụng"
+                  ? GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                          child: Row(
+                        children: [
+                          Image.asset(
+                            "assets/icons/job_add.png",
+                            width: 30.w,
+                            height: 30.w,
+                          ),
+                          SizedBox(
+                            width: 10.w,
+                          ),
+                          Text(
+                            "Đăng tuyển dụng",
+                            style: textTheme.medium16(),
+                          )
+                        ],
+                      )))
+                  : Container(),
+              SizedBox(
+                height: 10.h,
+              ),
+              GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddPostScreen()));
+                  },
+                  child: Container(
+                      child: Row(
+                    children: [
+                      Image.asset(
+                        "assets/icons/social-media.png",
+                        width: 30.w,
+                        height: 30.w,
+                      ),
+                      SizedBox(
+                        width: 10.w,
+                      ),
+                      Text("Đăng bài viết", style: textTheme.medium16())
+                    ],
+                  )))
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       key: _globalKey,
@@ -71,14 +133,17 @@ class _HomePageState extends State<HomePage>
       ),
       body: PageStorage(bucket: bucket, child: currentScreen),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: HexColor("#BB2649"),
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddPostScreen()));
+      floatingActionButton: Consumer<UserProvider>(
+        builder: (context, userProvider, child) {
+          return FloatingActionButton(
+            backgroundColor: HexColor("#BB2649"),
+            onPressed: () {
+              _dialogSelectAdd(context, userProvider.user);
+            },
+            elevation: 0,
+            child: Icon(Icons.add, color: Colors.white),
+          );
         },
-        elevation: 0,
-        child: Icon(Icons.add, color: Colors.white),
       ),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
@@ -257,17 +322,13 @@ class _HomePageState extends State<HomePage>
                       child: Center(
                         child: Column(
                           children: [
-                            CircleAvatar(
-                              radius: 50.r,
-                              backgroundColor: HexColor("#BB2649"),
-                              backgroundImage: NetworkImage(
-                                  "https://www.elle.vn/wp-content/uploads/2017/07/25/hinh-anh-dep-1.jpg"),
-                            ),
+                            AvatarWidget(context,
+                                user: userProvider.user, radius: 45),
                             SizedBox(
                               height: 12.h,
                             ),
                             Text(
-                              "Haley Jessica",
+                              '${userProvider.user.fullname ?? userProvider.user.name}',
                               style: textTheme.semibold20(),
                             ),
                             SizedBox(

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../core/models/jobsModel.dart';
 import '../../../core/providers/jobsProvider.dart';
 import '../../../widgets/AvatarWidget.dart';
+import '../../../widgets/item_job_horizal.dart';
 import '../../detailJob/detailJob.dart';
 import '../../see_more_screen/see_all_scree.dart';
 
@@ -63,7 +64,11 @@ class _OtherJobsState extends State<OtherJobs> {
               if (snapshot.hasData) {
                 List<JobModel> jobs = snapshot.data;
                 return Column(
-                  children: [...jobs.map((job) => _itemOtherJob(context, job))],
+                  children: [
+                    ...jobs.map((job) => ItemJobHorizal(
+                          job: job,
+                        ))
+                  ],
                 );
               } else if (snapshot.hasError) {
                 return Text("${snapshot.error}");
@@ -71,72 +76,16 @@ class _OtherJobsState extends State<OtherJobs> {
                 return Container(
                   child: Column(
                     children: [
-                      shimmerFromColor(height: 74.h, width: 1.sw),
-                      shimmerFromColor(height: 74.h, width: 1.sw),
-                      shimmerFromColor(height: 74.h, width: 1.sw),
+                      ...List.generate(
+                        3,
+                        (_) => shimmerFromColor(height: 74.h, width: 1.sw),
+                      ).toList()
                     ],
                   ),
                 );
             },
           )
         ],
-      ),
-    );
-  }
-
-  _itemOtherJob(BuildContext context, JobModel job) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    DetailJobScreen(jobId: job.jobId.toString())));
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 25.w),
-        margin: EdgeInsets.only(top: 17.h),
-        width: 1.sw,
-        height: 74.h,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        child: Row(children: [
-          AvatarWidget(context, user: job.users, radius: 25),
-          SizedBox(
-            width: 16.5.w,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "${job.jobName}",
-                style: textTheme.sub14(),
-              ),
-              Spacer(),
-              Text(
-                "${job.users!.name}",
-                style: textTheme.regular13(color: "#0D0D26", opacity: 0.6),
-              )
-            ],
-          ),
-          Spacer(),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                "${job.wage}",
-                style: textTheme.medium12(),
-              ),
-              Spacer(),
-              Text(
-                "${job.categoryJob} - ${job.location}",
-                style: textTheme.regular13(color: "#0D0D26", opacity: 0.6),
-              )
-            ],
-          ),
-        ]),
       ),
     );
   }

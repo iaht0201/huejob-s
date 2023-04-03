@@ -26,7 +26,7 @@ class ItemJobWidget extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 25.w),
           margin: EdgeInsets.only(right: 15.w, top: 20.h),
           width: 156.w,
-          height: 164.h,
+          height: 190.h,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.r),
@@ -64,6 +64,9 @@ class ItemJobWidget extends StatelessWidget {
                 height: 12.h,
               ),
               Text(
+                maxLines: 2,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
                 "${job.jobName}",
                 style: textTheme.sub14(),
               ),

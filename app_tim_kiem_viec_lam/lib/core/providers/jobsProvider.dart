@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/jobCategory_model.dart';
 import '../models/jobsModel.dart';
+import '../models/search_job_model.dart';
 
 class JobsProvider extends ChangeNotifier {
   SupabaseClient _supbase = SupabaseBase.supabaseClient;
@@ -134,24 +135,72 @@ class JobsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<JobModel>> searchJob(String name) async {
-    final respon = await _supbase
+  Future<List<JobModel>> search(String query) async {
+    final result = await _supbase
         .from('jobs')
         .select("*,users(*)")
-        .textSearch('job_name', '%${name}%',
-            config: 'english ', type: TextSearchType.websearch)
-        .limit(100)
+        .textSearch('fts', "'${query}'")
         .execute();
-    if (respon.data == null) {
-      print(respon.status);
+    if (result.data == null) {
+      print(result.status);
     }
-    var data = respon.data;
     List<JobModel> _listJobs = [];
-
-    for (int i = 0; i < data.length; i++) {
-      _listJobs.add(JobModel.fromMap(data[i]));
+    var data = result.data;
+    for (int j = 0; j < data.length; j++) {
+      _listJobs.add(JobModel.fromMap(data[j]));
     }
-    print("jobs ${_listJobs}");
     return _listJobs;
+  }
+
+  Future<List<SearchJobModel>> searchJob(String name) async {
+    List<SearchJobModel> listSearchJob = [];
+    // List<String> column = ['role', 'job_name'];
+    List<Map<String, String>> column = [
+      {'column': 'job_name', 'title': 'Job Name'},
+      {'column': 'role', 'title': 'Role'}
+    ];
+    for (int i = 0; i < column.length; i++) {
+      var supbase = _supbase.from('jobs').select("*,users(*)");
+
+      List<JobModel> _listJobs = [];
+      var respon = await supbase
+          .textSearch('${column[i]['column']}', '${name}:*',
+              config: 'english ', type: TextSearchType.websearch)
+          .execute();
+      var data = respon.data;
+      for (int j = 0; j < data.length; j++) {
+        _listJobs.add(JobModel.fromMap(data[j]));
+      }
+      print(_listJobs);
+      listSearchJob.add(
+        SearchJobModel(title: "${column[i]['title']}", searchList: _listJobs),
+      );
+    }
+
+    print(listSearchJob);
+    return listSearchJob;
+    // final respon = await _supbase
+    //     .from('jobs')
+    //     .select("*,users(*)")
+    //     .textSearch('role', "${name.substring(1, 2)}|${name}")
+    //     // .textSearch('job_name', '${name}:*',
+    //     //     config: 'english ', type: TextSearchType.websearch)
+
+    //     // .eq('job_name', '%${name}%')
+    //     // .textSearch('job_name', '${name}:*',
+    //     //     config: 'english ', type: TextSearchType.websearch)
+    //     .limit(100)
+    //     .execute();
+    // if (respon.data == null) {
+    //   print(respon.status);
+    // }
+    // var data = respon.data;
+    // List<JobModel> _listJobs = [];
+
+    // for (int i = 0; i < data.length; i++) {
+    //   _listJobs.add(JobModel.fromMap(data[i]));
+    // }
+    // print("jobs ${_listJobs}");
+    // return _listJobs;
   }
 }

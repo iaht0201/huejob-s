@@ -1,5 +1,6 @@
 // import 'package:app_tim_kiem_viec_lam/screens/home/widgets/post_widgets/postInteract_widget.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/post_widgets/postInteract_widget.dart';
+import 'package:app_tim_kiem_viec_lam/widgets/AvatarWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import '../../../../core/models/post_model.dart';
@@ -137,29 +138,17 @@ class _PostHeaderState extends State<_PostHeader> {
           Stack(
             children: [
               GestureDetector(
-                onTap: () {
-                  print(widget.post.userId);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ProfileScreen(
-                                clientID: widget.post.userId,
-                              )));
-                },
-                child: widget.post.users!.imageUrl == null
-                    ? CircleAvatar(
-                        radius: 20,
-                        backgroundColor: HexColor("#BB2649"),
-                        child: Text(
-                            "${widget.post.users?.name.toString().substring(0, 1).toUpperCase()}",
-                            style: TextStyle(fontSize: 40)))
-                    : CircleAvatar(
-                        radius: 20,
-                        backgroundColor: HexColor("#BB2649"),
-                        backgroundImage:
-                            NetworkImage("${widget.post.users!.imageUrl}"),
-                      ),
-              )
+                  onTap: () {
+                    print(widget.post.userId);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen(
+                                  clientID: widget.post.userId,
+                                )));
+                  },
+                  child: AvatarWidget(context,
+                      user: widget.post.users, radius: 20))
             ],
           ),
           const SizedBox(width: 8.0),

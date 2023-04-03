@@ -51,5 +51,7 @@ class JobModel {
       wokringTime: json['working_time'],
       users: UserModel.fromMap(json["users"]),
       longitude: json['longitude'],
-      latitude: json['latitude']);
+      latitude: json['latitude']
+      
+      );
 }

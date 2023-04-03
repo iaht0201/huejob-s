@@ -3,6 +3,7 @@ import 'package:app_tim_kiem_viec_lam/core/models/jobsModel.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/jobsProvider.dart';
 import 'package:app_tim_kiem_viec_lam/data/home/category_data.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
+import 'package:app_tim_kiem_viec_lam/widgets/item_job_horizal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/models/search_job_model.dart';
 import '../../core/providers/postProvider.dart';
 import '../../widgets/item_job_widget.dart';
 import '../profile/widgets/button_arrow.dart';
@@ -39,7 +41,8 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
-  List<JobModel>? _results;
+  // List<SearchJobModel>? _results;
+  List<JobModel> _results = [];
   String _input = '';
   _onSearchFieldChanged(String value) async {
     setState(() => _input = value);
@@ -48,7 +51,8 @@ class _SearchScreenState extends State<SearchScreen> {
       setState(() => _results = []);
     } else {
       try {
-        final results = await jobProvider.searchJob(_input);
+        // final results = await jobProvider.searchJob(_input);
+        final results = await jobProvider.search(_input);
         setState(() {
           _results = results;
           if (value.isEmpty) {
@@ -169,12 +173,30 @@ class _SearchScreenState extends State<SearchScreen> {
                     height: 1.sh - 180.h,
                     // color: HexColor("##E5E5E5"),
                     child: SingleChildScrollView(
-                      child: (_results ?? []).isNotEmpty
+                      child: _results.isNotEmpty
                           ? Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                ..._results!
-                                    .map((e) => ItemJobWidget(job: e))
-                                    .toList()
+                                ..._results.map((jobs) {
+                                  return ItemJobHorizal(job: jobs);
+                                  //  Container(
+                                  //   child: Column(
+                                  //     mainAxisAlignment:
+                                  //         MainAxisAlignment.start,
+                                  //     crossAxisAlignment:
+                                  //         CrossAxisAlignment.start,
+                                  //     children: [
+                                  //       ItemJobHorizal(job: jobs)
+                                  //       // Text("${jobs.title}",
+                                  //       //     style: textTheme.semibold16(
+                                  //       //         color: "000000")),
+                                  //       // ...jobs.searchList.map(
+                                  //       //     (job) =>)
+                                  //     ],
+                                  //   ),
+                                  // );
+                                }).toList()
                               ],
                             )
                           : Column(

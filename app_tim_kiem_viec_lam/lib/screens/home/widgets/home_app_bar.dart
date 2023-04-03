@@ -82,8 +82,8 @@ class HomeAppBar extends StatelessWidget {
                             height: 28.h,
                           )),
                     ),
-                    const SizedBox(
-                      width: 10,
+                    SizedBox(
+                      width: 10.w,
                     ),
                   ],
                 )
@@ -91,9 +91,5 @@ class HomeAppBar extends StatelessWidget {
             );
           },
         ));
-  }
-
-  _navigatorDrawer(BuildContext context) {
-    return Drawer();
   }
 }
