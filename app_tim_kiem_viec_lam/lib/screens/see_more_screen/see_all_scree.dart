@@ -1,4 +1,4 @@
-import 'package:app_tim_kiem_viec_lam/core/providers/jobsProvider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/jobs_rovider.dart';
 import 'package:app_tim_kiem_viec_lam/screens/profile/widgets/button_arrow.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 import 'package:app_tim_kiem_viec_lam/widgets/item_job_widget.dart';
@@ -9,7 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/models/jobsModel.dart';
+import '../../core/models/jobs_model.dart';
 
 class SeeAllScreen extends StatefulWidget {
   const SeeAllScreen({super.key, required this.styleJob});

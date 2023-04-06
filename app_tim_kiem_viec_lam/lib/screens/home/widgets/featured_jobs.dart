@@ -1,5 +1,5 @@
-import 'package:app_tim_kiem_viec_lam/core/models/jobsModel.dart';
-import 'package:app_tim_kiem_viec_lam/screens/detailJob/detailJob.dart';
+import 'package:app_tim_kiem_viec_lam/core/models/jobs_model.dart';
+import 'package:app_tim_kiem_viec_lam/screens/detailJob/detail_job.dart';
 import 'package:app_tim_kiem_viec_lam/screens/see_more_screen/see_all_scree.dart';
 import 'package:carousel_indicator/carousel_indicator.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +10,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../../core/providers/jobsProvider.dart';
+import '../../../core/providers/jobs_rovider.dart';
 import '../../../data/home/featureJobsData.dart';
 import '../../../utils/constant.dart';
 import '../../profile/profile_screen.dart';
@@ -223,8 +223,9 @@ class _FeaturedJobsState extends State<FeaturedJobs> {
             // padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 24.w),
             ),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 25.h, horizontal: 24.w),
+          padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 24.w),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,9 +269,14 @@ class _FeaturedJobsState extends State<FeaturedJobs> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "${item.jobName}",
-                        style: textTheme.semibold16(),
+                      Container(
+                        width: 0.32.sw,
+                        child: Text(
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          "${item.jobName}",
+                          style: textTheme.semibold16(),
+                        ),
                       ),
                       SizedBox(height: 3.h),
                       Text(

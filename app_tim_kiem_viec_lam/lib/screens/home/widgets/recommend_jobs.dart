@@ -1,4 +1,4 @@
-import 'package:app_tim_kiem_viec_lam/core/models/jobsModel.dart';
+import 'package:app_tim_kiem_viec_lam/core/models/jobs_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 import 'package:app_tim_kiem_viec_lam/widgets/item_job_widget.dart';
@@ -9,8 +9,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/providers/jobsProvider.dart';
-import '../../detailJob/detailJob.dart';
+import '../../../core/providers/jobs_rovider.dart';
+import '../../detailJob/detail_job.dart';
 import '../../profile/profile_screen.dart';
 import '../../see_more_screen/see_all_scree.dart';
 

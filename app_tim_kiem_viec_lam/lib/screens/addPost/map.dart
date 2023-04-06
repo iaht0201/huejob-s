@@ -1,4 +1,4 @@
-import 'package:app_tim_kiem_viec_lam/core/providers/postProvider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/post_provider.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -62,7 +62,7 @@ class _OpenStreetMapState extends State<OpenStreetMap> {
                         jobProvider.setLongtitude =
                             pickedData.latLong.longitude;
                         jobProvider.setLatitude = pickedData.latLong.latitude;
-                        Navigator.of(context).pop();
+                        Navigator.pop(context, pickedData);
                       })
                   : (widget.isBack == true
                       ? OpenStreetMapSearchAndPick(
@@ -86,14 +86,6 @@ class _OpenStreetMapState extends State<OpenStreetMap> {
                   height: double.infinity,
                   child: Center(
                       child: shimmerFromColor(width: 1.sw, height: 1.sh)));
-          // Column(
-          //   children: [
-          //     ElevatedButton(
-          //         onPressed: () async {}, child: Text("Get location")),
-          //     Text(
-          //         "latitude: ${_position?.latitude},longtitude : ${_position?.longitude}")
-          //   ],
-          // );
         },
       ),
     );

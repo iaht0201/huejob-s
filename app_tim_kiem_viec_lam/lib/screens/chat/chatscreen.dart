@@ -1,10 +1,10 @@
-import 'package:app_tim_kiem_viec_lam/core/providers/userProvider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
-import '../../core/models/chatMessage.dart';
+import '../../core/models/chat_message.dart';
 import '../profile/widgets/button_arrow.dart';
 
 class ChatScreen extends StatefulWidget {

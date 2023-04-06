@@ -1,6 +1,6 @@
-import 'package:app_tim_kiem_viec_lam/core/models/jobCategory_model.dart';
-import 'package:app_tim_kiem_viec_lam/core/models/jobsModel.dart';
-import 'package:app_tim_kiem_viec_lam/core/providers/jobsProvider.dart';
+import 'package:app_tim_kiem_viec_lam/core/models/job_category_model.dart';
+import 'package:app_tim_kiem_viec_lam/core/models/jobs_model.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/jobs_rovider.dart';
 import 'package:app_tim_kiem_viec_lam/data/home/category_data.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 import 'package:app_tim_kiem_viec_lam/widgets/item_job_horizal.dart';
@@ -12,7 +12,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/models/search_job_model.dart';
-import '../../core/providers/postProvider.dart';
+import '../../core/providers/post_provider.dart';
 import '../../widgets/item_job_widget.dart';
 import '../profile/widgets/button_arrow.dart';
 import '../see_more_screen/see_all_scree.dart';
@@ -42,6 +42,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   // List<SearchJobModel>? _results;
+  bool _isLoading = false;
   List<JobModel> _results = [];
   String _input = '';
   _onSearchFieldChanged(String value) async {
@@ -51,6 +52,7 @@ class _SearchScreenState extends State<SearchScreen> {
       setState(() => _results = []);
     } else {
       try {
+        setState(() => _isLoading = true);
         // final results = await jobProvider.searchJob(_input);
         final results = await jobProvider.search(_input);
         setState(() {
@@ -58,12 +60,12 @@ class _SearchScreenState extends State<SearchScreen> {
           if (value.isEmpty) {
             _results = [];
           }
+          _isLoading = false;
         });
       } catch (e) {
         print(e);
       }
     }
-    print(_results);
   }
 
   Widget build(BuildContext context) {
@@ -172,42 +174,42 @@ class _SearchScreenState extends State<SearchScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 24.w),
                     height: 1.sh - 180.h,
                     // color: HexColor("##E5E5E5"),
-                    child: SingleChildScrollView(
-                      child: _results.isNotEmpty
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                    child: _isLoading == false
+                        ? SingleChildScrollView(
+                            child: _results.isNotEmpty
+                                ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      ..._results.map((jobs) {
+                                        return ItemJobHorizal(job: jobs);
+                                      }).toList()
+                                    ],
+                                  )
+                                : Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      _recentSearches(context),
+                                      // Chinh sua lai chuc nang goi y tim kiem
+                                      _popualarRoles(
+                                          context, postProvider.jobs),
+                                      _recentlyViewed(context),
+                                      // Chuc nang da xem
+                                    ],
+                                  ),
+                          )
+                        : Container(
+                            child: Column(
                               children: [
-                                ..._results.map((jobs) {
-                                  return ItemJobHorizal(job: jobs);
-                                  //  Container(
-                                  //   child: Column(
-                                  //     mainAxisAlignment:
-                                  //         MainAxisAlignment.start,
-                                  //     crossAxisAlignment:
-                                  //         CrossAxisAlignment.start,
-                                  //     children: [
-                                  //       ItemJobHorizal(job: jobs)
-                                  //       // Text("${jobs.title}",
-                                  //       //     style: textTheme.semibold16(
-                                  //       //         color: "000000")),
-                                  //       // ...jobs.searchList.map(
-                                  //       //     (job) =>)
-                                  //     ],
-                                  //   ),
-                                  // );
-                                }).toList()
-                              ],
-                            )
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _recentSearches(context),
-                                _popualarRoles(context, postProvider.jobs),
-                                _recentlyViewed(context),
+                                ...List.generate(
+                                    10,
+                                    (index) => shimmerFromColor(
+                                        width: 1.sw, height: 50.h))
                               ],
                             ),
-                    ),
+                          ),
                   )
                 ])),
               ],

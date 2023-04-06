@@ -1,7 +1,7 @@
 import 'package:app_tim_kiem_viec_lam/core/models/model.dart';
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
 
-import 'package:app_tim_kiem_viec_lam/core/providers/userProvider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/post_widgets/post_feed_widget.dart';
 
 import 'package:app_tim_kiem_viec_lam/screens/profile/widgets/button_arrow.dart';
@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/providers/authenciation_provider.dart';
-import '../../core/providers/postProvider.dart';
+import '../../core/providers/post_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, this.clientID});

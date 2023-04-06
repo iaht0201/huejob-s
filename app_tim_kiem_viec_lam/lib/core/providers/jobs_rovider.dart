@@ -1,11 +1,13 @@
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
-import 'package:app_tim_kiem_viec_lam/core/providers/userProvider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:app_tim_kiem_viec_lam/core/supabase/supabase.dart';
+import 'package:app_tim_kiem_viec_lam/screens/home/home.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../models/jobCategory_model.dart';
-import '../models/jobsModel.dart';
+import '../models/job_category_model.dart';
+import '../models/jobs_model.dart';
 import '../models/search_job_model.dart';
 
 class JobsProvider extends ChangeNotifier {
@@ -114,12 +116,14 @@ class JobsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<JobCategoryModel> _roleJob = [];
+  List<JobCategoryModel> get getRoleJob => _roleJob;
   Future fetchPopularRoles({int limit = 100}) async {
     final response = await SupabaseBase.supabaseClient
         .from('jobcategory')
         .select('*')
         .limit(limit)
-        .order("jobcategoryid", ascending: true)
+        // .order("jobcategoryid", ascending: true)
         .execute();
 
 // Bổ sung thêm hàm count đếm xem có bao nhiêu job với roles đó
@@ -129,78 +133,54 @@ class JobsProvider extends ChangeNotifier {
       for (int i = 0; i < data.length; i++) {
         _roles.add(JobCategoryModel.fromMap(data[i]));
       }
-      return _roles;
+      _roleJob = _roles;
+      // return _roles;
     }
-
     notifyListeners();
   }
 
   Future<List<JobModel>> search(String query) async {
     final result = await _supbase
-        .from('jobs')
-        .select("*,users(*)")
-        .textSearch('fts', "'${query}'")
-        .execute();
+        .rpc('jobs_searchs', params: {'search': '${query}'}).execute();
     if (result.data == null) {
       print(result.status);
     }
     List<JobModel> _listJobs = [];
     var data = result.data;
-    for (int j = 0; j < data.length; j++) {
-      _listJobs.add(JobModel.fromMap(data[j]));
+    for (int i = 0; i < data.length; i++) {
+      final jobModel = await JobModel.fromJson1(data[i], _supbase);
+      _listJobs.add(jobModel);
     }
     return _listJobs;
   }
 
-  Future<List<SearchJobModel>> searchJob(String name) async {
-    List<SearchJobModel> listSearchJob = [];
-    // List<String> column = ['role', 'job_name'];
-    List<Map<String, String>> column = [
-      {'column': 'job_name', 'title': 'Job Name'},
-      {'column': 'role', 'title': 'Role'}
-    ];
-    for (int i = 0; i < column.length; i++) {
-      var supbase = _supbase.from('jobs').select("*,users(*)");
-
-      List<JobModel> _listJobs = [];
-      var respon = await supbase
-          .textSearch('${column[i]['column']}', '${name}:*',
-              config: 'english ', type: TextSearchType.websearch)
+  Future<void> insertJob(BuildContext context, JobModel newJob) async {
+    try {
+      final response = await SupabaseBase.supabaseClient
+          .from("jobs")
+          .insert(newJob.toMapAddJob(newJob))
           .execute();
-      var data = respon.data;
-      for (int j = 0; j < data.length; j++) {
-        _listJobs.add(JobModel.fromMap(data[j]));
+      if (response != null) {
+        Fluttertoast.showToast(
+          msg: 'Đăng bài tuyển dụng thành công !',
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+        );
+        notifyListeners();
       }
-      print(_listJobs);
-      listSearchJob.add(
-        SearchJobModel(title: "${column[i]['title']}", searchList: _listJobs),
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: 'Đăng tuyển dụng thất bại, vui lòng thử lại sau!',
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
       );
     }
-
-    print(listSearchJob);
-    return listSearchJob;
-    // final respon = await _supbase
-    //     .from('jobs')
-    //     .select("*,users(*)")
-    //     .textSearch('role', "${name.substring(1, 2)}|${name}")
-    //     // .textSearch('job_name', '${name}:*',
-    //     //     config: 'english ', type: TextSearchType.websearch)
-
-    //     // .eq('job_name', '%${name}%')
-    //     // .textSearch('job_name', '${name}:*',
-    //     //     config: 'english ', type: TextSearchType.websearch)
-    //     .limit(100)
-    //     .execute();
-    // if (respon.data == null) {
-    //   print(respon.status);
-    // }
-    // var data = respon.data;
-    // List<JobModel> _listJobs = [];
-
-    // for (int i = 0; i < data.length; i++) {
-    //   _listJobs.add(JobModel.fromMap(data[i]));
-    // }
-    // print("jobs ${_listJobs}");
-    // return _listJobs;
   }
 }

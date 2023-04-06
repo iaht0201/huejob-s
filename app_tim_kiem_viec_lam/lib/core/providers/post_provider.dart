@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../screens/social/social_screen.dart';
 import '../models/bookmark_moder.dart';
-import '../models/jobCategory_model.dart';
+import '../models/job_category_model.dart';
 import '../models/like_model.dart';
 import '../models/post_model.dart';
 import '../supabase/supabase.dart';
@@ -267,7 +268,10 @@ class PostProvider extends ChangeNotifier {
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+          MaterialPageRoute(
+              builder: (BuildContext context) => HomePage(
+                    currentTab: 1,
+                  )),
         );
         notifyListeners();
       }

@@ -1,9 +1,9 @@
-import 'package:app_tim_kiem_viec_lam/core/models/jobsModel.dart';
-import 'package:app_tim_kiem_viec_lam/core/providers/jobsProvider.dart';
+import 'package:app_tim_kiem_viec_lam/core/models/jobs_model.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/jobs_rovider.dart';
 import 'package:app_tim_kiem_viec_lam/screens/applyJob/apply_job.dart';
 import 'package:app_tim_kiem_viec_lam/screens/profile/widgets/button_arrow.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
-import 'package:app_tim_kiem_viec_lam/widgets/AvatarWidget.dart';
+import 'package:app_tim_kiem_viec_lam/widgets/avatar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -11,8 +11,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/providers/postProvider.dart';
-import '../../core/providers/userProvider.dart';
+import '../../core/providers/post_provider.dart';
+import '../../core/providers/user_provider.dart';
 import '../addPost/map.dart';
 import '../home/widgets/home_app_bar.dart';
 
@@ -217,7 +217,7 @@ class _DetailJobScreenState extends State<DetailJobScreen> {
                                         )));
                           },
                           child: Text(
-                            "${job.location}",
+                            "${job.getCity}",
                             style: textTheme.semibold16(),
                           )),
                       // Text(

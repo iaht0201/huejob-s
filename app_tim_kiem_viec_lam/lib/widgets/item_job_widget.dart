@@ -1,11 +1,11 @@
-import 'package:app_tim_kiem_viec_lam/core/models/jobsModel.dart';
+import 'package:app_tim_kiem_viec_lam/core/models/jobs_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-import '../screens/detailJob/detailJob.dart';
+import '../screens/detailJob/detail_job.dart';
 import '../screens/profile/profile_screen.dart';
 import '../utils/constant.dart';
 

@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:app_tim_kiem_viec_lam/core/models/model.dart';
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
 
-import 'package:app_tim_kiem_viec_lam/core/providers/userProvider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:app_tim_kiem_viec_lam/screens/addPost/addPost_Screen.dart';
 
 import 'package:app_tim_kiem_viec_lam/screens/authentication/login/login.dart';
 import 'package:app_tim_kiem_viec_lam/screens/chat/listChatScreen.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/featured_jobs.dart';
-import 'package:app_tim_kiem_viec_lam/screens/home/widgets/otherJobs.dart';
-import 'package:app_tim_kiem_viec_lam/screens/home/widgets/recommendJobs.dart';
+import 'package:app_tim_kiem_viec_lam/screens/home/widgets/other_job.dart';
+import 'package:app_tim_kiem_viec_lam/screens/home/widgets/recommend_jobs.dart';
 
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/home_app_bar.dart';
 
@@ -19,7 +19,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import '../../core/providers/authenciation_provider.dart';
-import '../../core/providers/postProvider.dart';
+import '../../core/providers/post_provider.dart';
 import '../home/widgets/post_widgets/post_feed_widget.dart';
 
 class SocialScreen extends StatefulWidget {

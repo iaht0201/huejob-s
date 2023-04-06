@@ -5,11 +5,11 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/models/jobsModel.dart';
-import '../../../core/providers/jobsProvider.dart';
-import '../../../widgets/AvatarWidget.dart';
+import '../../../core/models/jobs_model.dart';
+import '../../../core/providers/jobs_rovider.dart';
+import '../../../widgets/avatar_widget.dart';
 import '../../../widgets/item_job_horizal.dart';
-import '../../detailJob/detailJob.dart';
+import '../../detailJob/detail_job.dart';
 import '../../see_more_screen/see_all_scree.dart';
 
 class OtherJobs extends StatefulWidget {

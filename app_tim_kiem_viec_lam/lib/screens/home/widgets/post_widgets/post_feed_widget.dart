@@ -1,6 +1,6 @@
 // import 'package:app_tim_kiem_viec_lam/screens/home/widgets/post_widgets/postInteract_widget.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/post_widgets/postInteract_widget.dart';
-import 'package:app_tim_kiem_viec_lam/widgets/AvatarWidget.dart';
+import 'package:app_tim_kiem_viec_lam/widgets/avatar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import '../../../../core/models/post_model.dart';

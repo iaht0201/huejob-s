@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../models/chatMessage.dart';
+import '../models/chat_message.dart';
 
 class ChatProvider extends ChangeNotifier {
   SupabaseClient _supabase = SupabaseBase.supabaseClient;

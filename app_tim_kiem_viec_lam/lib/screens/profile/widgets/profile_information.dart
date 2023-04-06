@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:app_tim_kiem_viec_lam/core/providers/userProvider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:app_tim_kiem_viec_lam/screens/chat/chatscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -11,7 +11,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/models/user_model.dart';
 
-import '../../../core/providers/postProvider.dart';
+import '../../../core/providers/post_provider.dart';
 import '../../../core/supabase/supabase.dart';
 import '../../chat/chatMessages.dart';
 import '../../chat/listChatScreen.dart';
@@ -186,7 +186,8 @@ class _ProfileInformationState extends State<ProfileInformation> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        EditProfile(user: widget.user)))
+                                        EditProfile(user: widget.user)
+                                        ))
                             : Navigator.push(
                                 context,
                                 MaterialPageRoute(

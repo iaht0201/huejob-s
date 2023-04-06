@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:app_tim_kiem_viec_lam/core/providers/authenciation_provider.dart';
-import 'package:app_tim_kiem_viec_lam/core/providers/jobCategoryProvider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/job_category_provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -10,12 +10,12 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:provider/provider.dart';
 
-import '../../core/models/jobCategory_model.dart';
+import '../../core/models/job_category_model.dart';
 import '../../core/models/user_model.dart';
-import '../../core/providers/postProvider.dart';
-import '../../core/providers/userProvider.dart';
-import '../../widgets/Profile_widget.dart';
-import '../../widgets/Textfiled_widget.dart';
+import '../../core/providers/post_provider.dart';
+import '../../core/providers/user_provider.dart';
+import '../../widgets/profile_widget.dart';
+import '../../widgets/textfiled_widget.dart';
 
 class SelectJobScreen extends StatefulWidget {
   SelectJobScreen({super.key, this.user});

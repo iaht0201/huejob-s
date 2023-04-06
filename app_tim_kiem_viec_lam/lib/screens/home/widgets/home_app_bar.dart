@@ -1,7 +1,7 @@
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
-import 'package:app_tim_kiem_viec_lam/core/providers/userProvider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
-import 'package:app_tim_kiem_viec_lam/widgets/AvatarWidget.dart';
+import 'package:app_tim_kiem_viec_lam/widgets/avatar_widget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -58,7 +58,8 @@ class HomeAppBar extends StatelessWidget {
                                 height: 5.h,
                               ),
                               Text(
-                                "HueJob's Luôn đồng hành cùng bạn!",
+                                overflow: TextOverflow.ellipsis,
+                                "HueJob's đồng hành cùng bạn!",
                                 style: textTheme.headline14(
                                     color: "FFFFFF", opacity: 0.6),
                               )

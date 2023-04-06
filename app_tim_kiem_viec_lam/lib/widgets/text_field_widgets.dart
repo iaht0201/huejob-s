@@ -1,30 +1,40 @@
+import 'package:app_tim_kiem_viec_lam/core/models/job_category_model.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/jobs_rovider.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 
-class TextFieldWidget extends StatefulWidget {
+import '../core/providers/post_provider.dart';
+
+class TextFieldWid extends StatefulWidget {
   final int maxLines;
   final String label;
   final String text;
   final bool enbled;
   final ValueChanged<String> onChanged;
   final num? width;
-  const TextFieldWidget(
+  final String? Function(String?)? validator;
+
+  IconData? icon;
+  TextFieldWid(
       {Key? key,
       this.maxLines = 1,
       required this.label,
+      this.validator,
       required this.text,
       required this.enbled,
       required this.onChanged,
+      this.icon,
       this.width = 1})
       : super(key: key);
 
   @override
-  _TextFieldWidgetState createState() => _TextFieldWidgetState();
+  _TextFieldWidState createState() => _TextFieldWidState();
 }
 
-class _TextFieldWidgetState extends State<TextFieldWidget> {
+class _TextFieldWidState extends State<TextFieldWid> {
   late final TextEditingController controller;
 
   @override
@@ -42,20 +52,24 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
   @override
   Widget build(BuildContext context) => Container(
         width: widget.width?.sw,
-        // margin: EdgeInsets.symmetric(horizontal: 10.w),
         child: Column(
+          // mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 8),
             TextFormField(
+              validator: widget.validator,
               enabled: widget.enbled,
               onChanged: widget.onChanged,
               controller: controller,
+              style: textTheme.medium14(color: "000000"),
               decoration: InputDecoration(
-                prefixIcon: Icon(
-                  Icons.home,
-                  color: HexColor("#AFB0B6"),
-                ),
+                prefixIcon: widget.icon != null
+                    ? Icon(
+                        widget.icon,
+                        color: HexColor("#000000"),
+                      )
+                    : null,
                 focusColor: Colors.black,
                 hintText: widget.label,
                 hintStyle: textTheme.medium14(color: "AFB0B6"),

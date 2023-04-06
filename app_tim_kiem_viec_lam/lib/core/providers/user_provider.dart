@@ -3,7 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../models/useTypeModel.dart';
+import '../models/usetype_model.dart';
 import '../models/user_model.dart';
 import '../supabase/supabase.dart';
 

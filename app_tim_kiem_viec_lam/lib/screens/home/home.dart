@@ -3,15 +3,16 @@ import 'dart:async';
 import 'package:app_tim_kiem_viec_lam/core/models/model.dart';
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
 
-import 'package:app_tim_kiem_viec_lam/core/providers/userProvider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:app_tim_kiem_viec_lam/screens/addPost/addPost_Screen.dart';
+import 'package:app_tim_kiem_viec_lam/screens/add_job/add_job.dart';
 
 import 'package:app_tim_kiem_viec_lam/screens/authentication/login/login.dart';
 import 'package:app_tim_kiem_viec_lam/screens/chat/chatMessages.dart';
 import 'package:app_tim_kiem_viec_lam/screens/chat/listChatScreen.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/featured_jobs.dart';
-import 'package:app_tim_kiem_viec_lam/screens/home/widgets/otherJobs.dart';
-import 'package:app_tim_kiem_viec_lam/screens/home/widgets/recommendJobs.dart';
+import 'package:app_tim_kiem_viec_lam/screens/home/widgets/other_job.dart';
+import 'package:app_tim_kiem_viec_lam/screens/home/widgets/recommend_jobs.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/tag_list.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/home_app_bar.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/job_hot.dart';
@@ -24,14 +25,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import '../../core/providers/authenciation_provider.dart';
-import '../../core/providers/postProvider.dart';
-import '../../widgets/AvatarWidget.dart';
+import '../../core/providers/post_provider.dart';
+import '../../widgets/avatar_widget.dart';
 import '../profile/widgets/button_arrow.dart';
-import '../social/socialScreen.dart';
+import '../social/social_screen.dart';
 import 'widgets/post_widgets/post_feed_widget.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  HomePage({super.key, this.currentTab = 0});
+  final int currentTab;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -39,7 +41,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  int pageIndex = 0;
   int currentTab = 0;
   final List screens = [
     HomePage(),
@@ -50,11 +51,16 @@ class _HomePageState extends State<HomePage>
     LoginView(),
   ];
   final PageStorageBucket bucket = PageStorageBucket();
-  Widget currentScreen = _ContentHome();
+  // Widget currentScreen = _ContentHome();
   late PostProvider jobProvider;
   late UserModel user;
+  Widget currentScreen = _ContentHome();
   void initState() {
     super.initState();
+    currentTab = widget.currentTab;
+    if (currentTab == 1) {
+      currentScreen = SocialScreen();
+    }
   }
 
   @override
@@ -75,7 +81,14 @@ class _HomePageState extends State<HomePage>
             children: [
               user.usertype == "Nhà tuyển dụng"
                   ? GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddJobScreen(
+                                      user: user,
+                                    )));
+                      },
                       child: Container(
                           child: Row(
                         children: [
@@ -149,7 +162,7 @@ class _HomePageState extends State<HomePage>
         shape: CircularNotchedRectangle(),
         notchMargin: 10,
         child: Container(
-          height: 60,
+          height: 60.h,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -203,7 +216,7 @@ class _HomePageState extends State<HomePage>
                           Icon(
                             Icons.change_circle_outlined,
                             size: 20,
-                            color: currentTab == 4
+                            color: currentTab == 1
                                 ? HexColor("#BB2649")
                                 : Colors.grey,
                           ),
@@ -211,7 +224,7 @@ class _HomePageState extends State<HomePage>
                             'Tương tác',
                             style: TextStyle(
                               fontSize: 10.sp,
-                              color: currentTab == 4
+                              color: currentTab == 1
                                   ? HexColor("#BB2649")
                                   : Colors.grey,
                             ),
@@ -237,7 +250,7 @@ class _HomePageState extends State<HomePage>
                       onPressed: () {
                         setState(() {
                           currentScreen = ListChatScreen();
-                          currentTab = 3;
+                          currentTab = 2;
                         });
                       },
                       child: Column(
@@ -246,7 +259,7 @@ class _HomePageState extends State<HomePage>
                           Icon(
                             Icons.message_outlined,
                             size: 20,
-                            color: currentTab == 3
+                            color: currentTab == 2
                                 ? HexColor("#BB2649")
                                 : Colors.grey,
                           ),
@@ -254,7 +267,7 @@ class _HomePageState extends State<HomePage>
                             'Nhắn tin',
                             style: TextStyle(
                               fontSize: 10.sp,
-                              color: currentTab == 3
+                              color: currentTab == 2
                                   ? HexColor("#BB2649")
                                   : Colors.grey,
                             ),
@@ -277,7 +290,7 @@ class _HomePageState extends State<HomePage>
                           Icon(
                             Icons.menu,
                             size: 20,
-                            color: currentTab == 4
+                            color: currentTab == 3
                                 ? HexColor("#BB2649")
                                 : Colors.grey,
                           ),
@@ -285,7 +298,7 @@ class _HomePageState extends State<HomePage>
                             'Lựa chọn',
                             style: TextStyle(
                               fontSize: 10.sp,
-                              color: currentTab == 4
+                              color: currentTab == 3
                                   ? HexColor("#BB2649")
                                   : Colors.grey,
                             ),
@@ -314,7 +327,7 @@ class _HomePageState extends State<HomePage>
             // margin: EdgeInsets.only(left: 41.w),
             child: ListView(children: [
               Container(
-                margin: EdgeInsets.only(top: 20),
+                margin: EdgeInsets.only(top: 20.h),
                 child: Stack(
                   children: [
                     Container(
@@ -464,13 +477,6 @@ class __ContentHomeState extends State<_ContentHome> {
       _loadPosts();
     }
   }
-  // void _scrollListener() {
-  //   if (!_isLoading &&
-  //       _scrollController.position.pixels ==
-  //           _scrollController.position.maxScrollExtent) {
-  //     _loadPosts();
-  //   }
-  // }
 
   void _loadPosts() async {
     setState(() {
@@ -512,12 +518,12 @@ class __ContentHomeState extends State<_ContentHome> {
                           bottomRight: Radius.circular(100))),
                   backgroundColor: HexColor("#BB2649"),
                   pinned: true,
-                  expandedHeight: 120,
+                  expandedHeight: 120.h,
                   flexibleSpace: LayoutBuilder(
                     builder:
                         (BuildContext context, BoxConstraints constraints) {
                       top = constraints.biggest.height;
-                      if (top.toDouble() < 100) {
+                      if (top.toDouble() < 100.h) {
                         _opacity = 1;
                       } else {
                         _opacity = 0;
@@ -530,8 +536,8 @@ class __ContentHomeState extends State<_ContentHome> {
                             isScroll: false,
                           ),
                           titlePadding: EdgeInsets.only(
-                            left: 0,
-                            right: 0,
+                            left: 0.w,
+                            right: 0.w,
                           ),
                           title: Container(
                             child: Row(
@@ -540,7 +546,6 @@ class __ContentHomeState extends State<_ContentHome> {
                                 children: [
                                   AnimatedOpacity(
                                       duration: Duration(milliseconds: 0),
-                                      //opacity: top == MediaQuery.of(context).padding.top + kToolbarHeight ? 1.0 : 0.0,
                                       opacity: _opacity,
                                       child: HomeAppBar(
                                           user: userProvider.user,
@@ -550,59 +555,6 @@ class __ContentHomeState extends State<_ContentHome> {
                     },
                   ));
             }),
-            // SliverPersistentHeader(
-            //     pinned: true,
-            //     floating: false,
-            //     delegate: _MyHeader(
-            //       child: Consumer<UserProvider>(
-            //           builder: (context, userProvider, _) {
-            //         return HomeAppBar(user: userProvider.user);
-            //       }),
-            //       // Padding(
-            //       //   padding: EdgeInsets.symmetric(horizontal: 20),
-            //       //   child: Column(children: [
-            //       //     Row(
-            //       //         mainAxisAlignment: MainAxisAlignment.start,
-            //       //         children: [
-            //       //           Row(
-            //       //             children: [
-            //       //               buttonArrow(context),
-            //       //               Text(
-            //       //                 "Đối tượng ngành nghề",
-            //       //                 style: Theme.of(context)
-            //       //                     .textTheme
-            //       //                     .titleLarge!
-            //       //                     .copyWith(color: Colors.white),
-            //       //               ),
-            //       //             ],
-            //       //           ),
-            //       //         ]),
-            //       //     Container(
-            //       //       child: TextField(
-            //       //           // onChanged: (query) => searchJobs(query),
-            //       //           decoration: InputDecoration(
-            //       //         contentPadding: EdgeInsets.symmetric(vertical: 20.0),
-            //       //         prefixIcon: const Icon(
-            //       //           Icons.search_rounded,
-            //       //           size: 35,
-            //       //           color: Colors.black,
-            //       //         ),
-            //       //         focusedBorder: OutlineInputBorder(
-            //       //             borderSide:
-            //       //                 BorderSide(color: HexColor("#F0F2F1")),
-            //       //             borderRadius: BorderRadius.circular(20)),
-            //       //         enabledBorder: OutlineInputBorder(
-            //       //             borderSide:
-            //       //                 BorderSide(color: HexColor("#F0F2F1")),
-            //       //             borderRadius: BorderRadius.circular(20)),
-            //       //         hintText: 'Bạn đang tìm ngành nghề nào?',
-            //       //         filled: true,
-            //       //         fillColor: Colors.white,
-            //       //       )),
-            //       //     ),
-            //       //   ]),
-            //       // ),
-            //     )),
             SliverList(
                 delegate: SliverChildListDelegate([
               Container(
@@ -703,92 +655,6 @@ class __ContentHomeState extends State<_ContentHome> {
         ),
       ]),
     );
-
-    // SingleChildScrollView(child: LayoutBuilder(
-    //   builder: (BuildContext context, BoxConstraints constraints) {
-    //     return Column(
-    //       mainAxisAlignment: MainAxisAlignment.start,
-    //       crossAxisAlignment: CrossAxisAlignment.start,
-    //       children: [
-    //         Consumer<UserProvider>(builder: (context, userProvider, _) {
-    //           return HomeAppBar(user: userProvider.user);
-    //         }),
-
-    //         SizedBox(
-    //           height: 20,
-    //         ),
-    //         Container(
-    //           padding: EdgeInsets.symmetric(horizontal: 20),
-    //           child: TextField(
-    //               decoration: InputDecoration(
-    //             contentPadding: EdgeInsets.symmetric(vertical: 20.0),
-    //             prefixIcon: const Icon(
-    //               Icons.search_rounded,
-    //               size: 35,
-    //               color: Colors.black,
-    //             ),
-    //             focusedBorder: OutlineInputBorder(
-    //                 borderSide: BorderSide(color: HexColor("#F0F2F1")),
-    //                 borderRadius: BorderRadius.circular(20)),
-    //             enabledBorder: OutlineInputBorder(
-    //                 borderSide: BorderSide(color: HexColor("#F0F2F1")),
-    //                 borderRadius: BorderRadius.circular(20)),
-    //             hintText: 'Bạn đang tìm kiếm loại công việc nào ?',
-    //           )),
-    //         ),
-    //         // CategorList(),
-    //         JobHot(),
-    //         TagList(),
-    //         Consumer<PostProvider>(
-    //           builder: (context, postProvider, _) {
-    //             return
-    //                 // Container(
-    //                 //   height: 1000,
-    //                 //   child: ListView.builder(
-    //                 //     itemCount: providerJob.posts.length,
-    //                 //     itemBuilder: (context, index) {
-    //                 //       return PostItem(post: jobProvider.posts[index]);
-    //                 //     },
-    //                 //   ),
-    //                 // );
-    //                 Container(
-    //               child: Column(
-    //                 children: [
-    //                   ...posts.map((e) {
-    //                     return PostItem(post: e);
-    //                   }).toList(),
-    //                   _isLoading
-    //                       ? CircularProgressIndicator()
-    //                       : SizedBox.shrink(),
-    //                 ],
-    //               ),
-    //             );
-    //           },
-    //         ),
-    //         // FutureBuilder(
-    //         //   future: providerJob.getPots(),
-    //         //   builder: (context, snapshot) {
-    //         //     if (snapshot.hasData) {
-    //         //       return Container(
-    //         //         child: Column(
-    //         //           children: [
-    //         //             ...providerJob.posts.map((e) {
-    //         //               return PostItem(post: e);
-    //         //             })
-    //         //           ],
-    //         //         ),
-    //         //       );
-    //         //     } else if (snapshot.hasError) {
-    //         //       return Text("Error: ${snapshot.error}");
-    //         //     } else {
-    //         //       return Container();
-    //         //     }
-    //         //   },
-    //         // ),
-    //       ],
-    //     );
-    //   },
-    // ));
   }
 }
 
@@ -821,77 +687,3 @@ class _MyHeader extends SliverPersistentHeaderDelegate {
     return false;
   }
 }
-
-// import 'package:app_tim_kiem_viec_lam/screens/chat/chatMessages.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/src/widgets/container.dart';
-// import 'package:flutter/src/widgets/framework.dart';
-// import 'package:provider/provider.dart';
-
-// import '../../core/providers/chatMessagerProvider.dart';
-// import '../../core/providers/job_provider.dart';
-
-// class HomePage extends StatefulWidget {
-//   const HomePage({super.key});
-
-//   @override
-//   State<HomePage> createState() => _HomePageState();
-// }
-
-// class _HomePageState extends State<HomePage> {
-//   Future<void> _loginUser(
-//       ChatProvider appService, String _email, String _password) async {
-//     await appService.signIn(_email, _password);
-
-//     setState(() {});
-//   }
-
-//   Future<void> _signOut(ChatProvider appService) async {
-//     await appService.signOut();
-
-//     setState(() {});
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final appService = Provider.of<ChatProvider>(context, listen: false);
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(appService.isAuthentificated()
-//             ? appService.getCurrentUserEmail()
-//             : 'Chat'),
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-
-//             const SizedBox(height: 10.0),
-//             ElevatedButton(
-//               onPressed: () =>
-//                   _loginUser(appService, "t123@gmail.com", '12345678'),
-//               child: const Text('Login User 1'),
-//             ),
-//             const SizedBox(height: 10.0),
-//             ElevatedButton(
-//               onPressed: () =>
-//                   _loginUser(appService, "test123@gmail.com", '12345678'),
-//               child: const Text('Login User 2'),
-//             ),
-//             const SizedBox(height: 10.0),
-//             ElevatedButton(
-//               onPressed: () => _signOut(appService),
-//               child: const Text('Sign out'),
-//             ),
-//             const SizedBox(height: 10.0),
-//             ElevatedButton(
-//               onPressed: () => Navigator.push(
-//                   context, MaterialPageRoute(builder: (context) => ChatPage())),
-//               child: const Text('Go To Chat'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

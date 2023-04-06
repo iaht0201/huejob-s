@@ -1,4 +1,4 @@
-import 'package:app_tim_kiem_viec_lam/core/models/useTypeModel.dart';
+import 'package:app_tim_kiem_viec_lam/core/models/usetype_model.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,7 +7,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/providers/authenciation_provider.dart';
-import '../../../core/providers/userProvider.dart';
+import '../../../core/providers/user_provider.dart';
 import '../../../core/routes/routes.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 

@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/models/user_model.dart';
-import '../../core/providers/postProvider.dart';
-import '../../core/providers/userProvider.dart';
+import '../../core/providers/post_provider.dart';
+import '../../core/providers/user_provider.dart';
 
-import '../../widgets/Textfiled_widget.dart';
+import '../../widgets/textfiled_widget.dart';
 
 class EditProfile extends StatefulWidget {
   EditProfile({super.key, this.user});
@@ -211,23 +211,22 @@ class _EditProfileState extends State<EditProfile> {
                           child: ElevatedButton(
                               onPressed: () async {
                                 final newUser = UserModel(
-                                  userId: userProvider.user!.userId,
-                                  name: userProvider.user!.name,
-                                  address:
-                                      _address ?? userProvider.user.address,
-                                  birthday: _birthday.toIso8601String(),
-                                  job: _job ?? userProvider.user.address,
-                                  email: userProvider.user!.email,
-                                  experience: _experience ??
-                                      userProvider.user.experience,
-                                  fullname:
-                                      _fullname ?? userProvider.user.fullname,
-                                  gender: _gender,
-                                  phone_number: _phoneNumber,
-                                  status: _status ?? userProvider.user.status,
-                                  imageUrl: userProvider.user!.imageUrl,
-                                  usertype: userProvider.user.usertype
-                                );
+                                    userId: userProvider.user!.userId,
+                                    name: userProvider.user!.name,
+                                    address:
+                                        _address ?? userProvider.user.address,
+                                    birthday: _birthday.toIso8601String(),
+                                    job: _job ?? userProvider.user.address,
+                                    email: userProvider.user!.email,
+                                    experience: _experience ??
+                                        userProvider.user.experience,
+                                    fullname:
+                                        _fullname ?? userProvider.user.fullname,
+                                    gender: _gender,
+                                    phone_number: _phoneNumber,
+                                    status: _status ?? userProvider.user.status,
+                                    imageUrl: userProvider.user!.imageUrl,
+                                    usertype: userProvider.user.usertype);
                                 userProvider.updateUser(context, newUser);
                               },
                               child: Container(

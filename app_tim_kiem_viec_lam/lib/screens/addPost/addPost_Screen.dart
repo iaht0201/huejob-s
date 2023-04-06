@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'package:app_tim_kiem_viec_lam/core/models/model.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/authenciation_provider.dart';
-import 'package:app_tim_kiem_viec_lam/core/providers/jobCategoryProvider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/job_category_provider.dart';
 import 'package:app_tim_kiem_viec_lam/core/supabase/supabase.dart';
 import 'package:app_tim_kiem_viec_lam/screens/addPost/map.dart';
 import 'package:app_tim_kiem_viec_lam/screens/selectJob/selectJob_screen.dart';
@@ -20,11 +20,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/models/user_model.dart';
-import '../../core/providers/postProvider.dart';
-import '../../core/providers/userProvider.dart';
+import '../../core/providers/post_provider.dart';
+import '../../core/providers/user_provider.dart';
 import '../../utils/postValidator.dart';
-import '../../widgets/Profile_widget.dart';
-import '../../widgets/Textfiled_widget.dart';
+import '../../widgets/profile_widget.dart';
+import '../../widgets/textfiled_widget.dart';
 
 class AddPostScreen extends StatefulWidget {
   AddPostScreen({super.key, this.user});

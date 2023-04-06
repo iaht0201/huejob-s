@@ -149,6 +149,15 @@ extension CustomTextTheme on TextTheme {
         opacity: opacity,
         letterSpacing: -0.01);
   }
+   TextStyle headline12({String? color = "FFFFFF", double opacity = 1}) {
+    return poppins(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: color,
+        opacity: opacity,
+        letterSpacing: -0.01);
+  }
+
 
   TextStyle headline22({String? color = "FFFFFF", double opacity = 1}) {
     return poppins(

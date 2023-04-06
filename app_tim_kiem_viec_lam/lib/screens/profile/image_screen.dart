@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/providers/authenciation_provider.dart';
-import '../../core/providers/userProvider.dart';
+import '../../core/providers/user_provider.dart';
 import '../../core/supabase/supabase.dart';
 
 import 'package:provider/provider.dart' as p;
