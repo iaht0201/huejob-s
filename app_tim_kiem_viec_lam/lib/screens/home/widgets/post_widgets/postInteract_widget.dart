@@ -1,4 +1,4 @@
-import 'package:app_tim_kiem_viec_lam/core/models/bookmark_moder.dart';
+import 'package:app_tim_kiem_viec_lam/core/models/bookmark_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/post_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';

@@ -10,7 +10,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../../core/providers/jobs_rovider.dart';
+import '../../../core/providers/jobs_provider.dart';
 import '../../../data/home/featureJobsData.dart';
 import '../../../utils/constant.dart';
 import '../../profile/profile_screen.dart';

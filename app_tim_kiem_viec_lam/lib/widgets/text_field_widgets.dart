@@ -1,5 +1,5 @@
 import 'package:app_tim_kiem_viec_lam/core/models/job_category_model.dart';
-import 'package:app_tim_kiem_viec_lam/core/providers/jobs_rovider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/jobs_provider.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -64,6 +64,7 @@ class _TextFieldWidState extends State<TextFieldWid> {
               controller: controller,
               style: textTheme.medium14(color: "000000"),
               decoration: InputDecoration(
+                floatingLabelAlignment: FloatingLabelAlignment.start,
                 prefixIcon: widget.icon != null
                     ? Icon(
                         widget.icon,
@@ -71,8 +72,8 @@ class _TextFieldWidState extends State<TextFieldWid> {
                       )
                     : null,
                 focusColor: Colors.black,
-                hintText: widget.label,
-                hintStyle: textTheme.medium14(color: "AFB0B6"),
+                labelText: widget.label,
+                labelStyle: textTheme.medium14(color: "AFB0B6"),
                 filled: true,
                 fillColor:
                     widget.enbled ? Colors.white : Colors.grey.withOpacity(0.2),

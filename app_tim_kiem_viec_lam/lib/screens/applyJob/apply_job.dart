@@ -1,7 +1,16 @@
+import 'dart:io';
+import 'dart:math';
+
+import 'package:app_tim_kiem_viec_lam/core/models/applied_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
+import 'package:app_tim_kiem_viec_lam/core/supabase/supabase.dart';
 import 'package:app_tim_kiem_viec_lam/data/home/featureJobsData.dart';
+import 'package:app_tim_kiem_viec_lam/screens/detailJob/detail_job.dart';
 import 'package:app_tim_kiem_viec_lam/screens/profile/widgets/button_arrow.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
+import 'package:app_tim_kiem_viec_lam/widgets/text_field_widgets.dart';
+import 'package:dotted_border/dotted_border.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -27,6 +36,20 @@ class _ApplyJobState extends State<ApplyJob> {
   final ScrollController _scrollController = ScrollController();
   double top = 0.0;
   double _opacity = 0;
+  PlatformFile? _file;
+  File? file;
+  String? _note;
+  IconData iconFile(file) {
+    String icon = file.extension;
+    switch (icon) {
+      case 'pdf':
+        return Icons.picture_as_pdf_outlined;
+
+      default:
+        return Icons.description;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +110,7 @@ class _ApplyJobState extends State<ApplyJob> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ShowProfile(user: widget.user),
+                      // ShowProfile(user: widget.user),
                       // _showProfile(context, widget.user),
                       _submitFile(context)
                     ],
@@ -108,7 +131,31 @@ class _ApplyJobState extends State<ApplyJob> {
                 // color: Colors.transparent,
                 height: 0.1.sh,
                 child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      if (file != null) {
+                        Random random = new Random();
+                        final fileBytes = await file?.readAsBytes();
+                        int randomNumber = random.nextInt(100);
+
+                        final fileName =
+                            '${userProvider.user.userId}/${randomNumber}_${_file?.name}';
+                        final storageResponse = await SupabaseBase
+                            .supabaseClient.storage
+                            .from('job')
+                            .uploadBinary(fileName, fileBytes!);
+
+                        final publicUrl = SupabaseBase.supabaseClient.storage
+                            .from('job')
+                            .getPublicUrl(fileName);
+                        ApplyModel newApply = ApplyModel(
+                            jobId: widget.job.jobId.toString(),
+                            userId: widget.user.userId.toString(),
+                            note: _note,
+                            fileUrl: publicUrl);
+                        print('Public URL: $publicUrl');
+                        print(storageResponse);
+                        jobProvider.inserApplyJob(context, newApply);
+                      }
                       // Navigator.push(
                       //     context,
                       //     MaterialPageRoute(
@@ -219,6 +266,136 @@ class _ApplyJobState extends State<ApplyJob> {
         ),
         SizedBox(
           height: 16.h,
+        ),
+        DottedBorder(
+          color: HexColor("#BB2649"),
+          borderType: BorderType.RRect,
+          radius: Radius.circular(12),
+          padding: EdgeInsets.all(6),
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 40.h),
+              height: 327.h,
+              width: 327.w,
+              color: Colors.transparent,
+              child: Column(
+                children: [
+                  Text(
+                    "Upload your CV or Resume and use it when you apply for jobs",
+                    textAlign: TextAlign.center,
+                    style: textTheme.medium14(color: "95969D"),
+                  ),
+                  SizedBox(
+                    height: 32.h,
+                  ),
+                  Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            color: HexColor("#BB2649").withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(12.r)),
+                        alignment: Alignment.center,
+                        width: 286.w,
+                        height: 73.h,
+                        child: _file == null
+                            ? Container(
+                                alignment: Alignment.center,
+                                width: 270.w,
+                                child: Text(
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  "Upload a Doc/Docx/PDF",
+                                  style: textTheme.medium14(color: "BB2649"),
+                                ),
+                              )
+                            : Container(
+                                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      iconFile(_file),
+                                      color: Colors.red,
+                                    ),
+                                    SizedBox(
+                                      width: 5.w,
+                                    ),
+                                    Text(_file!.name)
+                                  ],
+                                ),
+                              ),
+                      ),
+                      _file?.name == null
+                          ? Container()
+                          : Positioned(
+                              right: 8.w,
+                              top: 8.h,
+                              child: GestureDetector(
+                                onTap: () {
+                                  print("xoas");
+                                  setState(() {
+                                    _file = null;
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.close_rounded,
+                                  color: HexColor("#BB2649"),
+                                ),
+                              ))
+                    ],
+                  ),
+                  SizedBox(
+                    height: 32.h,
+                  ),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          primary: HexColor("#BB2649"),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.r))),
+                      onPressed: () async {
+                        FilePickerResult? result =
+                            await FilePicker.platform.pickFiles(
+                          type: FileType.custom,
+                          allowedExtensions: ['docx', 'pdf', 'doc'],
+                        );
+
+                        if (result != null) {
+                          file = File(result.files[0].path.toString());
+                          // await
+                          setState(() {
+                            _file = result.files[0];
+                          });
+                        } else {
+                          // User canceled the picker
+                        }
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 13.h, horizontal: 43.w),
+                        child: Text(
+                          "Upload",
+                          style: textTheme.medium16(color: "FFFFFF"),
+                        ),
+                      ))
+                ],
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        Container(
+          // width: 0.6.sw,
+          child: TextFieldWid(
+            maxLines: 3,
+            label: 'Hãy viết gì đó cho nhà tuyển dụng',
+            text: '',
+            enbled: true,
+            onChanged: (value) {
+              _note = value;
+            },
+          ),
         ),
       ],
     ));

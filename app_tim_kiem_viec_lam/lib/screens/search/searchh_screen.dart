@@ -1,6 +1,6 @@
 import 'package:app_tim_kiem_viec_lam/core/models/job_category_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/models/jobs_model.dart';
-import 'package:app_tim_kiem_viec_lam/core/providers/jobs_rovider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/jobs_provider.dart';
 import 'package:app_tim_kiem_viec_lam/data/home/category_data.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 import 'package:app_tim_kiem_viec_lam/widgets/item_job_horizal.dart';

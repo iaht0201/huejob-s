@@ -6,7 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../screens/social/social_screen.dart';
-import '../models/bookmark_moder.dart';
+import '../models/bookmark_model.dart';
 import '../models/job_category_model.dart';
 import '../models/like_model.dart';
 import '../models/post_model.dart';

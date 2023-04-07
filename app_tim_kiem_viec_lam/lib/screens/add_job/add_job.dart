@@ -3,10 +3,9 @@ import 'package:app_tim_kiem_viec_lam/screens/addPost/map.dart';
 import 'package:app_tim_kiem_viec_lam/screens/profile/widgets/button_arrow.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:dropdown_search/dropdown_search.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.dart';
@@ -14,8 +13,8 @@ import 'package:provider/provider.dart';
 
 import '../../core/models/job_category_model.dart';
 import '../../core/models/user_model.dart';
-import '../../core/providers/jobs_rovider.dart';
-import '../../widgets/textfiled_widget.dart';
+import '../../core/providers/jobs_provider.dart';
+
 import '../../widgets/show_frame_profile.dart';
 import '../../widgets/text_field_widgets.dart';
 
@@ -35,6 +34,7 @@ class _AddJobScreenState extends State<AddJobScreen> {
   String? _time;
   String? _role;
   String? _wage;
+  bool? isLoad = false;
   List<JobCategoryModel> roleJob = [];
   List<JobCategoryModel> _itemList = [];
   JobCategoryModel? selectedObj;
@@ -94,17 +94,26 @@ class _AddJobScreenState extends State<AddJobScreen> {
                           longitude: _pickedData?.latLong.longitude,
                           latitude: _pickedData?.latLong.latitude,
                         );
-                        jobProvider.insertJob(context, newJob);
+
+                        jobProvider.insertJob(context, newJob).whenComplete(
+                          () {
+                            setState(() {
+                              isLoad = true;
+                            });
+                          },
+                        );
                       }
                     },
-                    child: Text("Đăng",
-                        style: textTheme.semibold16(color: "#FFFFFF"))
+                    child: isLoad == false
+                        ? Text("Đăng",
+                            style: textTheme.semibold16(color: "#FFFFFF"))
+                        : CircularProgressIndicator()
                     // Container(
                     //     padding: EdgeInsets.symmetric(
                     //         horizontal: 20.w, vertical: 10.h),
                     //     decoration: BoxDecoration(color: HexColor("#BB2649")),
                     //     child:),
-                    ),
+                    )
               ],
             ),
           )

@@ -1,7 +1,7 @@
 import 'package:app_tim_kiem_viec_lam/core/models/chat_message.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/chat_messager_provider.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/job_category_provider.dart';
-import 'package:app_tim_kiem_viec_lam/core/providers/jobs_rovider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/jobs_provider.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';

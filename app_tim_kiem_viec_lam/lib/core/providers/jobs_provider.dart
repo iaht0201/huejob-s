@@ -1,3 +1,4 @@
+import 'package:app_tim_kiem_viec_lam/core/models/applied_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:app_tim_kiem_viec_lam/core/supabase/supabase.dart';
@@ -158,7 +159,7 @@ class JobsProvider extends ChangeNotifier {
     try {
       final response = await SupabaseBase.supabaseClient
           .from("jobs")
-          .insert(newJob.toMapAddJob(newJob))
+          .insert(newJob.toMapAddJob())
           .execute();
       if (response != null) {
         Fluttertoast.showToast(
@@ -177,6 +178,32 @@ class JobsProvider extends ChangeNotifier {
     } catch (e) {
       Fluttertoast.showToast(
         msg: 'Đăng tuyển dụng thất bại, vui lòng thử lại sau!',
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+    }
+  }
+
+  Future<void> inserApplyJob(BuildContext context, ApplyModel newApply) async {
+    try {
+      final response = await SupabaseBase.supabaseClient
+          .from("applyjob")
+          .insert(newApply.toMap())
+          .execute();
+      if (response != null) {
+        Fluttertoast.showToast(
+          msg: 'Ứng tuyển thành công',
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+        );
+        Navigator.of(context).pop();
+        notifyListeners();
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: '${e}',
         gravity: ToastGravity.BOTTOM,
         backgroundColor: Colors.red,
         textColor: Colors.white,

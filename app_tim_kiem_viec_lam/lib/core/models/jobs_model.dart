@@ -89,7 +89,7 @@ class JobModel {
     }
   }
 
-  Map<String, dynamic> toMapAddJob(JobModel newJob) {
+  Map<String, dynamic> toMapAddJob() {
     return {
       'wage': wage,
       'description': description,

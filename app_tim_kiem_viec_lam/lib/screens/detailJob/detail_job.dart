@@ -1,5 +1,5 @@
 import 'package:app_tim_kiem_viec_lam/core/models/jobs_model.dart';
-import 'package:app_tim_kiem_viec_lam/core/providers/jobs_rovider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/jobs_provider.dart';
 import 'package:app_tim_kiem_viec_lam/screens/applyJob/apply_job.dart';
 import 'package:app_tim_kiem_viec_lam/screens/profile/widgets/button_arrow.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';

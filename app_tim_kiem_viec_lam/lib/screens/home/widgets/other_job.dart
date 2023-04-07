@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/models/jobs_model.dart';
-import '../../../core/providers/jobs_rovider.dart';
+import '../../../core/providers/jobs_provider.dart';
 import '../../../widgets/avatar_widget.dart';
 import '../../../widgets/item_job_horizal.dart';
 import '../../detailJob/detail_job.dart';

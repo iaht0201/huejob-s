@@ -9,7 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/providers/jobs_rovider.dart';
+import '../../../core/providers/jobs_provider.dart';
 import '../../detailJob/detail_job.dart';
 import '../../profile/profile_screen.dart';
 import '../../see_more_screen/see_all_scree.dart';
