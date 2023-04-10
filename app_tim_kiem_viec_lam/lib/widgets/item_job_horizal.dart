@@ -31,45 +31,65 @@ class ItemJobHorizal extends StatelessWidget {
           borderRadius: BorderRadius.circular(20.r),
         ),
         child: Row(children: [
-          AvatarWidget(context, user: job.users, radius: 25),
-          SizedBox(
-            width: 16.5.w,
-          ),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 0.3.sw,
-                child: Text(
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  "${job.jobName}",
-                  style: textTheme.sub14(),
-                ),
-              ),
-              // Spacer(),
+              AvatarWidget(context, user: job.users, radius: 22),
               Text(
                 "${job.users!.name}",
                 style: textTheme.regular13(color: "#0D0D26", opacity: 0.6),
               )
             ],
           ),
-          Spacer(),
+          SizedBox(
+            width: 16.5.w,
+          ),
+
           Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                "${job.wage}",
-                style: textTheme.medium12(),
+              Container(
+                width: 0.57.sw,
+                child: Text(
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  "${job.jobName}",
+                  style: textTheme.sub14(),
+                ),
               ),
-              Spacer(),
-              Text(
-                "${job.categoryJob} - ${job.getCity}",
-                style: textTheme.regular13(color: "#0D0D26", opacity: 0.6),
+              Container(
+                width: 0.57.sw,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "💰 ${job.wage}",
+                      style: textTheme.medium12(),
+                    ),
+                    Text(
+                      "💼 ${job.categoryJob} - 🏭 ${job.getCity}",
+                      style:
+                          textTheme.regular13(color: "#0D0D26", opacity: 0.6),
+                    )
+                  ],
+                ),
               )
             ],
           ),
+
+          // Column(
+          //   crossAxisAlignment: CrossAxisAlignment.end,
+          //   children: [
+          //     Text(
+          //       "${job.wage}",
+          //       style: textTheme.medium12(),
+          //     ),
+          //     Spacer(),
+          //     Text(
+          //       "${job.categoryJob} - ${job.getCity}",
+          //       style: textTheme.regular13(color: "#0D0D26", opacity: 0.6),
+          //     )
+          //   ],
+          // ),
         ]),
       ),
     );

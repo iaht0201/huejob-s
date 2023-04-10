@@ -26,6 +26,7 @@ class _FeaturedJobsState extends State<FeaturedJobs> {
   late JobsProvider jobsProvider;
   void initState() {
     jobsProvider = Provider.of<JobsProvider>(context, listen: false);
+
     super.initState();
   }
 
@@ -111,21 +112,6 @@ class _FeaturedJobsState extends State<FeaturedJobs> {
                           ),
                         ],
                       );
-
-                      // return CarouselSlider(
-                      //   options: CarouselOptions(
-                      //     autoPlay: true,
-                      //     aspectRatio: 2.0,
-                      //     enlargeCenterPage: true,
-                      //   ),
-                      //   items: jobs.map(( e) {
-                      //     return Container(
-                      //       child: Text("${e.nameJob}"),
-                      //     ) ;
-                      //   }).toList(),
-                      // );
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
                     } else
                       return Container(
                         child: Row(
@@ -140,35 +126,6 @@ class _FeaturedJobsState extends State<FeaturedJobs> {
                   },
                 ),
               ),
-
-              //     PageView.builder(
-              //   controller: _controller,
-              //   // itemCount: jobData.length,
-              //   itemBuilder: (context, index) {
-              //     return
-
-              //      Row(
-              //       children: [
-              //         Container(
-              //           width: 327.w,
-              //           height: 126.h,
-              //           decoration: BoxDecoration(
-              //             image: DecorationImage(
-              //               image: AssetImage(
-              //                 'assets/images/jobs/featureBg.png',
-              //               ),
-              //               fit: BoxFit.fill,
-              //             ),
-              //             color: Colors.white,
-              //             borderRadius: BorderRadius.circular(24.r),
-              //           ),
-              //           padding: EdgeInsets.symmetric(
-              //               vertical: 20.h, horizontal: 24.w),
-              //         ),
-              //       ],
-              //     );
-              //   },
-              // )
             ]));
   }
 
@@ -200,129 +157,165 @@ class _FeaturedJobsState extends State<FeaturedJobs> {
   }
 
   Widget _itemFeaturedJobs(BuildContext context, JobModel item) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    DetailJobScreen(jobId: item.jobId.toString())));
-      },
-      child: Container(
-        margin: EdgeInsets.only(left: 13.w),
-        decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              opacity: 0.2,
-              image: AssetImage(
-                'assets/images/jobs/effectFeature.png',
-              ),
-            ),
-            borderRadius: BorderRadius.circular(24.r),
-            color: HexColor("#BB2649")
-            // padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 24.w),
-            ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 24.w),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    padding: EdgeInsets.all(12),
-                    child: Container(
-                      child: GestureDetector(
-                        onTap: () {
-                          // _navigatorDrawer(context);
-                          // Scaffold.of(context).openDrawer();
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      ProfileScreen(clientID: item.userId)));
-                        },
-                        child: item.users!.imageUrl == null
-                            ? (CircleAvatar(
-                                radius: 18.r,
-                                backgroundColor: HexColor("#BB2649"),
-                                child: Text(
-                                    "${item.users!.name.toString().substring(0, 1).toUpperCase()}",
-                                    style: const TextStyle(fontSize: 25))))
-                            : CircleAvatar(
-                                radius: 18.r,
-                                backgroundColor: HexColor("#BB2649"),
-                                backgroundImage:
-                                    NetworkImage("${item.users!.imageUrl}"),
-                              ),
-                      ),
+    var _checkIsBookMark;
+    return FutureBuilder(
+      future: jobsProvider.checkIsBookMarkJob(item.jobId.toString()),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          _checkIsBookMark = snapshot.data;
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          DetailJobScreen(jobId: item.jobId.toString())));
+            },
+            child: Container(
+              margin: EdgeInsets.only(left: 13.w),
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    opacity: 0.2,
+                    image: AssetImage(
+                      'assets/images/jobs/effectFeature.png',
                     ),
                   ),
-                  SizedBox(
-                    width: 16.5.w,
+                  borderRadius: BorderRadius.circular(24.r),
+                  color: HexColor("#BB2649")
+                  // padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 24.w),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 0.32.sw,
-                        child: Text(
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          "${item.jobName}",
-                          style: textTheme.semibold16(),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 24.w),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          padding: EdgeInsets.all(12),
+                          child: Container(
+                            child: GestureDetector(
+                              onTap: () {
+                                // _navigatorDrawer(context);
+                                // Scaffold.of(context).openDrawer();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ProfileScreen(
+                                            clientID: item.userId)));
+                              },
+                              child: item.users!.imageUrl == null
+                                  ? (CircleAvatar(
+                                      radius: 18.r,
+                                      backgroundColor: HexColor("#BB2649"),
+                                      child: Text(
+                                          "${item.users!.name.toString().substring(0, 1).toUpperCase()}",
+                                          style:
+                                              const TextStyle(fontSize: 25))))
+                                  : CircleAvatar(
+                                      radius: 18.r,
+                                      backgroundColor: HexColor("#BB2649"),
+                                      backgroundImage: NetworkImage(
+                                          "${item.users!.imageUrl}"),
+                                    ),
+                            ),
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 3.h),
-                      Text(
-                        "${item.users!.name}",
-                        style:
-                            textTheme.medium14(opacity: 0.6, color: "FFFFFF"),
-                      ),
-                    ],
-                  ),
-                  Spacer(),
-                  Icon(
-                    Icons.bookmark_add,
-                    color: Colors.white,
-                  )
-                ],
+                        SizedBox(
+                          width: 16.5.w,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 0.32.sw,
+                              child: Text(
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                "${item.jobName}",
+                                style: textTheme.semibold16(),
+                              ),
+                            ),
+                            SizedBox(height: 3.h),
+                            Text(
+                              "${item.users!.name}",
+                              style: textTheme.medium14(
+                                  opacity: 0.6, color: "FFFFFF"),
+                            ),
+                          ],
+                        ),
+                        Spacer(),
+                        _checkIsBookMark == false
+                            ? GestureDetector(
+                                onTap: () {
+                                  jobsProvider
+                                      .addBookMarkJob(item.jobId.toString());
+                                  setState(() {
+                                    _checkIsBookMark = true;
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.bookmark_add,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : GestureDetector(
+                                onTap: () {
+                                  jobsProvider
+                                      .deleteBookMarkJob(item.jobId.toString());
+                                  setState(() {
+                                    _checkIsBookMark = true;
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.bookmark,
+                                  color: HexColor("#26BB98"),
+                                ),
+                              )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 16.h,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        _itemHagTag(context, "${item.role}"),
+                        _itemHagTag(context, "${item.categoryJob}")
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15.h,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "${item.wage}",
+                          style: textTheme.medium14(color: "FFFFFF"),
+                        ),
+                        Text(
+                          "${item.location}",
+                          style:
+                              textTheme.medium14(opacity: 0.6, color: "FFFFFF"),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(
-                height: 16.h,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  _itemHagTag(context, "${item.role}"),
-                  _itemHagTag(context, "${item.categoryJob}")
-                ],
-              ),
-              SizedBox(
-                height: 15.h,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "${item.wage}",
-                    style: textTheme.medium14(color: "FFFFFF"),
-                  ),
-                  Text(
-                    "${item.location}",
-                    style: textTheme.medium14(opacity: 0.6, color: "FFFFFF"),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
+          );
+        } else {
+          return shimmerFromColor(height: 200.h, width: 280.w);
+        }
+      },
     );
   }
 }

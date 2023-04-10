@@ -73,6 +73,14 @@ extension CustomTextTheme on TextTheme {
         color: HexColor("$color").withOpacity(opacity));
   }
 
+  TextStyle regular16({String? color = "000000", double opacity = 1}) {
+    return GoogleFonts.poppins(
+        fontSize: 16.sp,
+        fontWeight: FontWeight.w400,
+        letterSpacing: -1,
+        color: HexColor("$color").withOpacity(opacity));
+  }
+
   TextStyle sub14({String? color = "0D0D26"}) {
     return GoogleFonts.poppins(
         fontSize: 14.sp,
@@ -81,7 +89,7 @@ extension CustomTextTheme on TextTheme {
         color: HexColor("$color"));
   }
 
-  TextStyle medium12({String? color = "0D0D26", double opacity = 1}) {
+  TextStyle medium12({String? color = "380B16", double opacity = 1}) {
     return poppins(
         fontSize: 12,
         fontWeight: FontWeight.w600,
@@ -89,7 +97,7 @@ extension CustomTextTheme on TextTheme {
         opacity: opacity);
   }
 
-  TextStyle medium14({String? color = "0D0D26", double opacity = 1}) {
+  TextStyle medium14({String? color = "380B16", double opacity = 1}) {
     return poppins(
         fontSize: 14,
         fontWeight: FontWeight.w500,
@@ -110,6 +118,14 @@ extension CustomTextTheme on TextTheme {
   TextStyle semibold16({String? color = "FFFFFF", double opacity = 1}) {
     return poppins(
         fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: color,
+        opacity: opacity);
+  }
+
+  TextStyle semibold14({String? color = "FFFFFF", double opacity = 1}) {
+    return poppins(
+        fontSize: 14,
         fontWeight: FontWeight.w600,
         color: color,
         opacity: opacity);
@@ -149,7 +165,8 @@ extension CustomTextTheme on TextTheme {
         opacity: opacity,
         letterSpacing: -0.01);
   }
-   TextStyle headline12({String? color = "FFFFFF", double opacity = 1}) {
+
+  TextStyle headline12({String? color = "FFFFFF", double opacity = 1}) {
     return poppins(
         fontSize: 12,
         fontWeight: FontWeight.w500,
@@ -157,7 +174,6 @@ extension CustomTextTheme on TextTheme {
         opacity: opacity,
         letterSpacing: -0.01);
   }
-
 
   TextStyle headline22({String? color = "FFFFFF", double opacity = 1}) {
     return poppins(

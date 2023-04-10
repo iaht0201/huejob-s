@@ -174,9 +174,9 @@ class _EditProfileState extends State<EditProfile> {
                           label: 'Kinh nghiệm',
                           text: "${userProvider.user?.experience ?? ""} ",
                           onChanged: (experience) {
-                            experience == ""
-                                ? _experience = userProvider.user?.experience
-                                : _experience = experience;
+                            // experience == ""
+                            //     ? _experience = userProvider.user?.experience
+                            //     : _experience = experience;
                           },
                         ),
                         TextFieldWidget(
@@ -218,8 +218,8 @@ class _EditProfileState extends State<EditProfile> {
                                     birthday: _birthday.toIso8601String(),
                                     job: _job ?? userProvider.user.address,
                                     email: userProvider.user!.email,
-                                    experience: _experience ??
-                                        userProvider.user.experience,
+                                    // experience: _experience ??
+                                    //     userProvider.user.experience,
                                     fullname:
                                         _fullname ?? userProvider.user.fullname,
                                     gender: _gender,

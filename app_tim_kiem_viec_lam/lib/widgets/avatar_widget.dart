@@ -32,7 +32,7 @@ Widget AvatarWidget(BuildContext context, {UserModel? user, num radius = 10}) {
                       backgroundColor: HexColor("#BB2649"),
                       child: Text(
                           "${user!.name.toString().substring(0, 1).toUpperCase()}",
-                          style: const TextStyle(fontSize: 25))))
+                          style: TextStyle(fontSize: 25.sp))))
                   : CircleAvatar(
                       radius: radius.r,
                       backgroundColor: HexColor("#BB2649"),

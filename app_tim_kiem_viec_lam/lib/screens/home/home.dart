@@ -458,7 +458,7 @@ class __ContentHomeState extends State<_ContentHome> {
   int _page = 1;
   int _pageSize = 2;
   bool _isLoading = false;
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   void initState() {
     jobProvider = Provider.of<PostProvider>(context, listen: false);
     userProvider = Provider.of<UserProvider>(context, listen: false);

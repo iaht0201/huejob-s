@@ -1,6 +1,8 @@
 import 'package:app_tim_kiem_viec_lam/core/models/bookmark_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/post_provider.dart';
+import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -125,9 +127,9 @@ class _PostInteractState extends State<PostInteract> {
     return Consumer<PostProvider>(
       builder: (context, postProvider, _) {
         return Container(
-          padding: EdgeInsets.symmetric(vertical: 4),
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            // mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _InteracLikeIcon(context, widget.post!.like_count.toString(),
                   isLiked == false ? Icons.thumb_up_outlined : Icons.thumb_up,
@@ -139,11 +141,17 @@ class _PostInteractState extends State<PostInteract> {
                   postProvider.addLike(widget.post);
                   isLiked = !isLiked;
                 }
-                ;
               }),
-              _InteracIcon(context, Icons.comment, () {
-                print("message");
-              }),
+              SizedBox(
+                width: 18.w,
+              ),
+              Image.asset("assets/icons/comment.png"),
+              // _InteracIcon(context, Icons.forum, () {
+              //   print("message");
+              // }),
+              SizedBox(
+                width: 18.w,
+              ),
               _InteracIcon(context,
                   !isBookMarked ? Icons.bookmark_outline : Icons.bookmark_sharp,
                   () {
@@ -159,9 +167,8 @@ class _PostInteractState extends State<PostInteract> {
                   });
                 }
               }),
-              _InteracIcon(context, Icons.share, () {
-                print("share");
-              }),
+              Spacer(),
+              Image.asset("assets/icons/more.png")
             ],
           ),
         );
@@ -177,11 +184,17 @@ class _PostInteractState extends State<PostInteract> {
           children: [
             Icon(
               icon,
-              color:
-                  icon == Icons.thumb_up ? HexColor("#BB2649") : Colors.black,
+              color: icon == Icons.thumb_up
+                  ? HexColor("#BB2649")
+                  : HexColor("#95969D"),
             ),
-            SizedBox(width: 2,) ,
-            Text("${text} ")
+            SizedBox(
+              width: 4.w,
+            ),
+            Text(
+              "${text}",
+              style: textTheme.medium14(color: "95969D"),
+            )
           ],
         ));
   }
@@ -189,7 +202,7 @@ class _PostInteractState extends State<PostInteract> {
   _InteracIcon(BuildContext context, IconData icon, Function() onTap) {
     return GestureDetector(
       onTap: onTap,
-      child: Icon(icon ),
+      child: Icon(icon, color: HexColor("#95969D")),
     );
   }
 }

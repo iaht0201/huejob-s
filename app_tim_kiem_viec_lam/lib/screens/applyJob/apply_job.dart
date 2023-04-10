@@ -150,19 +150,12 @@ class _ApplyJobState extends State<ApplyJob> {
                         ApplyModel newApply = ApplyModel(
                             jobId: widget.job.jobId.toString(),
                             userId: widget.user.userId.toString(),
-                            note: _note,
+                            note: _note ?? "",
                             fileUrl: publicUrl);
                         print('Public URL: $publicUrl');
                         print(storageResponse);
                         jobProvider.inserApplyJob(context, newApply);
                       }
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => ApplyJob(
-                      //               job: jobProvider.jobById,
-                      //               user: userProvider.user,
-                      //             )));
                     },
                     child: Container(
                       child: Text('Apply',

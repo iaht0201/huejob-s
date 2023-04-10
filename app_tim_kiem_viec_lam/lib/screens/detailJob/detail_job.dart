@@ -29,15 +29,54 @@ late UserProvider userProvider;
 class _DetailJobScreenState extends State<DetailJobScreen> {
   late TabController _tabController;
   bool isLoad = false;
+  bool? checkApply;
   void initState() {
     userProvider = Provider.of<UserProvider>(context, listen: false);
     jobProvider = Provider.of<JobsProvider>(context, listen: false);
-    jobProvider.getJobById(widget.jobId).whenComplete(() {
+
+    jobProvider.getJobById(widget.jobId).whenComplete(() async {
+      checkApply = await jobProvider.checkIsApplyJob(
+          jobProvider.jobById, userProvider.user);
+      print(checkApply);
       setState(() {
         isLoad = true;
       });
     });
+
     super.initState();
+  }
+
+  Future handleShowButton(String userType) async {
+    // Người tuyển dụng không thể ứng tuyển => Không thể ứng tuyển (Hoàn thành)
+    // Người ứng tuyển check là đã apply hay chưa => apply và cancel apply (Hoàn thành)
+    // Thời hạn của job . Nếu thời hạn của job < Now => Hết hạn apply (Chưa hoàn thành)
+    if (userType != "Nhà tuyển dụng") {
+      if (checkApply == true) {
+        jobProvider
+            .cancelApply(context, userProvider.user.userId.toString(),
+                jobProvider.jobById.jobId.toString())
+            .whenComplete(
+          () {
+            setState(() {
+              checkApply = false;
+            });
+          },
+        );
+      } else {
+        bool _check = await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ApplyJob(
+                      job: jobProvider.jobById,
+                      user: userProvider.user,
+                    )));
+
+        setState(() {
+          checkApply = _check;
+        });
+      }
+    } else
+      return;
   }
 
   @override
@@ -100,29 +139,41 @@ class _DetailJobScreenState extends State<DetailJobScreen> {
                     color: Colors.transparent,
                     elevation: 0.0,
                     child: Container(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 10.h, horizontal: 20.w),
-                      // color: Colors.transparent,
-                      height: 0.1.sh,
-                      child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ApplyJob(
-                                          job: jobProvider.jobById,
-                                          user: userProvider.user,
-                                        )));
-                          },
-                          child: Container(
-                            child: Text('Apply Now',
-                                style: textTheme.medium16(color: "FFFFFF")),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                              primary: HexColor("#BB2649"),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.r)))),
-                    ));
+                        padding: EdgeInsets.symmetric(
+                            vertical: 10.h, horizontal: 20.w),
+                        // color: Colors.transparent,
+                        height: 0.1.sh,
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              handleShowButton(
+                                  userProvider.user.usertype.toString());
+                            },
+                            child:
+                                userProvider.user.usertype == "Nhà tuyển dụng"
+                                    ? Container(
+                                        child: Text('Không thể ứng tuyển',
+                                            style: textTheme.medium16(
+                                                color: "FFFFFF")),
+                                      )
+                                    : checkApply == false
+                                        ? Container(
+                                            child: Text('Apply Now',
+                                                style: textTheme.medium16(
+                                                    color: "FFFFFF")),
+                                          )
+                                        : Container(
+                                            child: Text('Cancel Apply',
+                                                style: textTheme.medium16(
+                                                    color: "FFFFFF")),
+                                          ),
+                            style: ElevatedButton.styleFrom(
+                                primary: userProvider.user.usertype ==
+                                        "Nhà tuyển dụng"
+                                    ? HexColor("#8C6E75")
+                                    : HexColor("#BB2649"),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(16.r))))));
               },
             )
           : shimmerFromColor(
@@ -157,10 +208,37 @@ class _DetailJobScreenState extends State<DetailJobScreen> {
             children: [
               buttonArrow(context, color: "FFFFFF"),
               Spacer(),
-              Icon(
-                Icons.bookmark_add,
-                color: Colors.white,
-                size: 23,
+              FutureBuilder(
+                future: jobProvider.checkIsBookMarkJob(job.jobId.toString()),
+                builder: (context, snapshot) {
+                  var _checkIsBookMark;
+                  if (snapshot.hasData) {
+                    _checkIsBookMark = snapshot.data;
+                    return _checkIsBookMark == false
+                        ? GestureDetector(
+                            onTap: () {
+                              jobProvider.addBookMarkJob(job.jobId.toString());
+                            },
+                            child: Icon(
+                              Icons.bookmark_add,
+                              color: Colors.white,
+                              size: 23,
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: () {
+                              jobProvider
+                                  .deleteBookMarkJob(job.jobId.toString());
+                            },
+                            child: Icon(
+                              Icons.bookmark,
+                              color: HexColor("#26BB98"),
+                              size: 23,
+                            ),
+                          );
+                  } else
+                    return shimmerFromColor(width: 23.w, height: 23.w);
+                },
               )
             ],
           ),
@@ -260,19 +338,19 @@ class _DetailJobScreenState extends State<DetailJobScreen> {
               tabs: [
                 Tab(
                   child: Text(
-                    "Description",
+                    "Mô tả",
                     style: textTheme.medium14(),
                   ),
                 ),
                 Tab(
                   child: Text(
-                    "Requirement",
+                    "Yêu cầu",
                     style: textTheme.medium14(),
                   ),
                 ),
                 Tab(
                   child: Text(
-                    "Map",
+                    "Địa chỉ",
                     style: textTheme.medium14(),
                   ),
                 ),

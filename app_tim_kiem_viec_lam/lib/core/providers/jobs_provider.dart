@@ -2,9 +2,11 @@ import 'package:app_tim_kiem_viec_lam/core/models/applied_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:app_tim_kiem_viec_lam/core/supabase/supabase.dart';
+import 'package:app_tim_kiem_viec_lam/data/home/featureJobsData.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/job_category_model.dart';
@@ -185,7 +187,25 @@ class JobsProvider extends ChangeNotifier {
     }
   }
 
+  Future cancelApply(
+      BuildContext context, String userApplyId, String jobId) async {
+    await _supbase
+        .from("applyjob")
+        .delete()
+        .eq('job_id', jobId)
+        .eq('user_id', userApplyId)
+        .execute();
+
+    Fluttertoast.showToast(
+      msg: 'Hủy thành công',
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+    );
+  }
+
   Future<void> inserApplyJob(BuildContext context, ApplyModel newApply) async {
+    bool _checkApply = false;
     try {
       final response = await SupabaseBase.supabaseClient
           .from("applyjob")
@@ -198,7 +218,8 @@ class JobsProvider extends ChangeNotifier {
           backgroundColor: Colors.green,
           textColor: Colors.white,
         );
-        Navigator.of(context).pop();
+        _checkApply = true;
+        Navigator.pop(context, _checkApply);
         notifyListeners();
       }
     } catch (e) {
@@ -209,5 +230,55 @@ class JobsProvider extends ChangeNotifier {
         textColor: Colors.white,
       );
     }
+  }
+
+  Future<bool> checkIsApplyJob(JobModel job, UserModel userApply) async {
+    final prefs = await SharedPreferences.getInstance();
+    final response = await _supbase
+        .from("applyjob")
+        .select("*")
+        .eq('job_id', job.jobId)
+        .eq('user_id', prefs.getString('id'));
+    if (response.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
+  // bookmark
+  Future<bool> checkIsBookMarkJob(String jobId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final response = await _supbase
+        .from("bookmarkJob")
+        .select("*")
+        .eq('job_id', jobId)
+        .eq('userId', prefs.getString("id"));
+
+    if (response.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> addBookMarkJob(String jobId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await SupabaseBase.supabaseClient.from('bookmarkJob').insert({
+      'job_id': jobId,
+      'userId': prefs.getString("id"),
+    }).execute();
+
+    notifyListeners();
+  }
+
+  Future<void> deleteBookMarkJob(String jobId) async {
+    final prefs = await SharedPreferences.getInstance();
+    var a = await SupabaseBase.supabaseClient
+        .from('bookmarkJob')
+        .delete()
+        .eq('job_id', jobId)
+        .eq('userId', prefs.getString("id"))
+        .execute();
+    print(a);
+    notifyListeners();
   }
 }

@@ -8,11 +8,14 @@ import 'package:app_tim_kiem_viec_lam/screens/profile/widgets/button_arrow.dart'
 import 'package:app_tim_kiem_viec_lam/screens/profile/widgets/profile_information.dart';
 import 'package:app_tim_kiem_viec_lam/screens/profile/widgets/profile_detail_information.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 import 'package:provider/provider.dart';
 
 import '../../core/providers/authenciation_provider.dart';
 import '../../core/providers/post_provider.dart';
+import '../../utils/constant.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, this.clientID});
@@ -51,16 +54,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       jobProvider.getPotsById(widget.clientID.toString());
       return;
     }
-
-    // user = userProvider.user;
   }
-  // void iniState() {
-  //   final provider = Provider.of<UserProvider>(context);
-  //   final providerJob = Provider.of<PostProvider>(context);
-  //   providerJob.getPotsById();
-  //   super.initState();
-  //   // provider.fetchUser() ;
-  // }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,6 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Consumer<UserProvider>(
                     builder: (context, userProvider, _) {
                       return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           widget.clientID == null ||
                                   widget.clientID == userProvider.user.userId
@@ -119,26 +114,50 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   clientID: widget.clientID,
                                   user: userProvider.user,
                                   onImageUrlChanged: updateImageUrl),
-                          ProfileDetailInformation(user: userProvider.user),
+                          ProfileDetailInformation(
+                              user: widget.clientID == null
+                                  ? userProvider.user
+                                  : userProvider.userByID),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20.w),
+                            child: Text(
+                              "Bài viết",
+                              style: textTheme.sub16(),
+                            ),
+                          ),
+                          Consumer<PostProvider>(
+                            builder: (context, postProvider, _) {
+                              posts = postProvider.postById;
+                              return Container(
+                                child: Column(
+                                  children: [
+                                    ...posts.map((e) {
+                                      return PostItem(post: e);
+                                    })
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       );
                     },
                   ),
 
-                  Consumer<PostProvider>(
-                    builder: (context, postProvider, _) {
-                      posts = postProvider.postById;
-                      return Container(
-                        child: Column(
-                          children: [
-                            ...posts.map((e) {
-                              return PostItem(post: e);
-                            })
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+                  // Consumer<PostProvider>(
+                  //   builder: (context, postProvider, _) {
+                  //     posts = postProvider.postById;
+                  //     return Container(
+                  //       child: Column(
+                  //         children: [
+                  //           ...posts.map((e) {
+                  //             return PostItem(post: e);
+                  //           })
+                  //         ],
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
                   // FutureBuilder(
                   //   future: providerJob
                   //       .getPotsById(userProvider.user.userId.toString()),
@@ -166,6 +185,73 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ));
   }
+
+  _tabViewDetail(
+    BuildContext context,
+  ) {
+    return Container(
+      width: 1.sw,
+      child: DefaultTabController(
+        length: 3,
+        child: Column(children: [
+          TabBar(
+              unselectedLabelColor: Colors.grey,
+              indicatorColor: HexColor("#BB2649"),
+              tabs: [
+                Tab(
+                  child: Text(
+                    "Job",
+                    style: textTheme.medium14(),
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    "Bài viết",
+                    style: textTheme.medium14(),
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    "Hình ảnh",
+                    style: textTheme.medium14(),
+                  ),
+                ),
+              ]),
+          Container(
+            margin: EdgeInsets.only(left: 24.w, right: 24.w, top: 20.h),
+            // color: Color(0xFFF44336),
+            height: 500.h,
+            child: TabBarView(
+              children: [
+                Container(),
+                SingleChildScrollView(
+                  child: Consumer<PostProvider>(
+                    builder: (context, postProvider, _) {
+                      posts = postProvider.postById;
+                      return Container(
+                        child: Column(
+                          children: [
+                            ...posts.map((e) {
+                              return PostItem(post: e);
+                            })
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                // _tabBarView('${job.description}'),
+                // _tabBarView('${job.requirement ?? ""}'),
+                // _tabLocation(
+                //     job.latitude!.toDouble(), job.longitude!.toDouble()),
+                // _tabBarView('${job.location}'),
+              ],
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
 }
 
 class _MyHeader extends SliverPersistentHeaderDelegate {
@@ -174,15 +260,16 @@ class _MyHeader extends SliverPersistentHeaderDelegate {
   final Widget child;
 
   @override
-  double get minExtent => 80.0;
+  double get minExtent => 70.0;
 
   @override
-  double get maxExtent => 80.0;
+  double get maxExtent => 70.0;
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
+      padding: EdgeInsets.only(top: 12.h),
       color: Colors.white,
       child: child,
     );
