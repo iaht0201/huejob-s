@@ -13,9 +13,7 @@ class ShowProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        
-      },
+      onTap: () {},
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,12 +50,8 @@ class ShowProfile extends StatelessWidget {
                         ),
                         Text(
                           "${user.fullname ?? user?.name} 💚",
-                          style:
-                              textTheme.regular13(color: "#0D0D26", opacity: 0.6),
-                        ),
-                        Text(
-                          "${user.job ?? ""}",
-                          style: textTheme.sub14(),
+                          style: textTheme.regular13(
+                              color: "#0D0D26", opacity: 0.6),
                         ),
                       ],
                     ),

@@ -64,7 +64,6 @@ class _ImageScreenState extends State<ImageScreen> {
             name: user.name,
             address: user.address,
             birthday: user.birthday,
-            job: user.job,
             email: user.email,
             experience: user.experience,
             fullname: user.fullname,

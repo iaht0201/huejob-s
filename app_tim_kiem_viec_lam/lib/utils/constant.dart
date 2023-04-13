@@ -223,3 +223,12 @@ Widget shimmerFromColor({double height = 20, double width = 30}) {
     ),
   );
 }
+
+Widget shimmerAvatarColor({double radius = 10}) {
+  return Shimmer.fromColors(
+      baseColor: Colors.grey.withOpacity(0.3),
+      highlightColor: Colors.grey.withOpacity(0.1),
+      child: CircleAvatar(
+        radius: radius.r,
+      ));
+}

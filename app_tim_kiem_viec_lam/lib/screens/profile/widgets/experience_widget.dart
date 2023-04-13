@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -9,8 +11,9 @@ import '../../../utils/constant.dart';
 import '../../see_more_screen/see_all_scree.dart';
 
 class ExperienceWidget extends StatelessWidget {
-  const ExperienceWidget({super.key, this.experience});
+  const ExperienceWidget({super.key, this.experience, this.isClient = false});
   final List<ExperienceModel>? experience;
+  final bool isClient;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -20,9 +23,25 @@ class ExperienceWidget extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "Kinh nghiệm",
-                style: textTheme.sub16(),
+              Row(
+                children: [
+                  Text(
+                    "Kinh nghiệm",
+                    style: textTheme.sub16(),
+                  ),
+                  SizedBox(
+                    width: 5.w,
+                  ),
+                  isClient == false
+                      ? GestureDetector(
+                          onTap: () {},
+                          child: Icon(
+                            Icons.edit_square,
+                            size: 18,
+                          ),
+                        )
+                      : Container()
+                ],
               ),
               GestureDetector(
                 onTap: () {

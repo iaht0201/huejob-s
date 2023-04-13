@@ -21,6 +21,7 @@ class ProfileDetailInformation extends StatefulWidget {
 }
 
 class __ProfileDetailInformationState extends State<ProfileDetailInformation> {
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,11 +31,12 @@ class __ProfileDetailInformationState extends State<ProfileDetailInformation> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          widget.user?.experience == null
+          widget.user?.experience?.length == 0 ||
+                  widget.user?.experience == null
               ? Container()
               : ExperienceWidget(
                   experience: widget.user?.experience,
-                ),
+                  isClient: widget.isClient),
           SizedBox(
             height: 12.h,
           ),
@@ -43,10 +45,10 @@ class __ProfileDetailInformationState extends State<ProfileDetailInformation> {
               : EducationWidget(
                   education: widget.user?.education,
                 ),
-          InforUser(
-            text: widget.user!.address,
-            icon: widget.user!.address == 1 ? Icons.man : Icons.girl,
-          ),
+          // InforUser(
+          //   text: widget.user!.address,
+          //   icon: widget.user!.address == 1 ? Icons.man : Icons.girl,
+          // ),
           InforUser(
             text: widget.user!.getGender,
             icon: widget.user!.gender == 1 ? Icons.man : Icons.girl,
@@ -59,10 +61,6 @@ class __ProfileDetailInformationState extends State<ProfileDetailInformation> {
             text: widget.user!.phone_number.toString(),
             icon: Icons.phone,
           ),
-          // InforUser(
-          //   text: widget.user!.experience,
-          //   icon: Icons.star,
-          // ),
           InforUser(
             text: widget.user!.status,
             icon: Icons.note_alt_outlined,

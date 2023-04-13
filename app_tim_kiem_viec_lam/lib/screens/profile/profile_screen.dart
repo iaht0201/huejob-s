@@ -27,6 +27,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late List<PostModel> posts;
+  bool _isLoading = false;
   String? _imageUrl;
 
   void updateImageUrl(String url) {
@@ -39,23 +40,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   late PostProvider jobProvider;
   late UserProvider userProvider;
+
   @override
   void initState() {
     super.initState();
     jobProvider = Provider.of<PostProvider>(context, listen: false);
     userProvider = Provider.of<UserProvider>(context, listen: false);
-    if (widget.clientID == null) {
-      userProvider.fetchUser();
-      jobProvider.getPotsById(userProvider.user.userId.toString());
-
-      return;
-    } else {
-      userProvider.fetchUserByID(widget.clientID.toString());
-      jobProvider.getPotsById(widget.clientID.toString());
-      return;
-    }
+    userProvider.fetchUserByID(widget.clientID.toString()).whenComplete(
+      () {
+        jobProvider.getPotsById(widget.clientID.toString()).whenComplete(() {
+          setState(() {
+            _isLoading = true;
+          });
+        });
+      },
+    );
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
@@ -63,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           slivers: [
             SliverPersistentHeader(
                 pinned: true,
-                floating: false,
+                floating: true,
                 delegate: _MyHeader(
                     child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -79,15 +81,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             final UserModel user = widget.clientID == null
                                 ? userProvider.user
                                 : userProvider.userByID;
-                            return Center(
-                              child: Text(
-                                "@${user.fullname == null ? user.name : user.fullname}",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge!
-                                    .copyWith(color: Colors.black),
-                              ),
-                            );
+                            return _isLoading == true
+                                ? Center(
+                                    child: Text(
+                                      "@${user.fullname == null ? user.name : user.fullname}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge!
+                                          .copyWith(color: Colors.black),
+                                    ),
+                                  )
+                                : shimmerFromColor(width: 10.w, height: 20.h);
                           },
                         )),
                     Expanded(
@@ -102,45 +106,90 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   Consumer<UserProvider>(
                     builder: (context, userProvider, _) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          widget.clientID == null ||
-                                  widget.clientID == userProvider.user.userId
-                              ? ProfileInformation(
-                                  user: userProvider.user,
-                                  onImageUrlChanged: updateImageUrl)
-                              : ProfileInformation(
-                                  clientID: widget.clientID,
-                                  user: userProvider.user,
-                                  onImageUrlChanged: updateImageUrl),
-                          ProfileDetailInformation(
-                              user: widget.clientID == null
-                                  ? userProvider.user
-                                  : userProvider.userByID),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20.w),
-                            child: Text(
-                              "Bài viết",
-                              style: textTheme.sub16(),
-                            ),
-                          ),
-                          Consumer<PostProvider>(
-                            builder: (context, postProvider, _) {
-                              posts = postProvider.postById;
-                              return Container(
-                                child: Column(
-                                  children: [
-                                    ...posts.map((e) {
-                                      return PostItem(post: e);
-                                    })
-                                  ],
+                      return _isLoading == true
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                widget.clientID == null ||
+                                        widget.clientID ==
+                                            userProvider.user.userId
+                                    ? ProfileInformation(
+                                        user: userProvider.user,
+                                        onImageUrlChanged: updateImageUrl)
+                                    : ProfileInformation(
+                                        clientID: widget.clientID,
+                                        user: userProvider.user,
+                                        onImageUrlChanged: updateImageUrl),
+                                ProfileDetailInformation(
+                                    isClient: widget.clientID ==
+                                            userProvider.user.userId
+                                        ? false
+                                        : true,
+                                    user: widget.clientID == null
+                                        ? userProvider.user
+                                        : userProvider.userByID),
+                                Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 20.w),
+                                  child: Text(
+                                    "Bài viết",
+                                    style: textTheme.sub16(),
+                                  ),
                                 ),
-                              );
-                            },
-                          ),
-                        ],
-                      );
+                                Consumer<PostProvider>(
+                                  builder: (context, postProvider, _) {
+                                    posts = postProvider.postById;
+                                    return Container(
+                                      child: Column(
+                                        children: [
+                                          ...posts.map((e) {
+                                            return PostItem(post: e);
+                                          })
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            )
+                          : SizedBox(
+                              height: 400.h,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 22.w),
+                                    height: 360.h,
+                                    child: Stack(children: [
+                                      Container(
+                                        height: 200.h,
+                                        child: shimmerFromColor(
+                                            width: 1.sw, height: 200.h),
+                                      ),
+                                      Positioned(
+                                          top: 150.h,
+                                          right: 18.w,
+                                          child:
+                                              shimmerAvatarColor(radius: 55)),
+                                      Positioned(
+                                          top: 200.h,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              shimmerFromColor(
+                                                  width: 200.w, height: 30.h),
+                                              shimmerFromColor(
+                                                  width: 200.w, height: 30.h),
+                                              shimmerFromColor(
+                                                  width: 0.8.sw, height: 50.h)
+                                            ],
+                                          ))
+                                    ]),
+                                  ),
+                                ],
+                              ),
+                            );
                     },
                   ),
 

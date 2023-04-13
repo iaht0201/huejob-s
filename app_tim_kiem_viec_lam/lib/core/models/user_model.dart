@@ -9,14 +9,17 @@ class UserModel {
   final String? email;
   final String? birthday;
   final int? gender;
-  final String? address;
   final int? phone_number;
   final List<ExperienceModel>? experience;
-  final String? job;
+  final AddressModel? address;
+  final List<EducationModel>? education;
   final String? fullname;
   final String? status;
   final String? usertype;
-  final List<EducationModel>? education;
+  final String? firstname;
+  final String? familyname;
+
+  final String? caption;
   const UserModel(
       {this.userId,
       this.name,
@@ -27,34 +30,43 @@ class UserModel {
       this.address,
       this.phone_number,
       this.experience,
-      this.job,
       this.fullname,
       this.status,
       this.usertype,
+      this.caption,
+      this.familyname,
+      this.firstname,
       this.education});
 
   factory UserModel.fromJson(String str) => UserModel.fromMap(json.decode(str));
   factory UserModel.fromMap(Map<String, dynamic> json) => UserModel(
-      userId: json['userId'],
-      name: json['name'],
-      imageUrl: json['imageUrl'],
-      email: json['email'],
-      birthday: json['birthday'],
-      gender: json['gender'],
-      address: json['address'],
-      phone_number: json['phone_number'],
-      experience: json['experience'] != null
-          ? List<ExperienceModel>.from(
-              json['experience'].map((x) => ExperienceModel.fromMap(x)))
-          : null,
-      education: json['education'] != null
-          ? List<EducationModel>.from(
-              json['education'].map((x) => EducationModel.fromMap(x)))
-          : null,
-      job: json['job'],
-      status: json['status'],
-      usertype: json['usertype'],
-      fullname: json['fullname']);
+        userId: json['userId'],
+        name: json['name'],
+        imageUrl: json['imageUrl'],
+        email: json['email'],
+        birthday: json['birthday'],
+        gender: json['gender'],
+        phone_number: json['phone_number'],
+        caption: json['caption'],
+        address: json['address'] != null ? jsonDecode(json['address']) : null,
+        // address: json['address'] != null
+        //     ? List<AddressModel>.from(jsonDecode(json['address'])
+        //         .map((address) => AddressModel.fromMap(address)))
+        //     : null,
+        experience: json['experience'] != null
+            ? List<ExperienceModel>.from(jsonDecode(json['experience']).map(
+                (experienceJson) => ExperienceModel.fromMap(experienceJson)))
+            : null,
+        education: json['education'] != null
+            ? List<EducationModel>.from(jsonDecode(json['education'])
+                .map((education) => EducationModel.fromMap(education)))
+            : null,
+        status: json['status'],
+        usertype: json['usertype'],
+        fullname: json['fullname'],
+        firstname: json['firstName'],
+        familyname: json['familyName'],
+      );
   get getGender {
     if (gender == 1) {
       return "Nữ";
@@ -71,33 +83,39 @@ class UserModel {
       'name': name,
       'imageUrl': imageUrl,
       'email': email,
+      'familyName': familyname,
+      'firstName': firstname,
       'birthday': birthday,
       'gender': gender,
-      'address': address,
+      'address': json.encode(address?.toMap()),
       'phone_number': phone_number,
-      'job': job,
       'fullname': fullname,
       'status': status,
-      'usertype': usertype
+      'usertype': usertype,
+      'experience': experience != null
+          ? jsonEncode(List<dynamic>.from(experience!.map((e) => e.toMap())))
+          : null,
+      'education': education != null
+          ? jsonEncode(List<dynamic>.from(education!.map((e) => e.toJson())))
+          : null,
     };
   }
 }
 
 class EducationModel {
-  final String schoolName;
-  final String degree;
-  final String fieldOfStudy;
-  final String startDate;
-  final String endDate;
-  final String description;
-
+  final String? schoolName;
+  final String? degree;
+  final String? fieldOfStudy;
+  final String? startDate;
+  final String? endDate;
+  final String? description;
   EducationModel({
-    required this.schoolName,
-    required this.degree,
-    required this.fieldOfStudy,
-    required this.startDate,
-    required this.endDate,
-    required this.description,
+    this.schoolName,
+    this.degree,
+    this.fieldOfStudy,
+    this.startDate,
+    this.endDate,
+    this.description,
   });
   factory EducationModel.fromMap(Map<String, dynamic> json) => EducationModel(
         schoolName: json['schoolName'],
@@ -107,7 +125,6 @@ class EducationModel {
         endDate: json['endDate'],
         description: json['description'],
       );
-
   Map<String, dynamic> toJson() {
     return {
       'schoolName': schoolName,
@@ -149,5 +166,23 @@ class ExperienceModel {
         'end_date': endDate,
         'company_name': company_name,
         'description': description,
+      };
+}
+
+class AddressModel {
+  final String? addressName;
+  final double? longitude;
+  final double? latitude;
+  AddressModel({this.addressName, this.latitude, this.longitude});
+  factory AddressModel.fromMap(Map<String, dynamic> json) => AddressModel(
+        addressName: json['address_name'],
+        longitude: json['longitude'],
+        latitude: json['latitude'],
+      );
+
+  Map<String, dynamic> toMap() => {
+        'address_name': addressName,
+        'longitude': longitude,
+        'latitude': latitude,
       };
 }

@@ -16,6 +16,7 @@ class TextFieldWid extends StatefulWidget {
   final ValueChanged<String> onChanged;
   final num? width;
   final String? Function(String?)? validator;
+  final String type;
 
   IconData? icon;
   TextFieldWid(
@@ -27,6 +28,7 @@ class TextFieldWid extends StatefulWidget {
       required this.enbled,
       required this.onChanged,
       this.icon,
+      this.type = "normal",
       this.width = 1})
       : super(key: key);
 
@@ -58,6 +60,9 @@ class _TextFieldWidState extends State<TextFieldWid> {
           children: [
             SizedBox(height: 8),
             TextFormField(
+              keyboardType: widget.type == "normal"
+                  ? TextInputType.name
+                  : TextInputType.number,
               validator: widget.validator,
               enabled: widget.enbled,
               onChanged: widget.onChanged,

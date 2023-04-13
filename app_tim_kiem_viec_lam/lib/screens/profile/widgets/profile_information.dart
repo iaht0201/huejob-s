@@ -45,7 +45,6 @@ class _ProfileInformationState extends State<ProfileInformation> {
     super.initState();
     userProvider = p.Provider.of<UserProvider>(context, listen: false);
     if (widget.clientID != null) {
-      // userProvider.fetchUserByID(widget.clientID.toString());
       userProvider
           .getFollow(widget.user.userId.toString(), widget.clientID.toString())
           .whenComplete(() => setState(() {
@@ -133,6 +132,47 @@ class _ProfileInformationState extends State<ProfileInformation> {
                             ),
                           )),
                     ),
+                    Positioned(
+                        right: 10.w,
+                        top: 10.h,
+                        child: Container(
+                            child: Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                widget.clientID == null
+                                    ? Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                EditProfile(user: user)))
+                                    : Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ChatPage(
+                                                userTo: widget.clientID,
+                                                userFrom:
+                                                    userProvider.user.userId)));
+                              },
+                              child: widget.clientID == null
+                                  ? Icon(
+                                      Icons.edit_outlined,
+                                      color: Colors.white,
+                                    )
+                                  : Icon(
+                                      Icons.chat_bubble_outline,
+                                      color: Colors.white,
+                                    ),
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Icon(
+                              Icons.more_horiz,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ))),
                     Positioned(
                         top: 150.h,
                         right: 18.w,
