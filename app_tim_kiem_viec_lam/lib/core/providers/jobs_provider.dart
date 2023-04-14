@@ -18,8 +18,25 @@ class JobsProvider extends ChangeNotifier {
 
   List<JobsProvider> _listViewedJob = [];
   List<JobsProvider> get listViewedJob => _listViewedJob;
+  List<JobModel> listJobsSearch = [];
+
   set setListViewedJob(value) {
     _listViewedJob = value;
+  }
+
+  Future<void> fetchCategorySearchJob() async {
+    var respon =
+        await _supbase.from("jobs").select("*,users(*)").limit(50).execute();
+    if (respon.data != null) {
+      var data = respon.data;
+      List<JobModel> _listJobs = [];
+
+      for (int i = 0; i < data.length; i++) {
+        _listJobs.add(JobModel.fromMap(data[i]));
+      }
+      listJobsSearch = _listJobs;
+    }
+    notifyListeners();
   }
 
   Future fetchFeaturedJobs(String job) async {
@@ -126,7 +143,6 @@ class JobsProvider extends ChangeNotifier {
         .from('jobcategory')
         .select('*')
         .limit(limit)
-        // .order("jobcategoryid", ascending: true)
         .execute();
 
 // Bổ sung thêm hàm count đếm xem có bao nhiêu job với roles đó

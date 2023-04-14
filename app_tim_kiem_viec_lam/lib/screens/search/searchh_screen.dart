@@ -1,10 +1,15 @@
 import 'package:app_tim_kiem_viec_lam/core/models/job_category_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/models/jobs_model.dart';
+import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/jobs_provider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:app_tim_kiem_viec_lam/data/home/category_data.dart';
+import 'package:app_tim_kiem_viec_lam/screens/detailJob/detail_job.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
+import 'package:app_tim_kiem_viec_lam/widgets/avatar_widget.dart';
 import 'package:app_tim_kiem_viec_lam/widgets/item_job_horizal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,11 +34,19 @@ class _SearchScreenState extends State<SearchScreen> {
   late final JobsProvider jobProvider;
   late final PostProvider postProvider;
   bool isLoad = false;
+  late List<JobModel> jobList = [];
+  late List<UserModel> userList = [];
+  TextEditingController _searchController = TextEditingController();
   @override
   void initState() {
     super.initState();
     jobProvider = Provider.of<JobsProvider>(context, listen: false);
+    userProvider = Provider.of<UserProvider>(context, listen: false);
     postProvider = Provider.of<PostProvider>(context, listen: false);
+    jobProvider.fetchCategorySearchJob();
+    userProvider.fetchCategoryUser();
+    // jobList = jobProvider.li;
+
     postProvider.getJobCategory(limit: 9).whenComplete(() {
       setState(() {
         isLoad = true;
@@ -41,32 +54,72 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
-  // List<SearchJobModel>? _results;
-  bool _isLoading = false;
-  List<JobModel> _results = [];
   String _input = '';
-  _onSearchFieldChanged(String value) async {
-    setState(() => _input = value);
-
-    if (value.isEmpty) {
-      setState(() => _results = []);
+  List<JobModel> searchResult = [];
+  List<UserModel> searchUser = [];
+  searchJobs(String query) async {
+    setState(() => _input = query);
+    List<JobModel> _results = [];
+    List<UserModel> _searchUser = [];
+    if (query.isEmpty) {
+      _results = [];
+      _searchUser = [];
     } else {
       try {
         setState(() => _isLoading = true);
-        // final results = await jobProvider.searchJob(_input);
-        final results = await jobProvider.search(_input);
-        setState(() {
-          _results = results;
-          if (value.isEmpty) {
-            _results = [];
+
+        _results.addAll(jobProvider.listJobsSearch.where((item) =>
+            item.jobName!.toLowerCase().contains(_input.toLowerCase()) ||
+            item.users!.email!.toLowerCase().contains(_input.toLowerCase())));
+
+        // List<UserModel> _users =
+        //     List<UserModel>.from(userProvider.listUserSearch);
+        _searchUser.addAll(userProvider.listUserSearch.where((item) {
+          if (item.name != null && item.name!.isNotEmpty) {
+            return item.name!.toLowerCase().contains(_input.toLowerCase());
           }
-          _isLoading = false;
-        });
+          return false;
+        }));
+
+        print(_searchUser);
       } catch (e) {
         print(e);
       }
     }
+
+    setState(() {
+      searchResult = _results;
+      searchUser = _searchUser;
+      _isLoading = false;
+    });
   }
+
+  // List<SearchJobModel>? _results;
+  bool _isLoading = false;
+  // List<JobModel> _results = [];
+
+  // _onSearchFieldChanged(String value) async {
+  //   setState(() => _input = value);
+
+  //   if (value.isEmpty) {
+  //     setState(() => _results = []);
+  //   } else {
+  //     try {
+  //       setState(() => _isLoading = true);
+  //       // final results = await jobProvider.searchJob(_input);
+  //       final results = await jobProvider.search(_input);
+  //       setState(() {
+  //         _results = results;
+  //         if (value.isEmpty) {
+  //           _results = [];
+  //         }
+  //         _isLoading = false;
+  //       });
+  //     } catch (e) {
+  //       print(e);
+  //     }
+  //   }
+  // }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,18 +171,34 @@ class _SearchScreenState extends State<SearchScreen> {
                                   color: HexColor("#F2F2F3"),
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(12.r))),
-                              child: TextField(
+                              child: TextFormField(
+                                  controller: _searchController,
                                   autofocus: true,
-                                  onChanged: (query) =>
-                                      _onSearchFieldChanged(query),
+                                  onChanged: (query) => searchJobs(query),
+                                  // _onSearchFieldChanged(query),
                                   decoration: InputDecoration(
                                     contentPadding:
                                         EdgeInsets.symmetric(vertical: 20.0.h),
-                                    prefixIcon: const Icon(
-                                      Icons.search_rounded,
-                                      size: 35,
-                                      color: Colors.black,
+                                    prefixIcon: Image.asset(
+                                      "assets/icons/search.png",
+                                      width: 20.w,
+                                      height: 20.h,
                                     ),
+                                    suffixIcon: _searchController.text == ""
+                                        ? null
+                                        : GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                _searchController.clear();
+                                                searchResult.clear();
+                                                searchUser.clear();
+                                              });
+                                            },
+                                            child: Icon(
+                                              Icons.cancel_outlined,
+                                              color: HexColor("#BB2649"),
+                                            ),
+                                          ),
                                     focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
                                             color: HexColor("#F0F2F1")),
@@ -172,21 +241,129 @@ class _SearchScreenState extends State<SearchScreen> {
                     delegate: SliverChildListDelegate([
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 24.w),
-                    height: 1.sh - 180.h,
+
+                    height: 1.sh - 190.h,
                     // color: HexColor("##E5E5E5"),
                     child: _isLoading == false
                         ? SingleChildScrollView(
-                            child: _results.isNotEmpty
-                                ? Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      ..._results.map((jobs) {
-                                        return ItemJobHorizal(job: jobs);
-                                      }).toList()
-                                    ],
+                            child: searchResult.isNotEmpty
+                                ?
+                                //  Column(
+                                //     mainAxisAlignment: MainAxisAlignment.start,
+                                //     crossAxisAlignment:
+                                //         CrossAxisAlignment.start,
+                                //     children: [
+                                //       ..._results.map((jobs) {
+                                //         return ItemJobHorizal(job: jobs);
+                                //       }).toList()
+                                //     ],
+                                //   )
+                                Container(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        searchUser.isNotEmpty
+                                            ? Text(
+                                                "Người dùng",
+                                                style: textTheme.medium14(),
+                                              )
+                                            : Container(),
+                                        ...searchUser
+                                            .map((e) => Container(
+                                                margin: EdgeInsets.only(
+                                                    top: 10.h, bottom: 10.h),
+                                                child: Row(
+                                                  children: [
+                                                    AvatarWidget(context,
+                                                        user: e, radius: 25.r),
+                                                    SizedBox(
+                                                      width: 10.w,
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          "${e.name}",
+                                                          style: textTheme
+                                                              .regular16(),
+                                                        ),
+                                                        e.familyname == null ||
+                                                                e.firstname ==
+                                                                    null
+                                                            ? Container()
+                                                            : Text(
+                                                                " ${e.familyname} ${e.firstname}")
+                                                      ],
+                                                    )
+                                                  ],
+                                                )))
+                                            .take(3)
+                                            .toList(),
+                                        SizedBox(
+                                          height: 10.h,
+                                        ),
+                                        Center(child: Text("Xem thêm")),
+                                        SizedBox(
+                                          height: 5.h,
+                                        ),
+                                        searchResult.isNotEmpty
+                                            ? Text("Job",
+                                                style: textTheme.medium14())
+                                            : Container(),
+                                        ...searchResult
+                                            .map((e) => ItemJobHorizal(
+                                                  job: e,
+                                                ))
+                                            .toList(),
+                                        SizedBox(
+                                          height: 10.h,
+                                        ),
+                                        Center(child: Text("Xem thêm"))
+                                      ],
+                                    ),
                                   )
+                                // Container(
+                                //     height: 0.7.sh,
+                                //     child: Column(
+                                //       children: [
+                                //         Expanded(
+                                //           child: ListView.builder(
+                                //             itemCount: searchResult.isEmpty
+                                //                 ? jobProvider
+                                //                     .listJobsSearch.length
+                                //                 : searchResult.length,
+                                //             itemBuilder: (BuildContext context,
+                                //                 int index) {
+                                //               JobModel job =
+                                //                   searchResult[index];
+                                //               // JobModel job = searchResult.isEmpty
+                                //               //     ? jobProvider.jobs[index]
+                                //               //     : searchResult[index];
+                                //               return Column(
+                                //                 children: [
+                                //                   Text("${job.jobName}"),
+                                //                   const Divider(),
+                                //                 ],
+                                //               );
+                                //             },
+                                //           ),
+                                //         ),
+                                //         Text("Người dùng"),
+                                //         Expanded(
+                                //             child: Column(
+                                //           children: [
+                                //             ...searchUser
+                                //                 .map((e) => Text("${e.name}"))
+                                //           ],
+                                //         )),
+                                //       ],
+                                //     ),
+                                //   )
                                 : Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -315,10 +492,10 @@ class _MyHeader extends SliverPersistentHeaderDelegate {
   final Widget child;
 
   @override
-  double get minExtent => 180.0.h;
+  double get minExtent => 160.0.h;
 
   @override
-  double get maxExtent => 180.0.h;
+  double get maxExtent => 160.0.h;
 
   @override
   Widget build(

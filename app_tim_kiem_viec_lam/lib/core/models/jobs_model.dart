@@ -53,6 +53,22 @@ class JobModel {
       users: UserModel.fromMap(json["users"]),
       longitude: json['longitude'],
       latitude: json['latitude']);
+
+  factory JobModel.fromMap1(Map<String, dynamic> json) => JobModel(
+      jobId: json['job_id'],
+      wage: json['wage'],
+      description: json['description'],
+      createdAt: json['created_at'],
+      expirationDate: json['expiration_date'],
+      userId: json['userId'],
+      role: json['role'],
+      jobName: json['job_name'],
+      location: json['location'],
+      categoryJob: json['category_job'],
+      requirement: json['requirement'],
+      wokringTime: json['working_time'],
+      longitude: json['longitude'],
+      latitude: json['latitude']);
   static Future<JobModel> fromJson1(
       Map<String, dynamic> json, SupabaseClient client) async {
     final response = await client

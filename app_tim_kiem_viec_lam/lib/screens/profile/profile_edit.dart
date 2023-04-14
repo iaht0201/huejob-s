@@ -120,12 +120,12 @@ class _EditProfileState extends State<EditProfile> {
   void initState() {
     super.initState();
     userProvider = Provider.of<UserProvider>(context, listen: false);
-    _experiences = userProvider.userByID.experience ?? [];
-    _address = userProvider.userByID.address;
-    _educations = userProvider.userByID.education ?? [];
-    _character = userProvider.userByID.gender == 1
+    _experiences = List<ExperienceModel>.from(widget.user?.experience ?? []);
+    _address = widget.user?.address;
+    _educations = List<EducationModel>.from(widget.user?.education ?? []);
+    _character = widget.user?.gender == 1
         ? CheckGender.man
-        : (userProvider.userByID.gender == 0)
+        : (userProvider.user.gender == 0)
             ? CheckGender.woman
             : CheckGender.other;
 
@@ -263,8 +263,18 @@ class _EditProfileState extends State<EditProfile> {
                               "Giới tính: ",
                               style: textTheme.medium14(),
                             ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
                             Row(
                               children: [
+                                Text(
+                                  "Nam",
+                                  style: textTheme.medium14(),
+                                ),
+                                SizedBox(
+                                  width: 3.w,
+                                ),
                                 Radio<CheckGender>(
                                     focusColor: HexColor("#BB2649"),
                                     value: CheckGender.man,
@@ -272,19 +282,27 @@ class _EditProfileState extends State<EditProfile> {
                                     onChanged: (CheckGender? value) {
                                       setState(() {
                                         _character = value;
+                                        // _gender = value ;
+                                        if (_character == CheckGender.man) {
+                                          _gender = 1;
+                                        } else if (_character ==
+                                            CheckGender.woman) {
+                                          _gender = 0;
+                                        } else
+                                          _gender = 2;
                                       });
                                     }),
-                                SizedBox(
-                                  width: 10.w,
-                                ),
-                                Text(
-                                  "Nam",
-                                  style: textTheme.medium14(),
-                                ),
                               ],
                             ),
                             Row(
                               children: [
+                                Text(
+                                  "Nữ",
+                                  style: textTheme.medium14(),
+                                ),
+                                SizedBox(
+                                  width: 3.w,
+                                ),
                                 Radio<CheckGender>(
                                     value: CheckGender.woman,
                                     groupValue: _character,
@@ -293,17 +311,17 @@ class _EditProfileState extends State<EditProfile> {
                                         _character = value;
                                       });
                                     }),
-                                SizedBox(
-                                  width: 10.w,
-                                ),
-                                Text(
-                                  "Nữ",
-                                  style: textTheme.medium14(),
-                                ),
                               ],
                             ),
                             Row(
                               children: [
+                                Text(
+                                  "Khác",
+                                  style: textTheme.medium14(),
+                                ),
+                                SizedBox(
+                                  width: 3.w,
+                                ),
                                 Radio<CheckGender>(
                                     value: CheckGender.other,
                                     groupValue: _character,
@@ -312,13 +330,6 @@ class _EditProfileState extends State<EditProfile> {
                                         _character = value;
                                       });
                                     }),
-                                SizedBox(
-                                  width: 10.w,
-                                ),
-                                Text(
-                                  "Khác",
-                                  style: textTheme.medium14(),
-                                ),
                               ],
                             )
                           ],
@@ -434,13 +445,9 @@ class _EditProfileState extends State<EditProfile> {
                           gender: _gender,
                           phone_number: int.parse(_phoneNumber.toString()),
                           status: _status ?? userProvider.user.status,
-                          imageUrl: userProvider.user!.imageUrl,
+                          imageUrl: userProvider.user.imageUrl,
                           usertype: userProvider.user.usertype);
-                      final jsonExperiences = json
-                          .encode(_experiences.map((e) => e.toMap()).toList());
-                      print(jsonExperiences);
-                      final _addresstest = json.encode(_address?.toMap());
-                      print(_addresstest);
+
                       userProvider.updateUser(context, newUser);
                       // if (file != null) {
                       //   Random random = new Random();
@@ -635,6 +642,9 @@ class _EditProfileState extends State<EditProfile> {
               ],
             );
           },
+        ),
+        SizedBox(
+          height: 10.h,
         ),
         ElevatedButton(
           style: ButtonStyle(

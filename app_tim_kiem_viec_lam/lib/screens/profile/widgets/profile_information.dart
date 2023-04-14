@@ -240,7 +240,7 @@ class _ProfileInformationState extends State<ProfileInformation> {
                                 height: 20.h,
                               ),
                               Text(
-                                "${user.fullname ?? user.name}",
+                                "${user.full_name ?? user.name}",
                                 style: textTheme.semibold20(),
                               ),
                               SizedBox(

@@ -1,3 +1,4 @@
+import 'package:app_tim_kiem_viec_lam/core/models/search_job_model.dart';
 import "package:flutter/material.dart";
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,8 +15,46 @@ class UserProvider extends ChangeNotifier {
   UserModel get userByID => _userByID;
   List<UserTypeModel> _userTye = [];
   List<UserTypeModel>? get userType => _userTye;
+  List<SearchJobModel> _searchList = [];
+  List<SearchJobModel> get getSearchList => _searchList;
+  // Future<void> getCategorySearch() async {
+  //   final respon = await SupabaseBase.supabaseClient
+  //       .from('jobs')
+  //       .select('*,user(*)')
+  //       .limit(50)
+  //       .execute();
+  //   if (respon.data != null) {
+  //     final List<SearchJobModel> _searchlist = [];
+  //     var data = await respon.data;
+  //     for (int i = 0; i < data.length; i++) {
+  //       _searchlist.add(SearchJobModel.fromMap(data[i]));
+  //     }
+  //     _searchList = _searchlist;
+  //   }
+  //   notifyListeners();
+  // }<
+  // List<UserModel> get listUser => _listUser;
+  List<UserModel> listUserSearch = [];
 
-// Fetch User
+  Future<void> fetchCategoryUser() async {
+    var respon = await SupabaseBase.supabaseClient
+        .from("users")
+        .select("*")
+        .limit(50)
+        .execute();
+    if (respon.data != null) {
+      var data = respon.data;
+      List<UserModel> _listUser = [];
+
+      for (int i = 0; i < data.length; i++) {
+        _listUser.add(UserModel.fromMap(data[i]));
+      }
+      listUserSearch = _listUser;
+    }
+
+    notifyListeners();
+  }
+
   Future<void> fetchUser() async {
     final prefs = await SharedPreferences.getInstance();
     String? id = await prefs.getString('id');

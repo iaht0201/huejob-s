@@ -41,7 +41,7 @@ class __ProfileDetailInformationState extends State<ProfileDetailInformation> {
             height: 12.h,
           ),
           widget.user?.education == null
-              ? Container()
+            ? Container()
               : EducationWidget(
                   education: widget.user?.education,
                 ),

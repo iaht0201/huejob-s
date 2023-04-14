@@ -48,9 +48,11 @@ class UserModel {
         gender: json['gender'],
         phone_number: json['phone_number'],
         caption: json['caption'],
-        address: json['address'] != null ? jsonDecode(json['address']) : null,
+        address: json['address'] != null
+            ? AddressModel.fromMap(jsonDecode(json['address']))
+            : null,
         // address: json['address'] != null
-        //     ? List<AddressModel>.from(jsonDecode(json['address'])
+        //     ? List<AddressModel>.filrom(jsonDecode(json['address'])
         //         .map((address) => AddressModel.fromMap(address)))
         //     : null,
         experience: json['experience'] != null
@@ -75,6 +77,11 @@ class UserModel {
     } else {
       return "Khác";
     }
+  }
+
+  get full_name {
+    if (familyname == null || firstname == null) return;
+    return "$familyname $firstname";
   }
 
   Map<String, dynamic> toMap() {
