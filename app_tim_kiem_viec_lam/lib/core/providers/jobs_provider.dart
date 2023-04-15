@@ -25,6 +25,7 @@ class JobsProvider extends ChangeNotifier {
   }
 
   Future<void> fetchCategorySearchJob() async {
+    //  Lam xong hagtag lựa chọn chủ đè muốn quan tâm => eq chủ đề đó
     var respon =
         await _supbase.from("jobs").select("*,users(*)").limit(50).execute();
     if (respon.data != null) {
@@ -158,9 +159,9 @@ class JobsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<JobModel>> search(String query) async {
+  Future searchJob(String query) async {
     final result = await _supbase
-        .rpc('jobs_searchs', params: {'search': '${query}'}).execute();
+        .rpc('jobs_search_ver1', params: {'search': '${query}'}).execute();
     if (result.data == null) {
       print(result.status);
     }

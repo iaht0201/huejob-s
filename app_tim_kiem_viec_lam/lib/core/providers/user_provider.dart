@@ -55,6 +55,43 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future fetchUserByQuery({int limit = 20, String? query}) async {
+    final result = await SupabaseBase.supabaseClient
+        .rpc('user_search1', params: {'search': '${query}'})
+        .limit(limit)
+        .execute();
+
+    if (result.data != null) {
+      var data = result.data;
+      List<UserModel> _listUser = [];
+      for (int i = 0; i < data.length; i++) {
+        _listUser.add(UserModel.fromMap(data[i]));
+      }
+      return _listUser;
+    }
+  }
+  // Future fetchUserBYQuery({int limit = 20, String? query}) async {
+  //   var respon = await SupabaseBase.supabaseClient
+  //       .from("users")
+  //       .select("*")
+  //       // .eq('name', query)
+  //       .or('firstName.eq.${query},familyName.eq.${query}')
+  //       .limit(limit)
+  //       .execute();
+  //   if (respon.data != null) {
+  //     var data = respon.data;
+  //     List<UserModel> _listUser = [];
+
+  //     for (int i = 0; i < data.length; i++) {
+  //       _listUser.add(UserModel.fromMap(data[i]));
+  //     }
+  //     print(_listUser);
+  //     return _listUser;
+  //   }
+
+  //   notifyListeners();
+  // }
+
   Future<void> fetchUser() async {
     final prefs = await SharedPreferences.getInstance();
     String? id = await prefs.getString('id');
