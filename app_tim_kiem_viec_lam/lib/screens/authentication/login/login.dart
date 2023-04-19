@@ -214,8 +214,9 @@ class _LoginViewState extends State<LoginView> {
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
                                         Navigator.pushNamed(
-                                            context, AppRoutes.SignupRoutes,
-                                            arguments: "a");
+                                          context,
+                                          AppRoutes.SignupRoutes,
+                                        );
                                       })
                               ],
                             )),

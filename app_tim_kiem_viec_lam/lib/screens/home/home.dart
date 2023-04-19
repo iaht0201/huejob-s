@@ -27,8 +27,10 @@ import 'package:provider/provider.dart';
 import '../../core/providers/authenciation_provider.dart';
 import '../../core/providers/post_provider.dart';
 import '../../widgets/avatar_widget.dart';
+import '../bookmark/bookmark.dart';
 import '../profile/widgets/button_arrow.dart';
 import '../social/social_screen.dart';
+import '../upload_profile/upload_profile.dart';
 import 'widgets/post_widgets/post_feed_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -54,8 +56,23 @@ class _HomePageState extends State<HomePage>
   // Widget currentScreen = _ContentHome();
   late PostProvider jobProvider;
   late UserModel user;
+  late UserProvider userProvider;
   Widget currentScreen = _ContentHome();
   void initState() {
+    userProvider = Provider.of<UserProvider>(context, listen: false);
+    // userProvider.checkCareAbout().then((isCheckCareAbout) {
+    //   if (isCheckCareAbout == true) {
+    //     Navigator.pushReplacement(
+    //       context,
+    //       MaterialPageRoute(builder: (context) => HomePage()),
+    //     );
+    //   } else {
+    //     Navigator.pushReplacement(
+    //       context,
+    //       MaterialPageRoute(builder: (context) => UpdateProfile()),
+    //     );
+    //   }
+    // });
     super.initState();
     currentTab = widget.currentTab;
     if (currentTab == 1) {
@@ -359,7 +376,10 @@ class _HomePageState extends State<HomePage>
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => ProfileScreen()));
+                                        builder: (context) => ProfileScreen(
+                                              clientID:
+                                                  userProvider.user.userId,
+                                            )));
                               },
                               child: Text(
                                 "View Profile",
@@ -401,7 +421,12 @@ class _HomePageState extends State<HomePage>
                   ),
                   ListTile(
                     title: _itemDrawer(context, Icons.bookmark, "Đã lưu"),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BookMarkScreen()));
+                    },
                   ),
                   ListTile(
                     title: _itemDrawer(context, Icons.settings, "Cài đặt"),
@@ -462,9 +487,9 @@ class __ContentHomeState extends State<_ContentHome> {
   void initState() {
     jobProvider = Provider.of<PostProvider>(context, listen: false);
     userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.fetchUser();
+
     jobProvider.getPots();
-    // _loadPosts();
+
     _scrollController.addListener(_scrollListener);
     super.initState();
   }

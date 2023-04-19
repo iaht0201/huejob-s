@@ -24,51 +24,52 @@ class _PostItemState extends State<PostItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 5.h),
-        margin: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _PostHeader(post: widget.post),
-            SizedBox(height: 12.5.h),
-            Container(
-                margin: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Text(
-                  widget.post.caption.toString(),
-                  style: textTheme.regular16(),
-                )),
-            GestureDetector(
-                onTap: () {
-                  _dialogBuilder(context);
-                },
-                child: widget.post.imageurl == null ||
-                        widget.post.imageurl == ""
-                    ? Container(
-                        // padding: EdgeInsets.symmetric(vertical: 10),
-                        )
-                    : Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: FadeInImage(
-                              placeholder: AssetImage(
-                                  "assets/images/no-image-width.png"),
-                              image:
-                                  NetworkImage(widget.post.imageurl.toString()),
-                              fit: BoxFit.contain,
-                              width: MediaQuery.of(context).size.width * 1),
-                        ),
-                      )),
-            SizedBox(
-              height: 10.h,
-            ),
-            PostInteract(
-              post: widget.post,
-            )
-          ],
-        ),
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 5.h),
+      margin: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _PostHeader(post: widget.post),
+          SizedBox(height: 12.5.h),
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Text(
+                widget.post.caption.toString(),
+                style: textTheme.regular16(),
+              )),
+          GestureDetector(
+              onTap: () {
+                _dialogBuilder(context);
+              },
+              child: widget.post.imageurl == null || widget.post.imageurl == ""
+                  ? Container(
+                      // padding: EdgeInsets.symmetric(vertical: 10),
+                      )
+                  : Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: FadeInImage(
+                            placeholder:
+                                AssetImage("assets/images/no-image-width.png"),
+                            image:
+                                NetworkImage(widget.post.imageurl.toString()),
+                            fit: BoxFit.contain,
+                            width: MediaQuery.of(context).size.width * 1),
+                      ),
+                    )),
+          SizedBox(
+            height: 10.h,
+          ),
+          PostInteract(
+            post: widget.post,
+          ),
+          SizedBox(
+            height: 15.h,
+          ),
+          Divider()
+        ],
       ),
     );
   }

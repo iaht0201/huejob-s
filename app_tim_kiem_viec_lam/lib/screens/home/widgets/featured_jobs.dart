@@ -1,4 +1,6 @@
 import 'package:app_tim_kiem_viec_lam/core/models/jobs_model.dart';
+import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:app_tim_kiem_viec_lam/screens/detailJob/detail_job.dart';
 import 'package:app_tim_kiem_viec_lam/screens/see_more_screen/see_all_scree.dart';
 import 'package:carousel_indicator/carousel_indicator.dart';
@@ -24,9 +26,11 @@ class FeaturedJobs extends StatefulWidget {
 
 class _FeaturedJobsState extends State<FeaturedJobs> {
   late JobsProvider jobsProvider;
+  late UserProvider userProvider;
   void initState() {
     jobsProvider = Provider.of<JobsProvider>(context, listen: false);
-
+    userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.fetchUser();
     super.initState();
   }
 
@@ -72,7 +76,7 @@ class _FeaturedJobsState extends State<FeaturedJobs> {
                 // width: 1.sw,
                 // height: 210.h,
                 child: FutureBuilder(
-                  future: jobsProvider.fetchFeaturedJobs("Công Nghệ Thông Tin"),
+                  future: jobsProvider.fetchFeaturedJobs(userProvider.user),
                   builder: (context, snapshot) {
                     List<JobModel> jobs = [];
                     if (snapshot.hasData) {
@@ -301,7 +305,7 @@ class _FeaturedJobsState extends State<FeaturedJobs> {
                           style: textTheme.medium14(color: "FFFFFF"),
                         ),
                         Text(
-                          "${item.location}",
+                          "${item.getCity}",
                           style:
                               textTheme.medium14(opacity: 0.6, color: "FFFFFF"),
                         ),

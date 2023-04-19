@@ -6,6 +6,7 @@ import 'package:app_tim_kiem_viec_lam/widgets/text_field_widgets.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.dart';
 
@@ -21,8 +22,9 @@ import '../addPost/map.dart';
 enum CheckGender { man, woman, other }
 
 class EditProfile extends StatefulWidget {
-  EditProfile({super.key, this.user});
+  EditProfile({super.key, this.user, this.action = "edit_profile"});
   UserModel? user;
+  String action;
   @override
   State<EditProfile> createState() => _EditProfileState();
 }
@@ -129,11 +131,13 @@ class _EditProfileState extends State<EditProfile> {
             ? CheckGender.woman
             : CheckGender.other;
 
-    _phoneNumber = widget.user?.phone_number.toString();
+    _phoneNumber = userProvider.user.phone_number.toString() != "null"
+        ? userProvider.user.phone_number.toString()
+        : "";
 
     // userProvider.userByID.phone_number.toString();
-    _firstName = widget.user?.firstname.toString() ?? "";
-    _familyname = widget.user?.familyname.toString() ?? "";
+    _firstName = widget.user?.firstname ?? "";
+    _familyname = widget.user?.familyname ?? "";
     _locationController.text = (widget.user?.address != null
         ? widget.user?.address!.addressName!
         : "")!;
@@ -154,271 +158,255 @@ class _EditProfileState extends State<EditProfile> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverPersistentHeader(
-              pinned: true,
-              floating: false,
-              delegate: _MyHeader(
-                  child: Padding(
-                padding: EdgeInsets.only(top: 8.h),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: buttonArrow(context),
-                    ),
-                    Expanded(
-                      flex: 10,
-                      child: Center(
-                        child: Text(
-                          "Chỉnh sửa thông tin",
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge!
-                              .copyWith(color: Colors.black),
+      body: Form(
+        key: _formKey,
+        child: CustomScrollView(
+          slivers: [
+            SliverPersistentHeader(
+                pinned: true,
+                floating: false,
+                delegate: _MyHeader(
+                    child: Padding(
+                  padding: EdgeInsets.only(top: 8.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: buttonArrow(context),
+                      ),
+                      Expanded(
+                        flex: 10,
+                        child: Center(
+                          child: Text(
+                            "Cập nhập thông tin",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(color: Colors.black),
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Container(),
-                    ),
-                  ],
-                ),
-              ))),
-          SliverList(
-              delegate: SliverChildListDelegate([
-            Consumer<UserProvider>(
-              builder: (context, userProvider, _) {
-                return Container(
-                  width: 1.sw,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-                  clipBehavior: Clip.hardEdge,
-                  decoration: BoxDecoration(
-                      // color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20.r),
-                          topRight: Radius.circular(20.r))),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 24.h),
-                        TextFieldWid(
-                          icon: Icons.person,
-                          label: "${userProvider.user?.name}",
-                          text: "",
-                          enbled: false,
-                          onChanged: (value) {},
-                        ),
-                        SizedBox(height: 12.h),
-                        TextFieldWid(
-                          icon: Icons.email,
-                          label: "${userProvider.user.email}",
-                          text: "",
-                          enbled: false,
-                          onChanged: (value) {},
-                        ),
-                        SizedBox(height: 12.h),
-                        TextFieldWid(
-                          icon: Icons.engineering_outlined,
-                          label: "${userProvider.user.usertype}",
-                          text: "",
-                          enbled: false,
-                          onChanged: (value) {},
-                        ),
-                        SizedBox(height: 12.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextFieldWid(
-                              width: 0.42,
-                              label: "Họ",
-                              text: _familyname ?? "",
-                              enbled: true,
-                              onChanged: (value) {
-                                _familyname = value;
-                              },
-                            ),
-                            TextFieldWid(
-                              width: 0.42,
-                              label: "Tên",
-                              text: _firstName ?? "",
-                              enbled: true,
-                              onChanged: (value) {
-                                _firstName = value;
-                              },
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 12.h),
-                        _locationFormWidget(context),
-                        SizedBox(height: 12.h),
-                        Row(
-                          children: [
-                            Text(
-                              "Giới tính: ",
-                              style: textTheme.medium14(),
-                            ),
-                            SizedBox(
-                              width: 10.w,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  "Nam",
-                                  style: textTheme.medium14(),
-                                ),
-                                SizedBox(
-                                  width: 3.w,
-                                ),
-                                Radio<CheckGender>(
-                                    focusColor: HexColor("#BB2649"),
-                                    value: CheckGender.man,
-                                    groupValue: _character,
-                                    onChanged: (CheckGender? value) {
-                                      setState(() {
-                                        _character = value;
-                                        // _gender = value ;
-                                        if (_character == CheckGender.man) {
-                                          _gender = 1;
-                                        } else if (_character ==
-                                            CheckGender.woman) {
-                                          _gender = 0;
-                                        } else
-                                          _gender = 2;
-                                      });
-                                    }),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  "Nữ",
-                                  style: textTheme.medium14(),
-                                ),
-                                SizedBox(
-                                  width: 3.w,
-                                ),
-                                Radio<CheckGender>(
-                                    value: CheckGender.woman,
-                                    groupValue: _character,
-                                    onChanged: (CheckGender? value) {
-                                      setState(() {
-                                        _character = value;
-                                      });
-                                    }),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  "Khác",
-                                  style: textTheme.medium14(),
-                                ),
-                                SizedBox(
-                                  width: 3.w,
-                                ),
-                                Radio<CheckGender>(
-                                    value: CheckGender.other,
-                                    groupValue: _character,
-                                    onChanged: (CheckGender? value) {
-                                      setState(() {
-                                        _character = value;
-                                      });
-                                    }),
-                              ],
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              "Ngày sinh: ",
-                              style: textTheme.medium14(),
-                            ),
-                            Text(
-                                '${_birthday.day}/${_birthday.month}/${_birthday.year}',
-                                style: textTheme.medium14()),
-                            TextButton(
-                                onPressed: () => _selectDate(context),
-                                child: Icon(
-                                  Icons.calendar_today_rounded,
-                                  size: 15,
-                                  color: HexColor("#BB2649"),
-                                )),
-                          ],
-                        ),
-                        TextFieldWid(
-                          icon: Icons.phone_android,
-                          type: "number",
-                          label: "Số điện thoại",
-                          text: _phoneNumber ?? "",
-                          enbled: true,
-                          onChanged: (value) {
-                            _phoneNumber = value;
-                          },
-                        ),
-                        SizedBox(height: 24.h),
-                        _experienceForm(context),
-                        _educationForm(context),
-                        // Container(
-                        //   width: double.infinity,
-                        //   margin: EdgeInsets.only(
-                        //     top: MediaQuery.of(context).size.height * 0.012,
-                        //   ),
-                        //   child: ElevatedButton(
-                        //       onPressed: () async {
-                        //         final newUser = UserModel(
-                        //             userId: userProvider.user.userId,
-                        //             name: userProvider.user.name,
-                        //             address: _address,
-                        //             familyname: _familyname,
-                        //             firstname: _firstName,
-                        //             birthday: _birthday.toIso8601String(),
-                        //             email: userProvider.user.email,
-                        //             experience: _experiences,
-                        //             education: _educations,
-                        //             fullname:
-                        //                 _fullname ?? userProvider.user.fullname,
-                        //             gender: _gender,
-                        //             phone_number:
-                        //                 int.parse(_phoneNumber.toString()),
-                        //             status: _status ?? userProvider.user.status,
-                        //             imageUrl: userProvider.user!.imageUrl,
-                        //             usertype: userProvider.user.usertype);
-                        //         final jsonExperiences = json.encode(_experiences
-                        //             .map((e) => e.toMap())
-                        //             .toList());
-                        //         print(jsonExperiences);
-                        //         userProvider.updateUser(context, newUser);
-                        //       },
-                        //       child: Container(
-                        //         padding: EdgeInsets.all(
-                        //           15,
-                        //         ),
-                        //         child: Text('Hoàn tất',
-                        //             style: TextStyle(
-                        //                 fontWeight: FontWeight.bold,
-                        //                 fontSize: 22)),
-                        //       ),
-                        //       style: ElevatedButton.styleFrom(
-                        //           primary: Colors.red,
-                        //           shape: RoundedRectangleBorder(
-                        //               borderRadius:
-                        //                   BorderRadius.circular(16)))),
-                        // ),
-                      ],
-                    ),
+                      Expanded(
+                        flex: 2,
+                        child: Container(),
+                      ),
+                    ],
                   ),
-                );
-              },
-            )
-          ])),
-        ],
+                ))),
+            SliverList(
+                delegate: SliverChildListDelegate([
+              Consumer<UserProvider>(
+                builder: (context, userProvider, _) {
+                  return Container(
+                    width: 1.sw,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                        // color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20.r),
+                            topRight: Radius.circular(20.r))),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 24.h),
+                          TextFieldWid(
+                            icon: Icons.person,
+                            label: "${userProvider.user?.name}",
+                            text: "",
+                            enbled: false,
+                            onChanged: (value) {},
+                          ),
+                          SizedBox(height: 12.h),
+                          TextFieldWid(
+                            icon: Icons.email,
+                            label: "${userProvider.user.email}",
+                            text: "",
+                            enbled: false,
+                            onChanged: (value) {},
+                          ),
+                          SizedBox(height: 12.h),
+                          TextFieldWid(
+                            icon: Icons.engineering_outlined,
+                            label: "${userProvider.user.usertype}",
+                            text: "",
+                            enbled: false,
+                            onChanged: (value) {},
+                          ),
+                          SizedBox(height: 12.h),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextFieldWid(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Họ không được để trống';
+                                  }
+                                  if (RegExp(r'\d').hasMatch(value)) {
+                                    return 'Tên không được chứa số';
+                                  }
+                                  return null;
+                                },
+                                width: 0.42,
+                                label: "Họ",
+                                text: _familyname ?? "",
+                                enbled: true,
+                                onChanged: (value) {
+                                  _familyname = value;
+                                },
+                              ),
+                              TextFieldWid(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Tên không được để trống';
+                                  }
+                                  if (RegExp(r'\d').hasMatch(value)) {
+                                    return 'Tên không được chứa số';
+                                  }
+                                  return null;
+                                },
+                                width: 0.42,
+                                label: "Tên",
+                                text: _firstName ?? "",
+                                enbled: true,
+                                onChanged: (value) {
+                                  _firstName = value;
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 12.h),
+                          _locationFormWidget(context),
+                          SizedBox(height: 12.h),
+                          Row(
+                            children: [
+                              Text(
+                                "Giới tính: ",
+                                style: textTheme.medium14(),
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "Nam",
+                                    style: textTheme.medium14(),
+                                  ),
+                                  SizedBox(
+                                    width: 3.w,
+                                  ),
+                                  Radio<CheckGender>(
+                                      focusColor: HexColor("#BB2649"),
+                                      value: CheckGender.man,
+                                      groupValue: _character,
+                                      onChanged: (CheckGender? value) {
+                                        setState(() {
+                                          _character = value;
+                                          // _gender = value ;
+                                          if (_character == CheckGender.man) {
+                                            _gender = 1;
+                                          } else if (_character ==
+                                              CheckGender.woman) {
+                                            _gender = 0;
+                                          } else
+                                            _gender = 2;
+                                        });
+                                      }),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "Nữ",
+                                    style: textTheme.medium14(),
+                                  ),
+                                  SizedBox(
+                                    width: 3.w,
+                                  ),
+                                  Radio<CheckGender>(
+                                      value: CheckGender.woman,
+                                      groupValue: _character,
+                                      onChanged: (CheckGender? value) {
+                                        setState(() {
+                                          _character = value;
+                                        });
+                                      }),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "Khác",
+                                    style: textTheme.medium14(),
+                                  ),
+                                  SizedBox(
+                                    width: 3.w,
+                                  ),
+                                  Radio<CheckGender>(
+                                      value: CheckGender.other,
+                                      groupValue: _character,
+                                      onChanged: (CheckGender? value) {
+                                        setState(() {
+                                          _character = value;
+                                        });
+                                      }),
+                                ],
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                "Ngày sinh: ",
+                                style: textTheme.medium14(),
+                              ),
+                              Text(
+                                  '${_birthday.day}/${_birthday.month}/${_birthday.year}',
+                                  style: textTheme.medium14()),
+                              TextButton(
+                                  onPressed: () => _selectDate(context),
+                                  child: Icon(
+                                    Icons.calendar_today_rounded,
+                                    size: 15,
+                                    color: HexColor("#BB2649"),
+                                  )),
+                            ],
+                          ),
+                          TextFieldWid(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Số điện thoại không được để trống';
+                              }
+                              if (!RegExp(r'^0\d{9}$').hasMatch(value)) {
+                                return 'Số điện thoại không hợp lệ';
+                              }
+                              return null;
+                            },
+                            icon: Icons.phone_android,
+                            type: "number",
+                            label: "Số điện thoại",
+                            text: _phoneNumber ?? "",
+                            enbled: true,
+                            onChanged: (value) {
+                              _phoneNumber = value;
+                            },
+                          ),
+                          SizedBox(height: 24.h),
+                          _experienceForm(context),
+                          _educationForm(context),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              )
+            ])),
+          ],
+        ),
       ),
       bottomNavigationBar: Consumer<UserProvider>(
         builder: (context, userProvider, child) {
@@ -431,24 +419,38 @@ class _EditProfileState extends State<EditProfile> {
                 height: 0.1.sh,
                 child: ElevatedButton(
                     onPressed: () async {
-                      final newUser = UserModel(
-                          userId: userProvider.user.userId,
-                          name: userProvider.user.name,
-                          address: _address,
-                          familyname: _familyname,
-                          firstname: _firstName,
-                          birthday: _birthday.toIso8601String(),
-                          email: userProvider.user.email,
-                          experience: _experiences,
-                          education: _educations,
-                          fullname: _fullname ?? userProvider.user.fullname,
-                          gender: _gender,
-                          phone_number: int.parse(_phoneNumber.toString()),
-                          status: _status ?? userProvider.user.status,
-                          imageUrl: userProvider.user.imageUrl,
-                          usertype: userProvider.user.usertype);
+                      if (_address == null) {
+                        Fluttertoast.showToast(
+                          msg: 'Vui lòng chọn địa chỉ',
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                        );
+                      } else {
+                        if (_formKey.currentState!.validate()) {
+                          final newUser = UserModel(
+                              careAbout: userProvider.user.careAbout,
+                              userId: userProvider.user.userId,
+                              name: userProvider.user.name,
+                              address: _address,
+                              familyname: _familyname,
+                              firstname: _firstName,
+                              birthday: _birthday.toIso8601String(),
+                              email: userProvider.user.email,
+                              experience: _experiences,
+                              education: _educations,
+                              fullname: _fullname ?? userProvider.user.fullname,
+                              gender: _gender,
+                              phone_number: int.parse(_phoneNumber.toString()),
+                              status: _status ?? userProvider.user.status,
+                              imageUrl: userProvider.user.imageUrl,
+                              usertype: userProvider.user.usertype);
 
-                      userProvider.updateUser(context, newUser);
+                          userProvider.updateUser(context, newUser,
+                              action: "${widget.action}");
+                        }
+                      }
+
                       // if (file != null) {
                       //   Random random = new Random();
                       //   final fileBytes = await file?.readAsBytes();

@@ -8,6 +8,7 @@ import '../../screens/profile/profile_screen.dart';
 import '../../screens/splash/splash.dart';
 
 class AppRoutes {
+  
   static const String LoginRoute = "/login";
   static const String SignupRoutes = "/signup";
   static const String HomeRoutes = "/home";

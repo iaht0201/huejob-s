@@ -81,17 +81,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             final UserModel user = widget.clientID == null
                                 ? userProvider.user
                                 : userProvider.userByID;
-                            return _isLoading == true
-                                ? Center(
-                                    child: Text(
-                                      "@${user.fullname == null ? user.name : user.fullname}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge!
-                                          .copyWith(color: Colors.black),
-                                    ),
-                                  )
-                                : shimmerFromColor(width: 10.w, height: 20.h);
+                            return Center(
+                                child: user.name != null
+                                    ? Text(
+                                        "@${user.name}",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge!
+                                            .copyWith(color: Colors.black),
+                                      )
+                                    : shimmerFromColor(
+                                        width: 80.w, height: 20.h));
                           },
                         )),
                     Expanded(

@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:app_tim_kiem_viec_lam/core/supabase/supabase.dart';
+import 'package:app_tim_kiem_viec_lam/screens/upload_profile/upload_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/providers/user_provider.dart';
 import '../authentication/login/login.dart';
 import '../home/home.dart';
 import '../onboaring/onboaring_one_screen.dart';
@@ -19,15 +22,28 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   String? session;
   String? id;
+  late UserProvider userProvider;
   @override
   void initState() {
+    userProvider = Provider.of<UserProvider>(context, listen: false);
     getSession().whenComplete(() async {
       Timer(Duration(seconds: 2), () {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    session == null ? OnBoaring() : HomePage()));
+        if (session == null) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => OnBoaring()));
+        } else {
+          userProvider.fetchUser().whenComplete(() async {
+            if (userProvider.hasCareAbout) {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => HomePage()));
+            } else {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const UpdateProfile()));
+            }
+          });
+        }
       });
     });
 
@@ -50,14 +66,13 @@ class _SplashScreenState extends State<SplashScreen> {
         body: Container(
       width: double.infinity,
       height: double.infinity,
-      decoration:  BoxDecoration(
+      decoration: BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.center,
               end: Alignment.center,
               colors: [
             HexColor("#E94D71"),
-            HexColor("#BB2649")
-            ,
+            HexColor("#BB2649"),
           ])),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

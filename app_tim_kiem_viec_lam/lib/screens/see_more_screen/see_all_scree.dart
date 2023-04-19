@@ -1,4 +1,5 @@
 import 'package:app_tim_kiem_viec_lam/core/providers/jobs_provider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:app_tim_kiem_viec_lam/screens/profile/widgets/button_arrow.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 import 'package:app_tim_kiem_viec_lam/widgets/item_job_widget.dart';
@@ -21,16 +22,17 @@ class SeeAllScreen extends StatefulWidget {
 
 class _SeeAllScreenState extends State<SeeAllScreen> {
   late JobsProvider jobProvider;
+  late UserProvider userProvider;
   void initState() {
     jobProvider = Provider.of<JobsProvider>(context, listen: false);
-
+    userProvider = Provider.of<UserProvider>(context, listen: false);
     super.initState();
   }
 
   Future handleBuildJob() async {
     switch (widget.styleJob) {
       case "Featured Jobs":
-        return jobProvider.fetchFeaturedJobs("Công nghệ thông tin");
+        return jobProvider.fetchFeaturedJobs(userProvider.user);
 
       case "Recommended Jobs":
         return jobProvider.fetchRecommendJobs();

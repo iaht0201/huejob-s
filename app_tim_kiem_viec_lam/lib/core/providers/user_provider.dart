@@ -1,9 +1,11 @@
 import 'package:app_tim_kiem_viec_lam/core/models/search_job_model.dart';
+import 'package:app_tim_kiem_viec_lam/screens/profile/profile_edit.dart';
 import "package:flutter/material.dart";
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../screens/home/home.dart';
 import '../models/usetype_model.dart';
 import '../models/user_model.dart';
 import '../supabase/supabase.dart';
@@ -17,23 +19,9 @@ class UserProvider extends ChangeNotifier {
   List<UserTypeModel>? get userType => _userTye;
   List<SearchJobModel> _searchList = [];
   List<SearchJobModel> get getSearchList => _searchList;
-  // Future<void> getCategorySearch() async {
-  //   final respon = await SupabaseBase.supabaseClient
-  //       .from('jobs')
-  //       .select('*,user(*)')
-  //       .limit(50)
-  //       .execute();
-  //   if (respon.data != null) {
-  //     final List<SearchJobModel> _searchlist = [];
-  //     var data = await respon.data;
-  //     for (int i = 0; i < data.length; i++) {
-  //       _searchlist.add(SearchJobModel.fromMap(data[i]));
-  //     }
-  //     _searchList = _searchlist;
-  //   }
-  //   notifyListeners();
-  // }<
-  // List<UserModel> get listUser => _listUser;
+  late bool _hasCareAbout;
+  bool get hasCareAbout => _hasCareAbout;
+
   List<UserModel> listUserSearch = [];
 
   Future<void> fetchCategoryUser() async {
@@ -70,29 +58,8 @@ class UserProvider extends ChangeNotifier {
       return _listUser;
     }
   }
-  // Future fetchUserBYQuery({int limit = 20, String? query}) async {
-  //   var respon = await SupabaseBase.supabaseClient
-  //       .from("users")
-  //       .select("*")
-  //       // .eq('name', query)
-  //       .or('firstName.eq.${query},familyName.eq.${query}')
-  //       .limit(limit)
-  //       .execute();
-  //   if (respon.data != null) {
-  //     var data = respon.data;
-  //     List<UserModel> _listUser = [];
 
-  //     for (int i = 0; i < data.length; i++) {
-  //       _listUser.add(UserModel.fromMap(data[i]));
-  //     }
-  //     print(_listUser);
-  //     return _listUser;
-  //   }
-
-  //   notifyListeners();
-  // }
-
-  Future<void> fetchUser() async {
+  Future fetchUser() async {
     final prefs = await SharedPreferences.getInstance();
     String? id = await prefs.getString('id');
 
@@ -105,7 +72,16 @@ class UserProvider extends ChangeNotifier {
     if (response.data != null) {
       var data = await response.data;
       _user = UserModel.fromMap(data[0]);
+      checkIsCareAbout(user);
       notifyListeners();
+    }
+  }
+
+  Future checkIsCareAbout(UserModel user) async {
+    if (user.careAbout != null && user.careAbout!.isNotEmpty) {
+      _hasCareAbout = true;
+    } else {
+      _hasCareAbout = false;
     }
   }
 
@@ -157,7 +133,8 @@ class UserProvider extends ChangeNotifier {
   }
 
   // Update User
-  Future<void> updateUser(BuildContext context, UserModel newUser) async {
+  Future<void> updateUser(BuildContext context, UserModel newUser,
+      {String action = ""}) async {
     final prefs = await SharedPreferences.getInstance();
     try {
       final response = await SupabaseBase.supabaseClient
@@ -173,8 +150,21 @@ class UserProvider extends ChangeNotifier {
           textColor: Colors.white,
         );
         _user = newUser;
+        if (action == "next_update_profile") {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => EditProfile(
+                        user: _user,
+                        action: "next_homepage",
+                      )));
+        } else if (action == "next_homepage") {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => HomePage()));
+        } else {
+          Navigator.of(context).pop();
+        }
 
-        Navigator.of(context).pop();
         notifyListeners();
       }
     } catch (e) {
@@ -246,7 +236,4 @@ class UserProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-  // setState(() {
-  //   isLiked = false;
-  // });
 }

@@ -28,7 +28,7 @@ class _SignupViewState extends State<SignupView> {
   var _isVisible = false;
   var _confirm = false;
   late UserProvider userProvider;
-  List<String> itemsType = ['Người tìm việc', 'Nhà tuyển dụng', 'Công ty'];
+  List<String> itemsType = ['Người tìm việc', 'Nhà tuyển dụng'];
   void initState() {
     super.initState();
     emailController = TextEditingController();

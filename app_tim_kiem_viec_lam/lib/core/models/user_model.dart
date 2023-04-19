@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app_tim_kiem_viec_lam/core/models/job_category_model.dart';
 import 'package:meta/meta.dart';
 
 class UserModel {
@@ -18,6 +19,7 @@ class UserModel {
   final String? usertype;
   final String? firstname;
   final String? familyname;
+  final List<JobCategoryModel>? careAbout;
 
   final String? caption;
   const UserModel(
@@ -36,7 +38,8 @@ class UserModel {
       this.caption,
       this.familyname,
       this.firstname,
-      this.education});
+      this.education,
+      this.careAbout});
 
   factory UserModel.fromJson(String str) => UserModel.fromMap(json.decode(str));
   factory UserModel.fromMap(Map<String, dynamic> json) => UserModel(
@@ -48,13 +51,13 @@ class UserModel {
         gender: json['gender'],
         phone_number: json['phone_number'],
         caption: json['caption'],
+        careAbout: json['care_about'] != null
+            ? List<JobCategoryModel>.from(jsonDecode(json['care_about']).map(
+                (careAboutItem) => JobCategoryModel.fromMap(careAboutItem)))
+            : null,
         address: json['address'] != null
             ? AddressModel.fromMap(jsonDecode(json['address']))
             : null,
-        // address: json['address'] != null
-        //     ? List<AddressModel>.filrom(jsonDecode(json['address'])
-        //         .map((address) => AddressModel.fromMap(address)))
-        //     : null,
         experience: json['experience'] != null
             ? List<ExperienceModel>.from(jsonDecode(json['experience']).map(
                 (experienceJson) => ExperienceModel.fromMap(experienceJson)))
@@ -69,6 +72,46 @@ class UserModel {
         firstname: json['firstName'],
         familyname: json['familyName'],
       );
+
+  UserModel copyWith(
+      {String? userId,
+      String? name,
+      String? imageUrl,
+      String? email,
+      String? birthday,
+      int? gender,
+      int? phone_number,
+      List<ExperienceModel>? experience,
+      AddressModel? address,
+      List<EducationModel>? education,
+      String? fullname,
+      String? status,
+      String? usertype,
+      String? firstname,
+      String? familyname,
+      String? caption,
+      List<JobCategoryModel>? careAbout}) {
+    return UserModel(
+      userId: this.userId,
+      name: this.name,
+      imageUrl: imageUrl ?? this.imageUrl,
+      email: this.email,
+      birthday: birthday ?? this.birthday,
+      gender: gender ?? this.gender,
+      phone_number: phone_number ?? this.phone_number,
+      experience: experience ?? this.experience,
+      address: address ?? this.address,
+      education: education ?? this.education,
+      fullname: fullname ?? this.fullname,
+      status: status ?? this.status,
+      usertype: this.usertype,
+      firstname: firstname ?? this.firstname,
+      familyname: familyname ?? this.familyname,
+      caption: this.caption ?? this.caption,
+      careAbout: careAbout ?? this.careAbout,
+    );
+  }
+
   get getGender {
     if (gender == 1) {
       return "Nữ";
@@ -99,6 +142,9 @@ class UserModel {
       'fullname': fullname,
       'status': status,
       'usertype': usertype,
+      'care_about': careAbout != null
+          ? jsonEncode(List<dynamic>.from(careAbout!.map((e) => e.toMap())))
+          : null,
       'experience': experience != null
           ? jsonEncode(List<dynamic>.from(experience!.map((e) => e.toMap())))
           : null,

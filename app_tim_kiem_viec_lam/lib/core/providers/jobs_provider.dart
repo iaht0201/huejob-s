@@ -40,24 +40,27 @@ class JobsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future fetchFeaturedJobs(String job) async {
-    var respon = await _supbase
-        .from("jobs")
-        .select("*,users(*)")
-        .eq('category_job', 'Lập trình viên')
-        .limit(5)
-        .order('created_at', ascending: true)
-        .execute();
-    if (respon.data != null) {
-      var data = respon.data;
-      List<JobModel> _listFeaturJob = [];
-
-      for (int i = 0; i < data.length; i++) {
-        _listFeaturJob.add(JobModel.fromMap(data[i]));
+// Dan loi
+  Future fetchFeaturedJobs(UserModel user) async {
+    List<JobModel> _listFeaturJob = [];
+    for (int i = 0; i < user.careAbout!.length; i++) {
+      var respon = await _supbase
+          .from("jobs")
+          .select("*,users(*)")
+          .eq('category_job', "${user.careAbout?[i].jobName}")
+          .limit(5)
+          .order('created_at', ascending: true)
+          .execute();
+      if (respon.data != null && respon.data.isNotEmpty) {
+        var data = respon.data;
+        for (int i = 0; i < data.length; i++) {
+          _listFeaturJob.add(JobModel.fromMap(data[i]));
+        }
       }
-      return _listFeaturJob;
     }
+    print(_listFeaturJob);
     notifyListeners();
+    return _listFeaturJob;
   }
 
   Future fetchRolesJob(String job) async {
@@ -289,13 +292,58 @@ class JobsProvider extends ChangeNotifier {
 
   Future<void> deleteBookMarkJob(String jobId) async {
     final prefs = await SharedPreferences.getInstance();
-    var a = await SupabaseBase.supabaseClient
+    var respon = await SupabaseBase.supabaseClient
         .from('bookmarkJob')
         .delete()
         .eq('job_id', jobId)
         .eq('userId', prefs.getString("id"))
         .execute();
-    print(a);
+    print(respon);
     notifyListeners();
+  }
+
+  Future fetchBookMark() async {
+    final prefs = await SharedPreferences.getInstance();
+    var listJobBookMark = await _supbase
+        .from('bookmarkJob')
+        .select("job_id")
+        .eq('userId', prefs.getString("id"))
+        .execute();
+    print(listJobBookMark);
+    if (listJobBookMark.data != null) {
+      List<String> _jobItem = [];
+      var data = listJobBookMark.data;
+      for (int i = 0; i < data.length; i++) {
+        _jobItem.add(data[i]['job_id']);
+        print("i: ${data[i]['job_id']}");
+      }
+
+      return _jobItem;
+    }
+    return [];
+  }
+
+  Future getBookMarkJob() async {
+    List<JobModel> _listJob = [];
+    var jobIds = await fetchBookMark();
+
+    for (int i = 0; i < jobIds.length; i++) {
+      var respon = await _supbase
+          .from("jobs")
+          .select("*,users(*)")
+          .eq('job_id', jobIds[i])
+          .execute();
+      if (respon.data != null && respon.data.isNotEmpty) {
+        var data = respon.data;
+        for (int i = 0; i < data.length; i++) {
+          _listJob.add(JobModel.fromMap(data[i]));
+        }
+      }
+
+
+    }
+    print(_listJob);
+    notifyListeners();
+    return _listJob;
   }
 }

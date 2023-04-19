@@ -76,7 +76,7 @@ class ExperienceWidget extends StatelessWidget {
                   'assets/images/jobs/effectFeature.png',
                 ),
               ),
-              color: HexColor("#26BB98"),
+              color: HexColor("#fb8b24"),
               borderRadius: BorderRadius.circular(20.r),
             ),
             child: Row(

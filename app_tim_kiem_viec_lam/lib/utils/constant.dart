@@ -139,6 +139,15 @@ extension CustomTextTheme on TextTheme {
         opacity: opacity);
   }
 
+  TextStyle semibold24({String? color = "290200", double opacity = 1}) {
+    return poppins(
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+        color: color,
+        letterSpacing: -1.5,
+        opacity: opacity);
+  }
+
   TextStyle regular11({String? color = "FFFFFF", double opacity = 1}) {
     return poppins(
         fontSize: 11,
