@@ -2,12 +2,11 @@ import 'package:app_tim_kiem_viec_lam/screens/authentication/login/login.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hexcolor/hexcolor.dart';
+
 import 'package:provider/provider.dart';
-import 'package:hexcolor/hexcolor.dart';
+
 import 'core/providers/app.provider.dart';
 import 'core/routes/routes.dart';
-import 'package:fluro/fluro.dart';
 
 void main() {
   final router = FluroRouter();

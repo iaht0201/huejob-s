@@ -22,6 +22,7 @@ class PostInteract extends StatefulWidget {
 class _PostInteractState extends State<PostInteract> {
   bool isLiked = false;
   bool isBookMarked = false;
+  bool isLoading = false;
   List listBookmark = [];
   late PostProvider postProvider;
   late List<PostModel> post;
@@ -39,6 +40,7 @@ class _PostInteractState extends State<PostInteract> {
 
           break;
         }
+        isLoading = true;
       }
     });
     postProvider.getBookMark().whenComplete(() {
@@ -47,9 +49,9 @@ class _PostInteractState extends State<PostInteract> {
           setState(() {
             isBookMarked = true;
           });
-          break;
         }
       }
+      isLoading = true;
     });
 
     super.initState();
@@ -126,52 +128,59 @@ class _PostInteractState extends State<PostInteract> {
   Widget build(BuildContext context) {
     return Consumer<PostProvider>(
       builder: (context, postProvider, _) {
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Row(
-            // mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _InteracLikeIcon(context, widget.post!.like_count.toString(),
-                  isLiked == false ? Icons.thumb_up_outlined : Icons.thumb_up,
-                  () {
-                if (isLiked == true) {
-                  postProvider.deleteLike(widget.post);
-                  isLiked = !isLiked;
-                } else {
-                  postProvider.addLike(widget.post);
-                  isLiked = !isLiked;
-                }
-              }),
-              SizedBox(
-                width: 18.w,
-              ),
-              Image.asset("assets/icons/comment.png"),
-              // _InteracIcon(context, Icons.forum, () {
-              //   print("message");
-              // }),
-              SizedBox(
-                width: 18.w,
-              ),
-              _InteracIcon(context,
-                  !isBookMarked ? Icons.bookmark_outline : Icons.bookmark_sharp,
-                  () {
-                if (isBookMarked) {
-                  postProvider.deleteBookMark(widget.post);
-                  setState(() {
-                    isBookMarked = false;
-                  });
-                } else {
-                  postProvider.addBookMark(widget.post);
-                  setState(() {
-                    isBookMarked = true;
-                  });
-                }
-              }),
-              Spacer(),
-              Image.asset("assets/icons/more.png")
-            ],
-          ),
-        );
+        return isLoading
+            ? Container(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _InteracLikeIcon(
+                        context,
+                        widget.post!.like_count.toString(),
+                        isLiked == false
+                            ? Icons.thumb_up_outlined
+                            : Icons.thumb_up, () {
+                      if (isLiked == true) {
+                        postProvider.deleteLike(widget.post);
+                        isLiked = !isLiked;
+                      } else {
+                        postProvider.addLike(widget.post);
+                        isLiked = !isLiked;
+                      }
+                    }),
+                    SizedBox(
+                      width: 18.w,
+                    ),
+                    Image.asset("assets/icons/comment.png"),
+                    // _InteracIcon(context, Icons.forum, () {
+                    //   print("message");
+                    // }),
+                    SizedBox(
+                      width: 18.w,
+                    ),
+                    _InteracIcon(
+                        context,
+                        !isBookMarked
+                            ? Icons.bookmark_outline
+                            : Icons.bookmark_sharp, () {
+                      if (isBookMarked) {
+                        postProvider.deleteBookMark(widget.post);
+                        setState(() {
+                          isBookMarked = false;
+                        });
+                      } else {
+                        postProvider.addBookMark(widget.post);
+                        setState(() {
+                          isBookMarked = true;
+                        });
+                      }
+                    }),
+                    Spacer(),
+                    Image.asset("assets/icons/more.png")
+                  ],
+                ),
+              )
+            : Container();
       },
     );
   }

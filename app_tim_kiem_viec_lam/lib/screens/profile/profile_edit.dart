@@ -16,6 +16,7 @@ import '../../core/models/user_model.dart';
 import '../../core/providers/post_provider.dart';
 import '../../core/providers/user_provider.dart';
 
+import '../../widgets/datetime_cupertino.dart';
 import '../../widgets/textfiled_widget.dart';
 import '../addPost/map.dart';
 
@@ -33,6 +34,8 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController _locationController = TextEditingController();
   // TextFeild khác
   final _formKey = GlobalKey<FormState>();
+  final _formKeyExperience = GlobalKey<FormState>();
+  final _formKeyEducation = GlobalKey<FormState>();
   String? _fullname;
   int? _gender;
   DateTime _birthday = DateTime.now();
@@ -61,11 +64,14 @@ class _EditProfileState extends State<EditProfile> {
   String? _descriptionEdu;
   CheckGender? _character = CheckGender.man;
   PickedData? _pickedData;
+  String msgDateTime = "";
+  final List<String> _listYear = [];
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   late UserProvider userProvider;
+
   void _addEducation() {
     setState(() {
       _educations.add(EducationModel(
@@ -118,9 +124,22 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
 
+  void yearPicker() {
+    int initValueYear = DateTime.now().year;
+    for (int i = initValueYear; i > initValueYear - 60; i--) {
+      if (_listYear.length >= 60) {
+        break;
+      }
+      setState(() {
+        _listYear.add(i.toString());
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    yearPicker();
     userProvider = Provider.of<UserProvider>(context, listen: false);
     _experiences = List<ExperienceModel>.from(widget.user?.experience ?? []);
     _address = widget.user?.address;
@@ -154,6 +173,18 @@ class _EditProfileState extends State<EditProfile> {
       setState(() {
         _birthday = picked;
       });
+  }
+
+  bool isStartYearMoreThan(String startYear, String endYear) {
+    if (startYear.isEmpty && endYear.isEmpty) {
+      if (int.parse(startYear.toString()) > int.parse(endYear.toString())) {
+        setState(() {
+          msgDateTime = "Ngày bắt đầu không thể lớn hơn ngày kết thúc ";
+        });
+        return true;
+      }
+    }
+    return false;
   }
 
   Widget build(BuildContext context) {
@@ -574,93 +605,96 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   _experienceForm(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Kinh nghiệm",
-          style: textTheme.medium14(),
-        ),
-        ..._experiences.asMap().entries.map(
-          (entry) {
-            final int index = entry.key;
-            final ExperienceModel experience = entry.value;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                SizedBox(
-                  height: 10.h,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _removeExperience(index);
-                  },
-                  child: Icon(
-                    Icons.delete,
-                    size: 17,
-                    color: HexColor("#BB2649"),
+    return SizedBox(
+      width: 1.sw,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Kinh nghiệm",
+            style: textTheme.medium14(),
+          ),
+          ..._experiences.asMap().entries.map(
+            (entry) {
+              final int index = entry.key;
+              final ExperienceModel experience = entry.value;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  SizedBox(
+                    height: 10.h,
                   ),
-                ),
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 16.h, horizontal: 15.w),
-                  margin: EdgeInsets.only(top: 17.h),
-                  width: 1.sw,
-                  height: 115.h,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      opacity: 0.1,
-                      image: AssetImage(
-                        'assets/images/jobs/effectFeature.png',
-                      ),
+                  GestureDetector(
+                    onTap: () {
+                      _removeExperience(index);
+                    },
+                    child: Icon(
+                      Icons.delete,
+                      size: 17,
+                      color: HexColor("#BB2649"),
                     ),
-                    color: HexColor("#26BB98"),
-                    borderRadius: BorderRadius.circular(20.r),
                   ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 0.13.sw,
-                        child: Column(
-                          // crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CircleAvatar(
-                                radius: 30.r,
-                                backgroundColor: HexColor("#BB2649"),
-                                child: Text("T",
-                                    style: TextStyle(fontSize: 25.sp))),
-                          ],
+                  Container(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 16.h, horizontal: 15.w),
+                    margin: EdgeInsets.only(top: 17.h),
+                    width: 1.sw,
+                    height: 115.h,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        opacity: 0.1,
+                        image: AssetImage(
+                          'assets/images/jobs/effectFeature.png',
                         ),
                       ),
-                      SizedBox(
-                        width: 8.w,
-                      ),
-                      _inforExperience(context, experience),
-                    ],
+                      color: HexColor("#26BB98"),
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 0.13.sw,
+                          child: Column(
+                            // crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CircleAvatar(
+                                  radius: 30.r,
+                                  backgroundColor: HexColor("#BB2649"),
+                                  child: Text("T",
+                                      style: TextStyle(fontSize: 25.sp))),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: 8.w,
+                        ),
+                        _inforExperience(context, experience),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            );
-          },
-        ),
-        SizedBox(
-          height: 10.h,
-        ),
-        ElevatedButton(
-          style: ButtonStyle(
-              backgroundColor:
-                  MaterialStatePropertyAll<Color>(HexColor("#BB2649"))),
-          onPressed: () {
-            _showDialogExperience(context);
-          },
-          child: Text(
-            'Thêm kinh nghiệm',
-            style: textTheme.medium14(color: "FFFFFF"),
+                ],
+              );
+            },
           ),
-        ),
-      ],
+          SizedBox(
+            height: 10.h,
+          ),
+          ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor:
+                    MaterialStatePropertyAll<Color>(HexColor("#BB2649"))),
+            onPressed: () {
+              _showDialogExperience(context);
+            },
+            child: Text(
+              'Thêm kinh nghiệm',
+              style: textTheme.medium14(color: "FFFFFF"),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -756,92 +790,120 @@ class _EditProfileState extends State<EditProfile> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          elevation: 8,
-          backgroundColor: HexColor("#FAFAFD"),
-          title: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Kinh nghiệm",
-                style: textTheme.headline20(color: "000000"),
-              ),
-              TextFieldWid(
-                icon: Icons.abc_outlined,
-                label: "Tên công việc bạn đã làm",
-                text: "",
-                enbled: true,
-                onChanged: (value) {
-                  _jobTitle = value;
+        return Form(
+          key: _formKeyExperience,
+          child: AlertDialog(
+            elevation: 8,
+            backgroundColor: HexColor("#FAFAFD"),
+            title: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Kinh nghiệm",
+                  style: textTheme.headline20(color: "000000"),
+                ),
+                TextFieldWid(
+                  // icon: Icons.abc_outlined,
+                  label: "Tên công việc bạn đã làm",
+                  text: "",
+                  enbled: true,
+                  onChanged: (value) {
+                    _jobTitle = value;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Tên công việc không được để trống';
+                    }
+
+                    return null;
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 10.h),
+                      child: DateTimePicker(
+                        width: 0.33,
+                        title: "Ngày bắt đầu",
+                        listData: _listYear,
+                        onSelectedItemChanged: (value) {
+                          setState(() {
+                            _startDateEx = _listYear[_listYear.indexOf(value)];
+                          });
+                        },
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 10.h),
+                      child: DateTimePicker(
+                        width: 0.33,
+                        title: "Ngày kết thúc",
+                        listData: _listYear,
+                        onSelectedItemChanged: (value) {
+                          setState(() {
+                            _endDateEx = _listYear[_listYear.indexOf(value)];
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                // Check xem ngày bắt đầu có lớn không
+                // isStartYearMoreThan(
+                //         _startDateEx.toString(), _endDateEdu.toString())
+                //     ? Text("$msgDateTime")
+                //     : Container(),
+                TextFieldWid(
+                  label: "Tên nơi làm việc của bạn",
+                  text: "",
+                  enbled: true,
+                  onChanged: (value) {
+                    _companyName = value;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Tên nơi làm việc không được để trống';
+                    }
+
+                    return null;
+                  },
+                ),
+                TextFieldWid(
+                  label: "Mô tả",
+                  text: "",
+                  enbled: true,
+                  onChanged: (value) {
+                    _descriptionEx = value;
+                  },
+                ),
+                SizedBox(height: 16.h),
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  'Thoát',
+                  style: textTheme.semibold16(color: "000000"),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
                 },
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextFieldWid(
-                    width: 0.32,
-                    icon: Icons.abc_outlined,
-                    label: "Ngày bắt đầu",
-                    text: "",
-                    enbled: true,
-                    onChanged: (value) {
-                      _startDateEx = value;
-                    },
-                  ),
-                  TextFieldWid(
-                    width: 0.32,
-                    icon: Icons.abc_outlined,
-                    label: "Ngày kết thúc",
-                    text: "",
-                    enbled: true,
-                    onChanged: (value) {
-                      _endDateEx = value;
-                    },
-                  ),
-                ],
-              ),
-              TextFieldWid(
-                icon: Icons.abc_outlined,
-                label: "Tên công ty",
-                text: "",
-                enbled: true,
-                onChanged: (value) {
-                  _companyName = value;
+              TextButton(
+                child: Text(
+                  'OK',
+                  style: textTheme.semibold16(color: "000000"),
+                ),
+                onPressed: () {
+                  if (_formKeyExperience.currentState!.validate()) {
+                    _addExperience();
+                    Navigator.of(context).pop();
+                  }
                 },
               ),
-              TextFieldWid(
-                icon: Icons.abc_outlined,
-                label: "Mô tả",
-                text: "",
-                enbled: true,
-                onChanged: (value) {
-                  _descriptionEx = value;
-                },
-              ),
-              SizedBox(height: 16.h),
             ],
           ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(
-                'CANCEL',
-                style: textTheme.semibold16(color: "000000"),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text(
-                'OK',
-                style: textTheme.semibold16(color: "000000"),
-              ),
-              onPressed: () {
-                _addExperience();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
         );
       },
     );
@@ -851,100 +913,121 @@ class _EditProfileState extends State<EditProfile> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          elevation: 8,
-          backgroundColor: HexColor("#FAFAFD"),
-          title: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Học vấn",
-                style: textTheme.headline20(color: "000000"),
-              ),
-              TextFieldWid(
-                icon: Icons.abc_outlined,
-                label: "Trường đã học",
-                text: "",
-                enbled: true,
-                onChanged: (value) {
-                  _schoolName = value;
+        return Form(
+          key: _formKeyEducation,
+          child: AlertDialog(
+            elevation: 8,
+            backgroundColor: HexColor("#FAFAFD"),
+            title: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Học vấn",
+                  style: textTheme.headline20(color: "000000"),
+                ),
+                TextFieldWid(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Trường đã học không được để trống';
+                    }
+
+                    return null;
+                  },
+                  label: "Trường đã học",
+                  text: "",
+                  enbled: true,
+                  onChanged: (value) {
+                    _schoolName = value;
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 10.h),
+                      child: DateTimePicker(
+                        width: 0.33,
+                        title: "Ngày bắt đầu",
+                        listData: _listYear,
+                        onSelectedItemChanged: (value) {
+                          setState(() {
+                            _startDateEdu = _listYear[_listYear.indexOf(value)];
+                          });
+                        },
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 10.h),
+                      child: DateTimePicker(
+                        width: 0.33,
+                        title: "Ngày kết thúc",
+                        listData: _listYear,
+                        onSelectedItemChanged: (value) {
+                          setState(() {
+                            _endDateEdu = _listYear[_listYear.indexOf(value)];
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                TextFieldWid(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Chuyên ngành không được để trống';
+                    }
+
+                    return null;
+                  },
+                  label: "Chuyên ngành",
+                  text: "",
+                  enbled: true,
+                  onChanged: (value) {
+                    _fieldOfStudy = value;
+                  },
+                ),
+                TextFieldWid(
+                  label: "Bằng cấp",
+                  text: "",
+                  enbled: true,
+                  onChanged: (value) {
+                    _degree = value;
+                  },
+                ),
+                TextFieldWid(
+                  label: "Mô tả",
+                  text: "",
+                  enbled: true,
+                  onChanged: (value) {
+                    _descriptionEdu = value;
+                  },
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  'Thoát',
+                  style: textTheme.semibold16(color: "000000"),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
                 },
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextFieldWid(
-                    width: 0.32,
-                    icon: Icons.abc_outlined,
-                    label: "Ngày bắt đầu",
-                    text: "",
-                    enbled: true,
-                    onChanged: (value) {
-                      _startDateEdu = value;
-                    },
-                  ),
-                  TextFieldWid(
-                    width: 0.32,
-                    icon: Icons.abc_outlined,
-                    label: "Ngày kết thúc",
-                    text: "",
-                    enbled: true,
-                    onChanged: (value) {
-                      _endDateEdu = value;
-                    },
-                  ),
-                ],
-              ),
-              TextFieldWid(
-                icon: Icons.abc_outlined,
-                label: "Chuyên ngành",
-                text: "",
-                enbled: true,
-                onChanged: (value) {
-                  _fieldOfStudy = value;
-                },
-              ),
-              TextFieldWid(
-                icon: Icons.abc_outlined,
-                label: "Bằng cấp",
-                text: "",
-                enbled: true,
-                onChanged: (value) {
-                  _degree = value;
-                },
-              ),
-              TextFieldWid(
-                icon: Icons.abc_outlined,
-                label: "Mô tả",
-                text: "",
-                enbled: true,
-                onChanged: (value) {
-                  _descriptionEdu = value;
+              TextButton(
+                child: Text(
+                  'Hoàn tất',
+                  style: textTheme.semibold16(color: "000000"),
+                ),
+                onPressed: () {
+                  if (_formKeyEducation.currentState!.validate()) {
+                    _addEducation();
+                    Navigator.of(context).pop();
+                  }
                 },
               ),
             ],
           ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(
-                'CANCEL',
-                style: textTheme.semibold16(color: "000000"),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text(
-                'OK',
-                style: textTheme.semibold16(color: "000000"),
-              ),
-              onPressed: () {
-                _addEducation();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
         );
       },
     );

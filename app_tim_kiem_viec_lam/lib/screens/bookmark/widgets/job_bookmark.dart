@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/providers/jobs_provider.dart';
+import '../../../utils/constant.dart';
 
 class JobBookMarkWidget extends StatefulWidget {
   const JobBookMarkWidget({super.key});
@@ -18,33 +19,45 @@ class JobBookMarkWidget extends StatefulWidget {
 
 class _JobBookMarkWidgetState extends State<JobBookMarkWidget> {
   late JobsProvider jobProvider;
+  bool isLoading = false;
   void initState() {
     jobProvider = Provider.of<JobsProvider>(context, listen: false);
     super.initState();
+    jobProvider.getBookMarkJob().whenComplete(() {
+      setState(() {
+        isLoading = true;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 16.w),
-        child: FutureBuilder(
-          future: jobProvider.getBookMarkJob(),
-          builder: (context, snapshot) {
-            List<JobModel> jobs = [];
-
-            if (snapshot.hasData) {
-              jobs = snapshot.data;
-              return Wrap(
-                alignment: WrapAlignment.center,
-                children: [...jobs.map((e) => ItemJobWidget(job: e)).toList()],
+    return SafeArea(
+        top: false,
+        bottom: false,
+        child: Container(
+          alignment: Alignment.center,
+          margin: EdgeInsets.symmetric(horizontal: 20.w),
+          child: Builder(
+            builder: (context) {
+              return CustomScrollView(
+                slivers: [
+                  SliverOverlapInjector(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                        context),
+                  ),
+                  SliverGrid(
+                      delegate: SliverChildListDelegate([
+                        ...jobProvider.listBookmark
+                            .map((e) => ItemJobWidget(job: e))
+                            .toList()
+                      ]),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2)),
+                ],
               );
-            } else {
-              return Text("${snapshot.error}");
-            }
-          },
-        ),
-      ),
-    );
+            },
+          ),
+        ));
   }
 }

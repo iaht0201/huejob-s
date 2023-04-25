@@ -85,15 +85,11 @@ class _RecommendJobsState extends State<RecommendJobs> {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
-                          shimmerFromColor(height: 164.h, width: 156.w),
-                          SizedBox(
-                            width: 15.w,
-                          ),
-                          shimmerFromColor(height: 164.h, width: 156.w),
-                          SizedBox(
-                            width: 15.w,
-                          ),
-                          shimmerFromColor(height: 164.h, width: 156.w),
+                          ...List.generate(
+                            3,
+                            (index) =>
+                                shimmerFromColor(height: 164.h, width: 156.w),
+                          )
                         ],
                       ),
                     ),

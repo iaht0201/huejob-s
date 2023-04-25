@@ -164,6 +164,7 @@ class PostProvider extends ChangeNotifier {
   }
 
   Future<void> getBookMark() async {
+    _listBookmark.clear();
     final prefs = await SharedPreferences.getInstance();
     final response = await SupabaseBase.supabaseClient
         .from('bookmarks')
@@ -177,6 +178,7 @@ class PostProvider extends ChangeNotifier {
         _listBookmark.add(BookMarkModel.fromMap(bookmark));
       }
     }
+    print(_listBookmark);
     notifyListeners();
   }
 
@@ -246,6 +248,49 @@ class PostProvider extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  Future getPostIdBookMark() async {
+    final prefs = await SharedPreferences.getInstance();
+    var listJobBookMark = await SupabaseBase.supabaseClient
+        .from('bookmarks')
+        .select("post_id")
+        .eq('userId', prefs.getString("id"))
+        .execute();
+    print(listJobBookMark);
+    if (listJobBookMark.data != null) {
+      List<int> _jobItem = [];
+      var data = listJobBookMark.data;
+      for (int i = 0; i < data.length; i++) {
+        _jobItem.add(data[i]['post_id']);
+        print("i: ${data[i]['post_id']}");
+      }
+
+      return _jobItem;
+    }
+    return [];
+  }
+
+  Future getBookMarkPost() async {
+    List<PostModel> _listPost = [];
+    var postIds = await getPostIdBookMark();
+
+    for (int i = 0; i < postIds.length; i++) {
+      var respon = await SupabaseBase.supabaseClient
+          .from('posts')
+          .select('*, users(*)')
+          .eq("post_id", postIds[i])
+          .execute();
+      if (respon.data != null && respon.data.isNotEmpty) {
+        var data = respon.data;
+        for (int i = 0; i < data.length; i++) {
+          _listPost.add(PostModel.fromMap(data[i]));
+        }
+      }
+    }
+    print(_listPost);
+    notifyListeners();
+    return _listPost;
   }
 
   Future<void> insertPost(BuildContext context, PostModel newPost) async {

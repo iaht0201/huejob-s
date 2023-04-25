@@ -27,7 +27,10 @@ import 'package:provider/provider.dart';
 import '../../core/providers/authenciation_provider.dart';
 import '../../core/providers/post_provider.dart';
 import '../../widgets/avatar_widget.dart';
+import '../../widgets/bottom_navigator_bar_widget.dart';
+import '../../widgets/datetime_cupertino.dart';
 import '../bookmark/bookmark.dart';
+import '../manager_job/mannager_job.dart';
 import '../profile/widgets/button_arrow.dart';
 import '../social/social_screen.dart';
 import '../upload_profile/upload_profile.dart';
@@ -46,11 +49,8 @@ class _HomePageState extends State<HomePage>
   int currentTab = 0;
   final List screens = [
     HomePage(),
-    ProfileScreen(),
-    // BookMark Screen
-    // Noti
-    ProfileSettingScreen(),
-    LoginView(),
+    SocialScreen(),
+    ChatPage(),
   ];
   final PageStorageBucket bucket = PageStorageBucket();
   // Widget currentScreen = _ContentHome();
@@ -175,6 +175,7 @@ class _HomePageState extends State<HomePage>
           );
         },
       ),
+      // bottomNavigationBar: BottomNavigatorBarWidget(),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
         notchMargin: 10,
@@ -429,6 +430,28 @@ class _HomePageState extends State<HomePage>
                     },
                   ),
                   ListTile(
+                    title: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MannagerJobScreen()));
+                      },
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            "assets/icons/approved.png",
+                            width: 25.w,
+                          ),
+                          SizedBox(
+                            width: 10.w,
+                          ),
+                          Text('Quản lý job')
+                        ],
+                      ),
+                    ),
+                  ),
+                  ListTile(
                     title: _itemDrawer(context, Icons.settings, "Cài đặt"),
                     onTap: () {},
                   ),
@@ -670,7 +693,7 @@ class __ContentHomeState extends State<_ContentHome> {
                             ],
                           );
                         },
-                      )
+                      ),
                     ],
                   ),
                 ),

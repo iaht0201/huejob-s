@@ -63,6 +63,29 @@ class JobsProvider extends ChangeNotifier {
     return _listFeaturJob;
   }
 
+  // fetch danh sach job da dang
+
+  List<JobModel> get listJobRecruiter => _listJobRecruiter;
+  List<JobModel> _listJobRecruiter = [];
+  Future fetchJobByRecruiter() async {
+    final prefs = await SharedPreferences.getInstance();
+    _listJobRecruiter.clear();
+    var respon = await _supbase
+        .from("jobs")
+        .select("*,users(*)")
+        .eq('userId', '${prefs.getString('id')}')
+        .order('applied_count', ascending: false)
+        .execute(); 
+    if (respon.data != null) {
+      var data = respon.data;
+
+      for (int i = 0; i < data.length; i++) {
+        _listJobRecruiter.add(JobModel.fromMap(data[i]));
+      }
+    }
+    notifyListeners();
+  }
+
   Future fetchRolesJob(String job) async {
     var respon = await _supbase
         .from("jobs")
@@ -207,6 +230,26 @@ class JobsProvider extends ChangeNotifier {
     }
   }
 
+  // Apply
+  List<ApplyModel> _listApply = [];
+  get listApply => _listApply;
+  Future fetApplyJob(String jobId) async {
+    _listApply.clear();
+    var respon = await _supbase
+        .from("applyjob")
+        .select("*,users(*)")
+        .eq('job_id', jobId)
+        .execute();
+    if (respon.data != null && respon.data.isNotEmpty) {
+      var data = respon.data;
+      for (int i = 0; i < data.length; i++) {
+        _listApply.add(ApplyModel.fromMapWithUser(data[i]));
+      }
+    }
+    print(_listApply);
+    notifyListeners();
+  }
+
   Future cancelApply(
       BuildContext context, String userApplyId, String jobId) async {
     await _supbase
@@ -302,10 +345,10 @@ class JobsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future fetchBookMark() async {
+  Future getJobId(String nameColumn) async {
     final prefs = await SharedPreferences.getInstance();
     var listJobBookMark = await _supbase
-        .from('bookmarkJob')
+        .from('${nameColumn}')
         .select("job_id")
         .eq('userId', prefs.getString("id"))
         .execute();
@@ -323,9 +366,34 @@ class JobsProvider extends ChangeNotifier {
     return [];
   }
 
+  List<JobModel> _listJobBookMark = [];
+  get listBookmark => _listJobBookMark;
+
+  // Future<void> getBookMarkJob1() async {
+  //   _listJobBookMark.clear();
+
+  //   var jobIds = await getJobIdBookMark();
+
+  //   for (int i = 0; i < jobIds.length; i++) {
+  //     var respon = await _supbase
+  //         .from("jobs")
+  //         .select("*,users(*)")
+  //         .eq('job_id', jobIds[i])
+  //         .execute();
+  //     if (respon.data != null && respon.data.isNotEmpty) {
+  //       var data = respon.data;
+  //       for (int i = 0; i < data.length; i++) {
+  //         _listJobBookMark.add(JobModel.fromMap(data[i]));
+  //       }
+  //     }
+  //   }
+  //   print(_listJobBookMark);
+  //   notifyListeners();
+  // }
+
   Future getBookMarkJob() async {
     List<JobModel> _listJob = [];
-    var jobIds = await fetchBookMark();
+    var jobIds = await getJobId('bookmarkJob');
 
     for (int i = 0; i < jobIds.length; i++) {
       var respon = await _supbase
@@ -339,11 +407,11 @@ class JobsProvider extends ChangeNotifier {
           _listJob.add(JobModel.fromMap(data[i]));
         }
       }
-
-
     }
-    print(_listJob);
+    _listJobBookMark = _listJob;
+    print(_listJobBookMark);
+
     notifyListeners();
-    return _listJob;
+    // return _listJob;
   }
 }

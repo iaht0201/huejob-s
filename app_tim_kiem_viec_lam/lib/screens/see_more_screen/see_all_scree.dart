@@ -86,25 +86,32 @@ class _SeeAllScreenState extends State<SeeAllScreen> {
                       ...jobs.map((job) => ItemJobWidget(job: job)).toList()
                     ],
                   );
-                } else if (snapshot.hasError) {
-                  // print(snapshot.error);
-                  return Text("${snapshot.error}");
-                } else
-                  return Container(
-                    margin: EdgeInsets.only(top: 20.h),
-                    child: GridView.count(
-                        primary: false,
-                        padding: const EdgeInsets.all(20),
-                        crossAxisSpacing: 10.h,
-                        mainAxisSpacing: 10.w,
-                        crossAxisCount: 2,
-                        children: List.generate(
-                            6,
-                            (index) => shimmerFromColor(
-                                  width: 156.w,
-                                  height: 164.h,
-                                ))),
-                  );
+                }
+                return Container(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+                //  else if (snapshot.hasError) {
+                //   // print(snapshot.error);
+                //   return Text("${snapshot.error}");
+                // }
+                //  else
+                //   return Container(
+                //     margin: EdgeInsets.only(top: 20.h),
+                //     child: GridView.count(
+                //         primary: false,
+                //         padding: const EdgeInsets.all(20),
+                //         crossAxisSpacing: 10.h,
+                //         mainAxisSpacing: 10.w,
+                //         crossAxisCount: 2,
+                //         children: List.generate(
+                //             6,
+                //             (index) => shimmerFromColor(
+                //                   width: 156.w,
+                //                   height: 164.h,
+                //                 ))),
+                //   );
               },
             )),
       ),

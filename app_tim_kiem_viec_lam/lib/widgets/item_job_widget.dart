@@ -21,9 +21,21 @@ class ItemJobWidget extends StatefulWidget {
 
 class _ItemJobWidgetState extends State<ItemJobWidget> {
   late JobsProvider jobProvider;
+  bool isBookMarked = false;
+  bool isLoading = false;
   void initState() {
-    super.initState();
     jobProvider = Provider.of<JobsProvider>(context, listen: false);
+    jobProvider.getBookMarkJob().whenComplete(() {
+      setState(() {
+        for (JobModel job in jobProvider.listBookmark) {
+          if (job.jobId == widget.job.jobId) {
+            isBookMarked = true;
+          }
+        }
+        isLoading = true;
+      });
+    });
+    super.initState();
   }
 
   @override
@@ -31,112 +43,109 @@ class _ItemJobWidgetState extends State<ItemJobWidget> {
     return Stack(
       children: [
         GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        DetailJobScreen(jobId: widget.job.jobId.toString())));
-          },
-          child: Container(
-              padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 25.w),
-              margin: EdgeInsets.only(right: 15.w, top: 20.h),
-              width: 156.w,
-              height: 190.h,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    child: GestureDetector(
-                      onTap: () {
-                        // _navigatorDrawer(context);
-                        // Scaffold.of(context).openDrawer();
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProfileScreen(
-                                    clientID: widget.job.userId)));
-                      },
-                      child: widget.job.users!.imageUrl == null
-                          ? (CircleAvatar(
-                              radius: 22.r,
-                              backgroundColor: HexColor("#BB2649"),
-                              child: Text(
-                                  "${widget.job.users!.name.toString().substring(0, 1).toUpperCase()}",
-                                  style: const TextStyle(fontSize: 25))))
-                          : CircleAvatar(
-                              radius: 22.r,
-                              backgroundColor: HexColor("#BB2649"),
-                              backgroundImage:
-                                  NetworkImage("${widget.job.users!.imageUrl}"),
-                            ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 12.h,
-                  ),
-                  Text(
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                    "${widget.job.jobName}",
-                    style: textTheme.sub14(),
-                  ),
-                  SizedBox(
-                    height: 4.h,
-                  ),
-                  Text(
-                    "${widget.job.users?.fullname ?? widget.job.users?.name}",
-                    style: textTheme.regular13(color: "#0D0D26", opacity: 0.6),
-                  ),
-                  SizedBox(
-                    height: 8.h,
-                  ),
-                  Text(
-                    "${widget.job.wage}",
-                    style: textTheme.medium12(),
-                  ),
-                ],
-              )),
-        ),
-        Positioned(
-            right: 13.h,
-            top: 13.h,
-            child: FutureBuilder(
-              future:
-                  jobProvider.checkIsBookMarkJob(widget.job.jobId.toString()),
-              builder: (context, snapshot) {
-                var isBookMark;
-                if (snapshot.hasData) {
-                  isBookMark = snapshot.data;
-                  return Container(
-                    child: GestureDetector(
-                      onTap: () {
-                        isBookMark
-                            ? jobProvider
-                                .deleteBookMarkJob(widget.job.jobId.toString())
-                            : jobProvider
-                                .addBookMarkJob(widget.job.jobId.toString());
-                        setState(() {
-                          isBookMark = !isBookMark;
-                        });
-                      },
-                      child: Image.asset(
-                        "assets/icons/${isBookMark ? 'bookmark' : 'bookmark1'}.png",
-                        width: 15.w,
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          DetailJobScreen(jobId: widget.job.jobId.toString())));
+            },
+            child: Container(
+                padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 25.w),
+                margin: EdgeInsets.only(right: 15.w, top: 20.h),
+                width: 156.w,
+                height: 190.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: GestureDetector(
+                        onTap: () {
+                          // _navigatorDrawer(context);
+                          // Scaffold.of(context).openDrawer();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProfileScreen(
+                                      clientID: widget.job.userId)));
+                        },
+                        child: widget.job.users!.imageUrl == null
+                            ? (CircleAvatar(
+                                radius: 22.r,
+                                backgroundColor: HexColor("#BB2649"),
+                                child: Text(
+                                    "${widget.job.users!.name.toString().substring(0, 1).toUpperCase()}",
+                                    style: const TextStyle(fontSize: 25))))
+                            : CircleAvatar(
+                                radius: 22.r,
+                                backgroundColor: HexColor("#BB2649"),
+                                backgroundImage: NetworkImage(
+                                    "${widget.job.users!.imageUrl}"),
+                              ),
                       ),
                     ),
-                  );
-                }
-                return Container(
-                  child: shimmerFromColor(width: 20.w, height: 25.h),
-                );
-              },
-            )),
+                    SizedBox(
+                      height: 12.h,
+                    ),
+                    Text(
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      "${widget.job.jobName}",
+                      style: textTheme.sub14(),
+                    ),
+                    SizedBox(
+                      height: 4.h,
+                    ),
+                    Text(
+                      "${widget.job.users?.fullname ?? widget.job.users?.name}",
+                      style:
+                          textTheme.regular13(color: "#0D0D26", opacity: 0.6),
+                    ),
+                    SizedBox(
+                      height: 8.h,
+                    ),
+                    Text(
+                      "${widget.job.wage}",
+                      style: textTheme.medium12(),
+                    ),
+                  ],
+                ))),
+        isLoading
+            ? Positioned(
+                right: 25.h,
+                top: 25.h,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
+                  child: GestureDetector(
+                    onTap: () {
+                      if (isBookMarked) {
+                        jobProvider
+                            .deleteBookMarkJob(widget.job.jobId.toString());
+                        setState(() {
+                          isBookMarked = false;
+                        });
+                      } else {
+                        jobProvider.addBookMarkJob(widget.job.jobId.toString());
+                        setState(() {
+                          isBookMarked = true;
+                        });
+                      }
+                      // setState(() {
+                      //   isBookMarked = !isBookMarked;
+                      // });
+                    },
+                    child: Image.asset(
+                      "assets/icons/${isBookMarked ? 'bookmark' : 'bookmark1'}.png",
+                      width: 15.w,
+                    ),
+                  ),
+                ))
+            : Container()
       ],
     );
   }

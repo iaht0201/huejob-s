@@ -11,6 +11,12 @@ import '../models/user_model.dart';
 import '../supabase/supabase.dart';
 
 class UserProvider extends ChangeNotifier {
+  int _currentTab = 0;
+  int get currentTab => _currentTab;
+  set setCurrentTab(value) {
+    _currentTab = value;
+  }
+
   UserModel _user = new UserModel();
   UserModel _userByID = new UserModel();
   UserModel get user => _user;
