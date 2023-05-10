@@ -20,24 +20,25 @@ class JobModel {
   final double? latitude;
   final double? longitude;
   final int? applied_count;
-  JobModel({
-    this.jobId,
-    this.wage,
-    this.description,
-    this.createdAt,
-    this.expirationDate,
-    this.userId,
-    this.role,
-    this.jobName,
-    this.location,
-    this.categoryJob,
-    this.users,
-    this.requirement,
-    this.wokringTime,
-    this.latitude,
-    this.longitude,
-    this.applied_count,
-  });
+  final String? status;
+  JobModel(
+      {this.jobId,
+      this.wage,
+      this.description,
+      this.createdAt,
+      this.expirationDate,
+      this.userId,
+      this.role,
+      this.jobName,
+      this.location,
+      this.categoryJob,
+      this.users,
+      this.requirement,
+      this.wokringTime,
+      this.latitude,
+      this.longitude,
+      this.applied_count,
+      this.status});
   factory JobModel.fromJson(String str) => JobModel.fromMap(json.decode(str));
   factory JobModel.fromMap(Map<String, dynamic> json) => JobModel(
       jobId: json['job_id'],
@@ -55,7 +56,8 @@ class JobModel {
       users: UserModel.fromMap(json["users"]),
       applied_count: json['applied_count'],
       longitude: json['longitude'],
-      latitude: json['latitude']);
+      latitude: json['latitude'],
+      status: json['status']);
 
   factory JobModel.fromMap1(Map<String, dynamic> json) => JobModel(
       jobId: json['job_id'],
@@ -72,7 +74,8 @@ class JobModel {
       wokringTime: json['working_time'],
       longitude: json['longitude'],
       applied_count: json['applied_count'],
-      latitude: json['latitude']);
+      latitude: json['latitude'],
+      status: json['status']);
   static Future<JobModel> fromJson1(
       Map<String, dynamic> json, SupabaseClient client) async {
     final response = await client
@@ -109,8 +112,67 @@ class JobModel {
     }
   }
 
+  get isExpiration {
+    DateTime now = DateTime.now();
+    DateTime endOfDay = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    );
+
+    int nowMiliSecond = endOfDay.millisecondsSinceEpoch;
+    DateTime dateTime = DateTime.parse(expirationDate.toString());
+    int expiration = dateTime.millisecondsSinceEpoch;
+    if (nowMiliSecond > expiration) {
+      return true;
+    } else
+      return false;
+  }
+
+  get countExpiration {
+    DateTime now = DateTime.now();
+    DateTime endOfDay = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    );
+
+    int nowMiliSecond = endOfDay.millisecondsSinceEpoch;
+    DateTime dateTime = DateTime.parse(expirationDate.toString());
+    int expiration = dateTime.millisecondsSinceEpoch;
+    if (nowMiliSecond < expiration) {
+      int differenceInDays = (expiration - now.millisecondsSinceEpoch);
+      return differenceInDays;
+    }
+  }
+
+  Duration calculateDuration(DateTime now, DateTime createAt) {
+    return now.difference(createAt);
+  }
+
+  // hàm tính thời gian trước
+  get agoTime {
+    String result;
+    DateTime now = DateTime.now();
+    DateTime _expirationDate = DateTime.parse(expirationDate.toString());
+    Duration duration = calculateDuration(_expirationDate, now);
+    int second = duration.inSeconds;
+    if (second >= 0 && second <= 59) {
+      result = "${duration.inSeconds}giây";
+    } else if (second > 59 && second <= 3599) {
+      result = "${duration.inMinutes}p";
+    } else if (second > 3599 && second <= 86399) {
+      result = "${duration.inHours} giờ";
+    } else {
+      result = "${duration.inDays} ngày";
+    }
+
+    return result;
+  }
+
   Map<String, dynamic> toMapAddJob() {
     return {
+      // 'job_id': jobId,
       'wage': wage,
       'description': description,
       'userId': userId,
@@ -122,6 +184,42 @@ class JobModel {
       'working_time': wokringTime,
       'longitude': longitude,
       'latitude': latitude,
+      'expiration_date': expirationDate,
+      'status': status
     };
+  }
+
+  JobModel copyWith({
+    String? jobId,
+    String? wage,
+    String? description,
+    String? expirationDate,
+    String? userId,
+    String? role,
+    String? jobName,
+    String? location,
+    String? categoryJob,
+    String? wokringTime,
+    String? requirement,
+    double? latitude,
+    double? longitude,
+    String? status,
+  }) {
+    return JobModel(
+      jobId: this.jobId,
+      wage: wage ?? this.wage,
+      description: description ?? this.description,
+      expirationDate: expirationDate ?? this.expirationDate,
+      userId: userId ?? this.userId,
+      role: role ?? this.role,
+      jobName: jobName ?? this.jobName,
+      location: location ?? this.location,
+      categoryJob: categoryJob ?? this.categoryJob,
+      wokringTime: wokringTime ?? this.wokringTime,
+      requirement: requirement ?? this.requirement,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      status: status ?? this.status,
+    );
   }
 }

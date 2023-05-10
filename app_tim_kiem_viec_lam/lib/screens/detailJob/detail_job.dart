@@ -199,7 +199,9 @@ class _DetailJobScreenState extends State<DetailJobScreen> {
               ),
               borderRadius:
                   BorderRadius.only(bottomRight: Radius.circular(100.r)),
-              color: HexColor("#BB2649")),
+              color: !job.isExpiration
+                  ? HexColor("#BB2649")
+                  : HexColor("#95969D")),
         ),
         Positioned(
             child: Container(
@@ -279,10 +281,6 @@ class _DetailJobScreenState extends State<DetailJobScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text(
-                        "${job.wage}",
-                        style: textTheme.semibold16(),
-                      ),
                       GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -294,10 +292,17 @@ class _DetailJobScreenState extends State<DetailJobScreen> {
                                           longitude: job.longitude,
                                         )));
                           },
-                          child: Text(
-                            "${job.getCity}",
-                            style: textTheme.semibold16(),
-                          )),
+                          child: job.isExpiration
+                              ? Text(
+                                  "Đã hết hạn",
+                                  style: textTheme.medium14(color: "FFFFFF"),
+                                )
+                              : Text("Thời gian hết hạn: ${job.agoTime}",
+                                  style: textTheme.medium14(color: "FFFFFF"))),
+                      Text(
+                        "${job.wage}",
+                        style: textTheme.medium14(color: "FFFFFF"),
+                      ),
                       // Text(
                       //   "${job.location}",
                       //   style: textTheme.semibold16(),

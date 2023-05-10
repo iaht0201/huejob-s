@@ -16,7 +16,7 @@ import '../../core/models/user_model.dart';
 import '../../core/providers/post_provider.dart';
 import '../../core/providers/user_provider.dart';
 
-import '../../widgets/datetime_cupertino.dart';
+import '../../widgets/picker_cupertino/picker_year.dart';
 import '../../widgets/textfiled_widget.dart';
 import '../addPost/map.dart';
 
@@ -41,6 +41,7 @@ class _EditProfileState extends State<EditProfile> {
   DateTime _birthday = DateTime.now();
   AddressModel? _address;
   String? _phoneNumber;
+  String? _caption;
   String? _status;
   String? _imageUrl;
   String? _familyname;
@@ -160,6 +161,8 @@ class _EditProfileState extends State<EditProfile> {
     _locationController.text = (widget.user?.address != null
         ? widget.user?.address!.addressName!
         : "")!;
+
+    _caption = widget.user?.caption ?? "";
   }
 
   void _selectDate(BuildContext context) async {
@@ -427,6 +430,26 @@ class _EditProfileState extends State<EditProfile> {
                             },
                           ),
                           SizedBox(height: 24.h),
+                          TextFieldWid(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Tiểu sử không được để trống';
+                              }
+                              // if (!RegExp(r' ^(?:\w+\W*){1,52}$')
+                              //     .hasMatch(value)) {
+                              //   return 'Tiểu sử không quá 52 từ';
+                              // }
+                              return null;
+                            },
+                            maxLines: 3,
+                            icon: Icons.note_alt_outlined,
+                            label: "Tiểu sử",
+                            text: _caption ?? "",
+                            enbled: true,
+                            onChanged: (value) {
+                              _caption = value;
+                            },
+                          ),
                           _experienceForm(context),
                           _educationForm(context),
                         ],
@@ -460,22 +483,26 @@ class _EditProfileState extends State<EditProfile> {
                       } else {
                         if (_formKey.currentState!.validate()) {
                           final newUser = UserModel(
-                              careAbout: userProvider.user.careAbout,
-                              userId: userProvider.user.userId,
-                              name: userProvider.user.name,
-                              address: _address,
-                              familyname: _familyname,
-                              firstname: _firstName,
-                              birthday: _birthday.toIso8601String(),
-                              email: userProvider.user.email,
-                              experience: _experiences,
-                              education: _educations,
-                              fullname: _fullname ?? userProvider.user.fullname,
-                              gender: _gender,
-                              phone_number: int.parse(_phoneNumber.toString()),
-                              status: _status ?? userProvider.user.status,
-                              imageUrl: userProvider.user.imageUrl,
-                              usertype: userProvider.user.usertype);
+                            careAbout: userProvider.user.careAbout,
+                            userId: userProvider.user.userId,
+                            name: userProvider.user.name,
+                            address: _address,
+                            familyname: _familyname,
+                            firstname: _firstName,
+                            birthday: _birthday.toIso8601String(),
+                            email: userProvider.user.email,
+                            experience: _experiences,
+                            education: _educations,
+                            fullname: _fullname ?? userProvider.user.fullname,
+                            gender: _gender,
+                            phone_number: int.parse(_phoneNumber.toString()),
+                            status: _status ?? userProvider.user.status,
+                            imageUrl: userProvider.user.imageUrl,
+                            usertype: userProvider.user.usertype,
+                            caption: _caption ?? userProvider.user.caption,
+                            followers_count: userProvider.user.followers_count,
+                            following_count: userProvider.user.following_count,
+                          );
 
                           userProvider.updateUser(context, newUser,
                               action: "${widget.action}");
@@ -823,7 +850,7 @@ class _EditProfileState extends State<EditProfile> {
                   children: [
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 10.h),
-                      child: DateTimePicker(
+                      child: PickerYear(
                         width: 0.33,
                         title: "Ngày bắt đầu",
                         listData: _listYear,
@@ -836,7 +863,7 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 10.h),
-                      child: DateTimePicker(
+                      child: PickerYear(
                         width: 0.33,
                         title: "Ngày kết thúc",
                         listData: _listYear,
@@ -945,7 +972,7 @@ class _EditProfileState extends State<EditProfile> {
                   children: [
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 10.h),
-                      child: DateTimePicker(
+                      child: PickerYear(
                         width: 0.33,
                         title: "Ngày bắt đầu",
                         listData: _listYear,
@@ -958,7 +985,7 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 10.h),
-                      child: DateTimePicker(
+                      child: PickerYear(
                         width: 0.33,
                         title: "Ngày kết thúc",
                         listData: _listYear,

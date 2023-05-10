@@ -19,6 +19,8 @@ class UserModel {
   final String? usertype;
   final String? firstname;
   final String? familyname;
+  final num? following_count;
+  final num? followers_count; 
   final List<JobCategoryModel>? careAbout;
 
   final String? caption;
@@ -39,7 +41,9 @@ class UserModel {
       this.familyname,
       this.firstname,
       this.education,
-      this.careAbout});
+      this.careAbout, 
+      this.followers_count , 
+      this.following_count});
 
   factory UserModel.fromJson(String str) => UserModel.fromMap(json.decode(str));
   factory UserModel.fromMap(Map<String, dynamic> json) => UserModel(
@@ -71,6 +75,8 @@ class UserModel {
         fullname: json['fullname'],
         firstname: json['firstName'],
         familyname: json['familyName'],
+        followers_count : json['followers_count'] , 
+        following_count: json['following_count']
       );
 
   UserModel copyWith(
@@ -95,6 +101,45 @@ class UserModel {
       userId: this.userId,
       name: this.name,
       imageUrl: imageUrl ?? this.imageUrl,
+      email: this.email,
+      birthday: birthday ?? this.birthday,
+      gender: gender ?? this.gender,
+      phone_number: phone_number ?? this.phone_number,
+      experience: experience ?? this.experience,
+      address: address ?? this.address,
+      education: education ?? this.education,
+      fullname: fullname ?? this.fullname,
+      status: status ?? this.status,
+      usertype: this.usertype,
+      firstname: firstname ?? this.firstname,
+      familyname: familyname ?? this.familyname,
+      caption: this.caption ?? this.caption,
+      careAbout: careAbout ?? this.careAbout,
+    );
+  }
+
+  UserModel copyWithImage(
+      {String? userId,
+      String? name,
+      String? imageUrl,
+      String? email,
+      String? birthday,
+      int? gender,
+      int? phone_number,
+      List<ExperienceModel>? experience,
+      AddressModel? address,
+      List<EducationModel>? education,
+      String? fullname,
+      String? status,
+      String? usertype,
+      String? firstname,
+      String? familyname,
+      String? caption,
+      List<JobCategoryModel>? careAbout}) {
+    return UserModel(
+      userId: this.userId,
+      name: this.name,
+      imageUrl: imageUrl,
       email: this.email,
       birthday: birthday ?? this.birthday,
       gender: gender ?? this.gender,
@@ -151,6 +196,7 @@ class UserModel {
       'education': education != null
           ? jsonEncode(List<dynamic>.from(education!.map((e) => e.toJson())))
           : null,
+      'caption' : caption
     };
   }
 }

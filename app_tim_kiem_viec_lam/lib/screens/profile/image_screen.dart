@@ -2,8 +2,11 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:app_tim_kiem_viec_lam/core/models/user_model.dart';
+import 'package:app_tim_kiem_viec_lam/screens/profile/widgets/button_arrow.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +17,8 @@ import '../../core/providers/user_provider.dart';
 import '../../core/supabase/supabase.dart';
 
 import 'package:provider/provider.dart' as p;
+
+import '../../utils/constant.dart';
 
 class ImageScreen extends StatefulWidget {
   final XFile imageFile;
@@ -71,42 +76,9 @@ class _ImageScreenState extends State<ImageScreen> {
             phone_number: user.phone_number,
             status: user.status,
             imageUrl: imageUrlResponse,
-            usertype:
-                user.usertype // usertypeGiữ nguyên giá trị của trường imageUrl
-            );
+            usertype: user.usertype);
         userProvider.updateImage(context, newUser);
-
-//
-        // final updates = {
-        //   'userId': prefs.getString('id'),
-        //   "imageUrl": "${imageUrlResponse}"
-        // };
-        // try {
-        //   final response = await SupabaseBase.supabaseClient
-        //       .from('users')
-        //       .update(updates)
-        //       .eq('userId', prefs.getString('id'))
-        //       .execute();
-        //   if (response != null) {
-        //     Fluttertoast.showToast(
-        //       msg: 'Cập nhật thông tin thành công!',
-        //       gravity: ToastGravity.BOTTOM,
-        //       backgroundColor: Colors.green,
-        //       textColor: Colors.white,
-        //     );
-        //     Navigator.of(context).pop();
-        //   }
-        // } catch (e) {
-        //   Fluttertoast.showToast(
-        //     msg: 'Đang gặp sự cố!',
-        //     gravity: ToastGravity.BOTTOM,
-        //     backgroundColor: Colors.red,
-        //     textColor: Colors.white,
-        //   );
-        // }
       }
-
-      // widget.onImageUrlChanged(imageUrlResponse);
     } on StorageException catch (error) {
       print(error);
     }
@@ -114,31 +86,47 @@ class _ImageScreenState extends State<ImageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //  final provider = Provider.of<AuthenciationNotifier>(context);
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lựa chọn hình ảnh'),
+        backgroundColor: HexColor("#FFFFFF"),
+        elevation: 0,
+        leading: buttonArrow(context),
+        title: Text(
+          "Lựa chọn hình ảnh",
+          style: textTheme.semibold16(color: "#000000"),
+        ),
         actions: [
           p.Consumer<UserProvider>(
             builder: (context, userPorvider, child) {
-              return GestureDetector(
-                  onTap: () {
-                    updateUser(widget.imageFile, userPorvider.user);
-                  },
-                  child: Text("Lưu"));
+              return Padding(
+                padding: EdgeInsets.all(10),
+                child: Center(
+                  child: GestureDetector(
+                      onTap: () {
+                        updateUser(widget.imageFile, userPorvider.user);
+                      },
+                      child: Text(
+                        "Lưu",
+                        style: textTheme.medium16(color: "000000"),
+                      )),
+                ),
+              );
             },
           )
         ],
       ),
-      body: Container(
-        width: MediaQuery.of(context).size.width * 1,
-        child: Center(
-          child:
-              //  Image.network("${File(widget.imageFile.path)}")
-              Image.file(
-            File(widget.imageFile.path),
-            width: MediaQuery.of(context).size.width * 1,
+      body: SingleChildScrollView(
+        child: Container(
+          color: Colors.red,
+          width: 1.sw,
+          child: Center(
+            child:
+                //  Image.network("${File(widget.imageFile.path)}")
+                Image.file(
+              File(widget.imageFile.path),
+              width: 1.sw,
+              fit: BoxFit.fitWidth,
+            ),
           ),
         ),
       ),

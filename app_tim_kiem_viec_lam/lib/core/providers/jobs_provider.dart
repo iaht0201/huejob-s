@@ -20,6 +20,8 @@ class JobsProvider extends ChangeNotifier {
   List<JobsProvider> get listViewedJob => _listViewedJob;
   List<JobModel> listJobsSearch = [];
 
+  get newUser => null;
+
   set setListViewedJob(value) {
     _listViewedJob = value;
   }
@@ -67,21 +69,47 @@ class JobsProvider extends ChangeNotifier {
 
   List<JobModel> get listJobRecruiter => _listJobRecruiter;
   List<JobModel> _listJobRecruiter = [];
-  Future fetchJobByRecruiter() async {
+  Future fetchJobByRecruiter({String action = "Tất cả"}) async {
+    List<JobModel> _listJobRecruiter1 = [];
+    _listJobRecruiter1.clear();
     final prefs = await SharedPreferences.getInstance();
-    _listJobRecruiter.clear();
-    var respon = await _supbase
-        .from("jobs")
-        .select("*,users(*)")
-        .eq('userId', '${prefs.getString('id')}')
-        .order('applied_count', ascending: false)
-        .execute(); 
+    var respon;
+    switch (action) {
+      case "Đã hết hạn":
+        respon = await _supbase
+            .from("jobs")
+            .select("*,users(*)")
+            .eq('userId', '${prefs.getString('id')}')
+            .lt('expiration_date', DateTime.now().toUtc())
+            .order('applied_count', ascending: false)
+            .execute();
+        break;
+      case "Chưa hết hạn":
+        respon = await _supbase
+            .from("jobs")
+            .select("*,users(*)")
+            .eq('userId', '${prefs.getString('id')}')
+            .gte('expiration_date', DateTime.now().toUtc())
+            .order('applied_count', ascending: false)
+            .execute();
+        break;
+      default:
+        respon = await _supbase
+            .from("jobs")
+            .select("*,users(*)")
+            .eq('userId', '${prefs.getString('id')}')
+            .order('applied_count', ascending: false)
+            .execute();
+        break;
+    }
+
     if (respon.data != null) {
       var data = respon.data;
 
       for (int i = 0; i < data.length; i++) {
-        _listJobRecruiter.add(JobModel.fromMap(data[i]));
+        _listJobRecruiter1.add(JobModel.fromMap(data[i]));
       }
+      return _listJobRecruiter1;
     }
     notifyListeners();
   }
@@ -198,6 +226,37 @@ class JobsProvider extends ChangeNotifier {
       _listJobs.add(jobModel);
     }
     return _listJobs;
+  }
+
+  Future<void> updateJob(BuildContext context, JobModel newJob) async {
+    try {
+      final response = await SupabaseBase.supabaseClient
+          .from("jobs")
+          .update(newJob.toMapAddJob())
+          .eq('job_id', newJob.jobId)
+          .execute();
+      if (response != null) {
+        Fluttertoast.showToast(
+          msg: 'Cập nhập job thành công!',
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+        );
+        notifyListeners();
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: 'Cập nhập job thất bại!',
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+    }
   }
 
   Future<void> insertJob(BuildContext context, JobModel newJob) async {
@@ -366,6 +425,19 @@ class JobsProvider extends ChangeNotifier {
     return [];
   }
 
+  Future deleteJob(BuildContext context, String id) async {
+    await _supbase.rpc('handledeletejob', params: {'jobid': '$id'});
+
+    Fluttertoast.showToast(
+      msg: 'Xóa thành công',
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+    );
+
+    notifyListeners();
+  }
+
   List<JobModel> _listJobBookMark = [];
   get listBookmark => _listJobBookMark;
 
@@ -414,4 +486,37 @@ class JobsProvider extends ChangeNotifier {
     notifyListeners();
     // return _listJob;
   }
+
+  Future<void> updateApliedJob(BuildContext context, ApplyModel newApplied,
+      {String action = ""}) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final response = await SupabaseBase.supabaseClient
+        .from('applyjob')
+        .update(newApplied.toMap())
+        .eq('apply_id', newApplied.jobAppliedId)
+        .execute();
+    if (response != null) {
+      Fluttertoast.showToast(
+        msg: 'Cập nhật trạng thái thành công!',
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+      );
+      notifyListeners();
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Cập nhật thất bại!',
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+      notifyListeners();
+    }
+  }
+
+  // void convertFromDateTimeToMilisecond(DateTime) {
+  //   DateTime now = DateTime.now();
+
+  // }
 }

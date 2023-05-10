@@ -9,7 +9,7 @@ import '../screens/profile/profile_screen.dart';
 
 Widget AvatarWidget(BuildContext context, {UserModel? user, num radius = 10}) {
   return Container(
-      child: user?.name == null && user?.imageUrl == null
+      child: user?.name == null && (user?.imageUrl == null)
           ? Container(
               child: Shimmer.fromColors(
                   baseColor: Colors.grey.withOpacity(0.3),

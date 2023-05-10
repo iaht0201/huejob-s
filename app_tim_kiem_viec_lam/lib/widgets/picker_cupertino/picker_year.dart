@@ -5,8 +5,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class DateTimePicker extends StatefulWidget {
-  const DateTimePicker(
+class PickerYear extends StatefulWidget {
+  const PickerYear(
       {super.key,
       required this.title,
       required this.listData,
@@ -19,10 +19,10 @@ class DateTimePicker extends StatefulWidget {
   final num? height;
   final ValueChanged<String>? onSelectedItemChanged;
   @override
-  State<DateTimePicker> createState() => _DateTimePickerState();
+  State<PickerYear> createState() => _PickerYearState();
 }
 
-class _DateTimePickerState extends State<DateTimePicker> {
+class _PickerYearState extends State<PickerYear> {
   int _selectedValue = 0;
   @override
   Widget build(BuildContext context) {

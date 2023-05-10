@@ -28,7 +28,7 @@ import '../../core/providers/authenciation_provider.dart';
 import '../../core/providers/post_provider.dart';
 import '../../widgets/avatar_widget.dart';
 import '../../widgets/bottom_navigator_bar_widget.dart';
-import '../../widgets/datetime_cupertino.dart';
+import '../../widgets/picker_cupertino/picker_year.dart';
 import '../bookmark/bookmark.dart';
 import '../manager_job/mannager_job.dart';
 import '../profile/widgets/button_arrow.dart';
@@ -408,13 +408,13 @@ class _HomePageState extends State<HomePage>
               Container(
                 margin: EdgeInsets.only(left: 20.w),
                 child: Column(children: [
-                  ListTile(
-                    title: _itemDrawer(
-                        context, Icons.info_outline, "Personal Info"),
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
+                  // ListTile(
+                  //   title: _itemDrawer(
+                  //       context, Icons.info_outline, "Personal Info"),
+                  //   onTap: () {
+                  //     Navigator.pop(context);
+                  //   },
+                  // ),
                   ListTile(
                     title:
                         _itemDrawer(context, Icons.notifications, "Thông báo"),

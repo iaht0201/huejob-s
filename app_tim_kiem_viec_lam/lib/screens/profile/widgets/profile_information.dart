@@ -86,6 +86,11 @@ class _ProfileInformationState extends State<ProfileInformation> {
     setState(() => _isLoading = false);
   }
 
+  void handelUser() {
+    final newUser = widget.user.copyWithImage(imageUrl: null);
+    userProvider.updateImage(context, newUser);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -176,25 +181,33 @@ class _ProfileInformationState extends State<ProfileInformation> {
                     Positioned(
                         top: 150.h,
                         right: 18.w,
-                        child: CircleAvatar(
-                          radius: 65.r,
-                          backgroundColor: HexColor("#FFFFFF"),
-                          child: user.imageUrl == null
-                              ? (CircleAvatar(
-                                  foregroundImage: _image != null
-                                      ? FileImage(_image!)
-                                      : null,
-                                  radius: 60.r,
-                                  backgroundColor: HexColor("#BB2649"),
-                                  child: Text(
-                                      "${user.name.toString().substring(0, 1).toUpperCase()}",
-                                      style: TextStyle(fontSize: 40.sp))))
-                              : CircleAvatar(
-                                  radius: 60.r,
-                                  backgroundColor: HexColor("#BB2649"),
-                                  backgroundImage:
-                                      NetworkImage("${user.imageUrl}"),
-                                ),
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: GestureDetector(
+                            onTap: () {
+                              _bottomSheetChangeAvatar(context);
+                            },
+                            child: CircleAvatar(
+                              radius: 65.r,
+                              backgroundColor: HexColor("#FFFFFF"),
+                              child: user.imageUrl == null
+                                  ? (CircleAvatar(
+                                      foregroundImage: _image != null
+                                          ? FileImage(_image!)
+                                          : null,
+                                      radius: 60.r,
+                                      backgroundColor: HexColor("#BB2649"),
+                                      child: Text(
+                                          "${user.name.toString().substring(0, 1).toUpperCase()}",
+                                          style: TextStyle(fontSize: 40.sp))))
+                                  : CircleAvatar(
+                                      radius: 60.r,
+                                      backgroundColor: HexColor("#BB2649"),
+                                      backgroundImage:
+                                          NetworkImage("${user.imageUrl}"),
+                                    ),
+                            ),
+                          ),
                         )),
                     Positioned(
                         top: 240.h,
@@ -243,6 +256,10 @@ class _ProfileInformationState extends State<ProfileInformation> {
                                 "${user.full_name ?? user.name}",
                                 style: textTheme.semibold20(),
                               ),
+                              Text(
+                                "(${user.usertype})",
+                                style: textTheme.regular13(color: "000000"),
+                              ),
                               SizedBox(
                                 height: 10.h,
                               ),
@@ -251,7 +268,7 @@ class _ProfileInformationState extends State<ProfileInformation> {
                                   Row(
                                     children: [
                                       Text(
-                                        "9868",
+                                        "${user.followers_count}",
                                         style: textTheme.headline17(
                                             color: "000000"),
                                       ),
@@ -259,7 +276,7 @@ class _ProfileInformationState extends State<ProfileInformation> {
                                         width: 5.w,
                                       ),
                                       Text(
-                                        "Followers",
+                                        "Người theo dõi",
                                         style:
                                             textTheme.medium12(color: "95969D"),
                                       )
@@ -271,7 +288,7 @@ class _ProfileInformationState extends State<ProfileInformation> {
                                   Row(
                                     children: [
                                       Text(
-                                        "9868",
+                                        "${user.following_count}",
                                         style: textTheme.headline17(
                                             color: "000000"),
                                       ),
@@ -279,7 +296,7 @@ class _ProfileInformationState extends State<ProfileInformation> {
                                         width: 5.w,
                                       ),
                                       Text(
-                                        "Followers",
+                                        "Đang theo dõi",
                                         style:
                                             textTheme.medium12(color: "95969D"),
                                       )
@@ -293,10 +310,11 @@ class _ProfileInformationState extends State<ProfileInformation> {
                               Container(
                                 width: 0.85.sw,
                                 child: Text(
-                                  "Không có áp lực, không thành công. Mọi thứ tiêu cực – áp lực, thử thách – đều là cơ hội để bạn rèn luyện cũng như vươn lên đạt thành công.",
+                                  user.caption ??
+                                      "Không có áp lực, không thành công. Mọi thứ tiêu cực – áp lực, thử thách – đều là cơ hội để bạn rèn luyện cũng như vươn lên đạt thành công.",
                                   style: textTheme.medium14(color: "95969D"),
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ))
@@ -462,123 +480,143 @@ class _ProfileInformationState extends State<ProfileInformation> {
       ),
       context: context,
       builder: (BuildContext context) {
-        return LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            if (constraints.maxWidth > constraints.maxHeight) {
-              containerHeight = 300.0.h;
-            } else {
-              containerHeight = 240.0.h;
-            }
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20.r),
-                    topRight: Radius.circular(20.r)),
-                color: HexColor("#BB2649"),
+        return Container(
+          padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
+          decoration: BoxDecoration(
+              color: HexColor("#BB2649"),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.r),
+                  topRight: Radius.circular(20.r))),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top: 10.h, bottom: 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(height: 5.h, width: 35.w, color: Colors.white),
+                  ],
+                ),
               ),
-              height: containerHeight,
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 10.h, bottom: 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                            height: 5.h, width: 35.w, color: Colors.white),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 16.0.h),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.person_sharp,
-                          size: 33,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 13.0.h),
-                        Text(
-                          'Xem ảnh đại diện',
-                          style: TextStyle(
-                              fontSize: 19,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 16.0.h),
-                  GestureDetector(
-                    onTap: () async {
-                      final picker = ImagePicker();
-                      final imageFile = await picker.pickImage(
-                        source: ImageSource.gallery,
-                        maxWidth: 1200.w,
-                        maxHeight: 1200.h,
-                      );
-                      if (imageFile != null) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ImageScreen(
-                              imageFile: imageFile,
-                            ),
+              SizedBox(height: 16.0.h),
+              widget.user.imageUrl != null
+                  ? GestureDetector(
+                      onTap: () {
+                        _dialogBuilder(context);
+                      },
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/icons/eye.png",
+                            width: 25.w,
                           ),
-                        );
-                      }
+                          SizedBox(width: 13.0.h),
+                          Text('Xem ảnh đại diện',
+                              style: textTheme.semibold16(color: "FFFFFF"))
+                        ],
+                      ),
+                    )
+                  : Container(),
+              SizedBox(height: 16.0.h),
+              GestureDetector(
+                onTap: () async {
+                  final picker = ImagePicker();
+                  final imageFile = await picker.pickImage(
+                    source: ImageSource.gallery,
+                    maxWidth: 1200.w,
+                    maxHeight: 1200.h,
+                  );
+                  if (imageFile != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ImageScreen(
+                          imageFile: imageFile,
+                        ),
+                      ),
+                    );
+                  }
 
-                      // _upload(imageFile);
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.image,
-                          size: 33,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 13.0.w),
-                        Text(
-                          'Chọn ảnh đại diện',
-                          style: TextStyle(
-                              fontSize: 19,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
+                  // _upload(imageFile);
+                },
+                child: Row(
+                  children: [
+                    Image.asset(
+                      "assets/icons/select.png",
+                      width: 25.w,
                     ),
-                  ),
-                  SizedBox(height: 16.0.h),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.delete,
-                          size: 33,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 13.0.h),
-                        Text(
-                          'Xóa ảnh đại diện',
-                          style: TextStyle(
-                              fontSize: 19,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
+                    SizedBox(width: 13.0.w),
+                    Text(
+                      'Chọn ảnh đại diện',
+                      style: textTheme.semibold16(color: "FFFFFF"),
+                    )
+                  ],
+                ),
               ),
-            );
-          },
+              SizedBox(height: 16.0.h),
+              widget.user.imageUrl != null
+                  ? GestureDetector(
+                      onTap: () {
+                        handelUser();
+                      },
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            "assets/icons/trash.png",
+                            width: 25.w,
+                          ),
+                          SizedBox(width: 13.0.h),
+                          Text('Xóa ảnh đại diện',
+                              style: textTheme.semibold16(color: "FFFFFF"))
+                        ],
+                      ),
+                    )
+                  : Container(),
+            ],
+          ),
+        );
+        // LayoutBuilder(
+        //   builder: (BuildContext context, BoxConstraints constraints) {
+        //     if (constraints.maxWidth > constraints.maxHeight) {
+        //       containerHeight = 300.0.h;
+        //     } else {
+        //       containerHeight = 240.0.h;
+        //     }
+        //     return Container(
+        //       decoration: BoxDecoration(
+        //         borderRadius: BorderRadius.only(
+        //             topLeft: Radius.circular(20.r),
+        //             topRight: Radius.circular(20.r)),
+        //         color: HexColor("#BB2649"),
+        //       ),
+        //       height: containerHeight,
+        //       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+        //       child:
+        //     );
+        //   },
+        // );
+      },
+    );
+  }
+
+  Future<void> _dialogBuilder(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // title: Text('${widget.post!.caption}'),
+          content: widget.user.imageUrl != null
+              ? Padding(
+                  padding: EdgeInsets.symmetric(vertical: 0.0),
+                  child: Image.network(
+                    widget.user.imageUrl.toString(),
+                    fit: BoxFit.fitWidth,
+                  ))
+              : Container(),
         );
       },
     );

@@ -2,6 +2,7 @@ import 'package:app_tim_kiem_viec_lam/core/models/applied_model.dart';
 import 'package:app_tim_kiem_viec_lam/screens/applyJob/apply_job.dart';
 import 'package:app_tim_kiem_viec_lam/screens/manager_job/widgets/document.dart';
 import 'package:app_tim_kiem_viec_lam/widgets/avatar_widget.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -23,6 +24,15 @@ class MannagerApplyScreen extends StatefulWidget {
 }
 
 class _MannagerApplyScreenState extends State<MannagerApplyScreen> {
+  final List<String> status = [
+    'Đang chờ',
+    'Xem xét',
+    'Phê duyệt',
+    'Từ chối',
+    'Phỏng vấn',
+    'Hoàn tất'
+  ];
+  String? selectedStatus;
   late JobsProvider jobProvider;
   void initState() {
     super.initState();
@@ -102,7 +112,7 @@ class _MannagerApplyScreenState extends State<MannagerApplyScreen> {
                           style: textTheme.regular16(),
                         ),
                         Text(
-                          "Trạng thái: Đang chờ",
+                          "Trạng thái: ${selectedStatus ?? applied.status}",
                           style: textTheme.regular13(
                               color: "0D0D26", opacity: 0.7),
                         ),
@@ -114,13 +124,7 @@ class _MannagerApplyScreenState extends State<MannagerApplyScreen> {
                       ],
                     ),
                     Spacer(),
-                    TextButton(
-                        onPressed: () {}, child: Text("Cập nhập trạng thái")),
-
-                    // Text(
-                    //   "${applied.users!.name}",
-                    //   style: textTheme.regular16(),
-                    // )
+                    _dropdownStatus(context, applied: applied)
                   ],
                 ),
                 SizedBox(
@@ -161,6 +165,55 @@ class _MannagerApplyScreenState extends State<MannagerApplyScreen> {
               ],
             )),
       ],
+    );
+  }
+
+  _dropdownStatus(context, {ApplyModel? applied}) {
+    return GestureDetector(
+      onTap: () {
+        // userProvider.updateUser(context, newUser,
+        //     action: "next_update_profile")
+      },
+      child: Container(
+          width: 0.28.sw,
+          height: 50.h,
+          child: DropdownButtonFormField2(
+            decoration: InputDecoration(
+              filled: true,
+              // hintText: "Lựa chọn",
+              // hintStyle: textTheme.medium14(color: "AFB0B6"),
+              isDense: true,
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 15.h, horizontal: 5.w),
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+            isExpanded: true,
+            value: selectedStatus ?? applied!.status,
+            onChanged: (value) {
+              selectedStatus = value;
+            },
+            items: status.map((e) {
+              return DropdownMenuItem<String>(
+                child: Text(
+                  "${e}",
+                  style: textTheme.medium12(),
+                ),
+                value: e,
+                onTap: () {
+                  selectedStatus = e;
+                  ApplyModel newApplies =
+                      applied!.copyWith(status: selectedStatus);
+                  jobProvider.updateApliedJob(context, newApplies);
+                  print(newApplies);
+                },
+              );
+            }).toList(),
+            buttonDecoration:
+                BoxDecoration(borderRadius: BorderRadius.circular(8.r)),
+          )),
     );
   }
 }

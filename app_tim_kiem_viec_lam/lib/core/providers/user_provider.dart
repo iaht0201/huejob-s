@@ -117,13 +117,21 @@ class UserProvider extends ChangeNotifier {
           .eq('userId', prefs.getString('id'))
           .execute();
       if (response != null) {
+        _user = newUser;
+        // if (_user.imageUrl == null) {
+        //   Fluttertoast.showToast(
+        //     msg: 'Xóa ảnh thành công',
+        //     gravity: ToastGravity.BOTTOM,
+        //     backgroundColor: Colors.green,
+        //     textColor: Colors.white,
+        //   );
+        // }
         Fluttertoast.showToast(
           msg: 'Cập nhật ảnh thành công!',
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Colors.green,
           textColor: Colors.white,
         );
-        _user = newUser;
 
         Navigator.of(context).pop();
         notifyListeners();
@@ -242,4 +250,6 @@ class UserProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future deleteAvatar() async {}
 }

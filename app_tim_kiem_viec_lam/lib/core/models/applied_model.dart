@@ -49,4 +49,23 @@ class ApplyModel {
       'fileUrl': fileUrl
     };
   }
+
+  ApplyModel copyWith(
+      {String? jobAppliedId,
+      String? jobId,
+      String? userId,
+      String? status,
+      DateTime? applicationDate,
+      String? note,
+      String? fileUrl}) {
+    return ApplyModel(
+      jobAppliedId: this.jobAppliedId,
+      jobId: this.jobId,
+      userId: this.userId,
+      status: status ?? this.status,
+      applicationDate: this.applicationDate,
+      note: note ?? this.note,
+      fileUrl: this.fileUrl,
+    );
+  }
 }

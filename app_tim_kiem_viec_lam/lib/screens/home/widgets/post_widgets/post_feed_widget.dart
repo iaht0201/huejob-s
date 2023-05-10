@@ -96,7 +96,7 @@ class _PostItemState extends State<PostItem> {
               },
             ),
             TextButton(
-              style: TextButton.styleFrom(
+              style: TextButton.styleFrom(  
                 textStyle: Theme.of(context).textTheme.labelLarge,
               ),
               child: const Text('Enable'),
@@ -144,7 +144,7 @@ class _PostHeaderState extends State<_PostHeader> {
                             )));
               },
               child:
-                  AvatarWidget(context, user: widget.post.users, radius: 20)),
+                  AvatarWidget(context, user: widget.post.users, radius: 20.r)),
           SizedBox(width: 8.0.w),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
