@@ -47,8 +47,10 @@ class _ItemJobWidgetState extends State<ItemJobWidget> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          DetailJobScreen(jobId: widget.job.jobId.toString())));
+                      builder: (context) => DetailJobScreen(
+                            jobId: widget.job.jobId.toString(),
+                            userTo: widget.job.userId,
+                          )));
             },
             child: Container(
                 padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 25.w),

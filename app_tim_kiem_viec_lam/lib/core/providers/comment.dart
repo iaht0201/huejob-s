@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_tim_kiem_viec_lam/core/models/comment_job_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:app_tim_kiem_viec_lam/core/supabase/supabase.dart';
 
@@ -8,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/chat_message.dart';
-import '../models/comment.dart';
+import '../models/comment_post_model.dart';
 import '../models/user_model.dart';
 
 class CommentProvider extends ChangeNotifier {
@@ -24,6 +25,19 @@ class CommentProvider extends ChangeNotifier {
         .execute()
         .map((maps) => maps.map((item) {
               return CommentModel.fromJson(item, userFromId);
+            }).toList());
+  }
+
+  Stream<List<CommentJobModel>> getCommentJob(
+      String userFromId, String userToID, String jobId) {
+    return _supabase
+        .from('comment_job')
+        .stream(primaryKey: ['id'])
+        .order('created_at', ascending: false)
+        .eq('job_id', jobId)
+        .execute()
+        .map((maps) => maps.map((item) {
+              return CommentJobModel.fromJson(item, userFromId);
             }).toList());
   }
 
@@ -46,6 +60,22 @@ class CommentProvider extends ChangeNotifier {
         postId: postId);
     // Tạo một Message với userTo là người nhận  và usrFrom  là isMine
     await _supabase.from('comment_post').insert(commentPost.toMap()).execute();
+    // insert nó vào bảng message
+  }
+
+  Future<void> saveCommentJob(
+      String content, String userTo, String jobId) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // final userTo = await _getUserTo();
+    // Lấy id người nhận
+    final commentJob = CommentJobModel.create(
+        content: content,
+        userFrom: prefs.getString('id').toString(),
+        userTo: userTo,
+        jobId: jobId);
+    // Tạo một Message với userTo là người nhận  và usrFrom  là isMine
+    await _supabase.from('comment_job').insert(commentJob.toMap()).execute();
     // insert nó vào bảng message
   }
 }

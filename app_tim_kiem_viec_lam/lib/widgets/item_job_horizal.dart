@@ -18,8 +18,10 @@ class ItemJobHorizal extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    DetailJobScreen(jobId: job.jobId.toString())));
+                builder: (context) => DetailJobScreen(
+                      jobId: job.jobId.toString(),
+                      userTo: job.userId,
+                    )));
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 25.w),

@@ -172,8 +172,10 @@ class _FeaturedJobsState extends State<FeaturedJobs> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          DetailJobScreen(jobId: item.jobId.toString())));
+                      builder: (context) => DetailJobScreen(
+                            jobId: item.jobId.toString(),
+                            userTo: item.userId,
+                          )));
             },
             child: Container(
               margin: EdgeInsets.only(left: 13.w),

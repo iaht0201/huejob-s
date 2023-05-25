@@ -1,4 +1,4 @@
-import 'package:app_tim_kiem_viec_lam/core/models/comment.dart';
+import 'package:app_tim_kiem_viec_lam/core/models/comment_post_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +7,13 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/models/chat_message.dart';
+import '../../core/models/comment_job_model.dart';
 
 class CommentBubble extends StatelessWidget {
-  final CommentModel comment;
-  const CommentBubble({Key? key, required this.comment}) : super(key: key);
+  final CommentModel? comment;
+  final CommentJobModel? commentJob;
+  const CommentBubble({Key? key, this.comment, this.commentJob})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +23,9 @@ class CommentBubble extends StatelessWidget {
           return Column(
             children: [
               _itemChat(
-                  avatar: '${comment.imageUrl}',
-                  message: '${comment.content}',
-                  name: '${comment.username}'),
+                  avatar: '${comment?.imageUrl ?? commentJob?.imageUrl}',
+                  message: '${comment?.content ?? commentJob?.content}',
+                  name: '${comment?.username ?? commentJob?.username}'),
               SizedBox(
                 height: 20.h,
               )

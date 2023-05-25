@@ -1,5 +1,5 @@
 import 'package:app_tim_kiem_viec_lam/core/models/bookmark_model.dart';
-import 'package:app_tim_kiem_viec_lam/core/models/comment.dart';
+import 'package:app_tim_kiem_viec_lam/core/models/comment_post_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/post_provider.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:app_tim_kiem_viec_lam/screens/comment/comment.dart';

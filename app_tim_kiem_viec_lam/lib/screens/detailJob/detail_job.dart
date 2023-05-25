@@ -1,3 +1,4 @@
+import 'package:app_tim_kiem_viec_lam/core/models/comment_job_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/models/jobs_model.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/jobs_provider.dart';
 import 'package:app_tim_kiem_viec_lam/screens/applyJob/apply_job.dart';
@@ -11,14 +12,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/models/comment_post_model.dart';
+import '../../core/providers/comment.dart';
 import '../../core/providers/post_provider.dart';
 import '../../core/providers/user_provider.dart';
 import '../addPost/map.dart';
+import '../comment/comment.dart';
 import '../home/widgets/home_app_bar.dart';
 
 class DetailJobScreen extends StatefulWidget {
-  DetailJobScreen({super.key, required this.jobId});
+  DetailJobScreen({
+    super.key,
+    required this.jobId,
+    this.userFrom,
+    this.userTo,
+  });
   final String jobId;
+  final String? userTo;
+  final String? userFrom;
   @override
   State<DetailJobScreen> createState() => _DetailJobScreenState();
 }
@@ -28,6 +39,8 @@ late UserProvider userProvider;
 
 class _DetailJobScreenState extends State<DetailJobScreen> {
   late TabController _tabController;
+  final _formKey = GlobalKey<FormState>();
+  final _msgController = TextEditingController();
   bool isLoad = false;
   bool? checkApply;
   void initState() {
@@ -44,6 +57,24 @@ class _DetailJobScreenState extends State<DetailJobScreen> {
     });
 
     super.initState();
+  }
+
+  Future<void> _submit(CommentProvider appService, BuildContext context) async {
+    final _text = _msgController.text;
+
+    if (_text.isEmpty) {
+      return;
+    }
+
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      await appService.saveCommentJob(
+          _text, widget.userTo.toString(), widget.jobId);
+
+      _msgController.text = '';
+      Navigator.pop(context);
+    }
   }
 
   Future handleShowButton(String userType) async {
@@ -81,6 +112,7 @@ class _DetailJobScreenState extends State<DetailJobScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final appService = context.read<CommentProvider>();
     return Scaffold(
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -332,6 +364,7 @@ class _DetailJobScreenState extends State<DetailJobScreen> {
   }
 
   _bodyDetail(BuildContext context, {required JobModel job}) {
+    final appService = context.read<CommentProvider>();
     return Container(
       width: 1.sw,
       child: DefaultTabController(
@@ -367,7 +400,7 @@ class _DetailJobScreenState extends State<DetailJobScreen> {
                 ),
               ]),
           Container(
-            margin: EdgeInsets.only(left: 24.w, right: 24.w, top: 20.h),
+            margin: EdgeInsets.only(left: 12.w, right: 12.w, top: 20.h),
             // color: Color(0xFFF44336),
             height: 300.h,
             child: TabBarView(
@@ -376,7 +409,180 @@ class _DetailJobScreenState extends State<DetailJobScreen> {
                 _tabBarView('${job.requirement ?? ""}'),
                 _tabLocation(
                     job.latitude!.toDouble(), job.longitude!.toDouble()),
-                _tabBarView('${job.location}'),
+                // _tabBarView('${job.location}'),
+                Consumer<UserProvider>(
+                  builder: (context, userProvider, child) {
+                    return Container(
+                      height: 0.5.sh,
+                      child: Padding(
+                        padding: EdgeInsets.all(0.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              // padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 5.h),
+                              height: 0.368.sh,
+                              width: double.infinity,
+                              child: StreamBuilder<List<CommentJobModel>>(
+                                stream: appService.getCommentJob(
+                                    userProvider.user.userId.toString(),
+                                    widget.userTo.toString(),
+                                    widget.jobId),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    final comment = snapshot.data!;
+
+                                    List<CommentJobModel> filteredMessages =
+                                        comment;
+                                    // .where((item) =>
+                                    //     item.jobId == widget.jobId)
+                                    // .toList();
+
+                                    return Column(
+                                      children: [
+                                        Container(
+                                            height: 0.335.sh,
+                                            child: filteredMessages.length != 0
+                                                ? ListView.builder(
+                                                    // reverse: true,
+                                                    itemCount:
+                                                        filteredMessages.length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      final comment =
+                                                          filteredMessages[
+                                                              index];
+
+                                                      return CommentBubble(
+                                                          commentJob: comment);
+                                                      ;
+                                                    },
+                                                  )
+                                                : Text(
+                                                    "Hãy là người đầu tiên bình luận bài viết")),
+                                        // SizedBox(
+                                        //   height: 10.h,
+                                        // ),
+                                        // Spacer(),
+                                        // SafeArea(
+                                        //   child: Padding(
+                                        //     padding: const EdgeInsets.all(0.0),
+                                        //     child: Form(
+                                        //       key: _formKey,
+                                        //       child: TextFormField(
+                                        //         controller: _msgController,
+                                        //         decoration: InputDecoration(
+                                        //             labelText: 'Nhập nhận xét',
+                                        //             border: OutlineInputBorder(
+                                        //               borderSide: BorderSide(
+                                        //                 color:
+                                        //                     HexColor("#BB2649"),
+                                        //               ),
+                                        //             ),
+                                        //             focusedBorder:
+                                        //                 OutlineInputBorder(
+                                        //               borderSide: BorderSide(
+                                        //                 color:
+                                        //                     HexColor("#BB2649"),
+                                        //               ),
+                                        //             ),
+                                        //             labelStyle: TextStyle(
+                                        //                 color: HexColor(
+                                        //                     "#000000")),
+                                        //             suffixIcon: IconButton(
+                                        //               onPressed: () =>
+                                        //                   _submit(appService),
+                                        //               icon: Icon(
+                                        //                 Icons.send_rounded,
+                                        //                 color:
+                                        //                     HexColor("#BB2649"),
+                                        //               ),
+                                        //             )),
+                                        //       ),
+                                        //     ),
+                                        //   ),
+                                        // ),
+                                        GestureDetector(
+                                            onTap: () {
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                    content: // SafeArea(
+                                                        Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              0.0),
+                                                      child: Container(
+                                                        width: 1.sw,
+                                                        child: Form(
+                                                          key: _formKey,
+                                                          child: TextFormField(
+                                                            controller:
+                                                                _msgController,
+                                                            decoration:
+                                                                InputDecoration(
+                                                                    labelText:
+                                                                        'Nhập nhận xét',
+                                                                    border:
+                                                                        OutlineInputBorder(
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                        color: HexColor(
+                                                                            "#BB2649"),
+                                                                      ),
+                                                                    ),
+                                                                    focusedBorder:
+                                                                        OutlineInputBorder(
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                        color: HexColor(
+                                                                            "#BB2649"),
+                                                                      ),
+                                                                    ),
+                                                                    labelStyle: TextStyle(
+                                                                        color: HexColor(
+                                                                            "#000000")),
+                                                                    suffixIcon:
+                                                                        IconButton(
+                                                                      onPressed: () => _submit(
+                                                                          appService,
+                                                                          context),
+                                                                      icon:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .send_rounded,
+                                                                        color: HexColor(
+                                                                            "#BB2649"),
+                                                                      ),
+                                                                    )),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            },
+                                            child: Container(
+                                                child: Icon(Icons.add_box)))
+                                      ],
+                                    );
+                                  }
+
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                )
               ],
             ),
           ),
