@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import '../../core/providers/authenciation_provider.dart';
 import '../../core/providers/post_provider.dart';
 import '../../utils/constant.dart';
+import '../home/widgets/other_job.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, this.clientID});
@@ -128,6 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     user: widget.clientID == null
                                         ? userProvider.user
                                         : userProvider.userByID),
+                                OtherJobs(),
                                 Padding(
                                   padding:
                                       EdgeInsets.symmetric(horizontal: 20.w),

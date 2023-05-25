@@ -11,25 +11,24 @@ List<OnBoaringJob> onBoaringdata = [
   OnBoaringJob(
       index: 0,
       image: 'assets/images/onboaring/job1.png',
-      title: 'Search your job',
+      title: 'Tìm kiếm công việc',
       discription:
-          'Figure out your top five priorities whether it is company culture, salary.'),
+          'Tìm kiếm những công việc phù hợp với khả năng của bạn kết nối và tương tác giữa nhà tuyền dụng và người tìm việc khắp cả nước'),
   OnBoaringJob(
       index: 1,
       image: 'assets/images/onboaring/job2.png',
-      title: 'Browse jobs list',
+      title: 'Chia sẻ, thảo luận, hỏi đáp',
       discription:
-          'Our job list include several  industries, so you can find the best job for you.'),
+          'Không chỉ tạo nên một không gian tìm việc truyền thống mà nơi đây chúng ta có thể chia sẻ những kinh nghiệm, thảo luận, hỏi đáp về công việc mình đang quan tâm.'),
   OnBoaringJob(
       index: 2,
       image: 'assets/images/onboaring/job4.png',
-      title: 'Apply to best jobs',
-      discription:
-          'You can apply to your desirable jobs very quickly and easily with ease.'),
+      title: 'Ứng tuyển nhanh chóng',
+      discription: 'Bạn có thể ứng tuyển một cách nhanh chóng '),
   OnBoaringJob(
       index: 3,
       image: 'assets/images/onboaring/job3.png',
-      title: 'Make your career',
+      title: 'Luôn đồng hành cùng bạn',
       discription:
-          'We help you find your dream job based on your skillset, location, demand.'),
+          'Chúng tôi sẽ đồng hành cùng bạn trong quá trình tìm kiếm việc làm'),
 ];

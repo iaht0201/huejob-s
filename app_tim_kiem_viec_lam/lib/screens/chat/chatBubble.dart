@@ -1,5 +1,6 @@
 import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 
@@ -65,38 +66,31 @@ _itemChat({int? chat, String? avatar, message, time, name}) {
         children: [
           chat == 0
               ? (avatar == null
-                  ? Text("A" , style: TextStyle(color: Colors.black),)
+                  ? Text(
+                      "A",
+                      style: TextStyle(color: Colors.black),
+                    )
                   : Avatar(
                       image: avatar,
-                      size: 50,
+                      size: 45,
                     ))
               : Container(),
-          // avatar != null
-          //     ? Avatar(
-          //         image: avatar,
-          //         size: 50,
-          //       )
-          //     : Text(
-          //         '$time',
-          //         style: TextStyle(color: Colors.grey.shade400),
-          //       ),
           Flexible(
             child: Container(
-              margin: EdgeInsets.only(left: 0, right: 0, top: 20),
-              padding: EdgeInsets.all(20),
+              margin: EdgeInsets.only(left: 0.w, right: 0.w),
+              padding: EdgeInsets.all(15),
               decoration: BoxDecoration(
-                color:
-                    chat == 1 ? Colors.indigo.shade100 : Colors.red.shade300,
+                color: chat == 1 ? Colors.indigo.shade100 : Colors.red.shade300,
                 borderRadius: chat == 1
                     ? BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30),
-                        bottomLeft: Radius.circular(30),
+                        topLeft: Radius.circular(10.r),
+                        topRight: Radius.circular(10.r),
+                        bottomLeft: Radius.circular(10.r),
                       )
                     : BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30),
-                        bottomRight: Radius.circular(30),
+                        topLeft: Radius.circular(10.r),
+                        topRight: Radius.circular(10.r),
+                        bottomRight: Radius.circular(10.r),
                       ),
               ),
               child: Text('$message'),
@@ -113,7 +107,10 @@ _itemChat({int? chat, String? avatar, message, time, name}) {
 }
 
 class Avatar extends StatelessWidget {
-  Avatar({this.image, this.size = 50, this.margin = const EdgeInsets.only(right: 10)});
+  Avatar(
+      {this.image,
+      this.size = 50,
+      this.margin = const EdgeInsets.only(right: 10)});
   final double size;
   final image;
   final EdgeInsets margin;
@@ -128,9 +125,7 @@ class Avatar extends StatelessWidget {
         decoration: new BoxDecoration(
           shape: BoxShape.circle,
           image: new DecorationImage(
-            image: NetworkImage(image),
-            fit: BoxFit.cover
-          ),
+              image: NetworkImage(image), fit: BoxFit.cover),
         ),
       ),
     );

@@ -10,59 +10,7 @@ import '../models/chat_message.dart';
 
 class ChatProvider extends ChangeNotifier {
   SupabaseClient _supabase = SupabaseBase.supabaseClient;
-  // Lấy id của người gửi
-  // Future<String> _getUserTo() async {
-  //   final response = await _supabase
-  //       .from('users')
-  //       .select('userId')
-  //       .not('userId', 'eq', getCurrentUserId())
-  //       .execute();
 
-  //   return response.data[0]['userId'];
-  // }
-
-//   StreamController<List<Message>> _messageController =
-//       StreamController.broadcast();
-// //  Real time lấy messages theo userId
-//   void getMessages(String userFromId, String userToId) async {
-//     final response = await _supabase
-//         .from('messages')
-//         .stream(primaryKey: ['id'])
-//         .eq('user_from', userFromId)
-//         .eq('user_to', userToId)
-//         .execute();
-
-//     if (response == null) {
-//       print('Error fetching messages: ${response}');
-//       return;
-//     }
-//   }
-  // Stream<Lis t<Message>> getMessages(String userFromId, String userToID) {
-
-  //   final _supabase = await
-  //       .from('message')
-  //       .stream(primaryKey: ['id'])
-  //       // .stream(primaryKey: ['id'])
-  //       .eq('user_from', userFromId)
-  //       .eq('user_to', userToID)
-  //       .order('created_at')
-  //       .execute() ;
-
-  // }
-  // Stream<List<Message>> getMessages(String userFromId, String userToID) {
-
-  //   return _supabase
-  //       .from('message')
-  //       .stream(primaryKey: ['id'])
-  //       // .stream(primaryKey: ['id'])
-  //       // .eq('user_from', userFromId)
-  //       // .eq('user_to', userToID)
-  //       .order('created_at').on
-  //       .execute()
-  //       .map((maps) => maps.map((item) {
-  //             return Message.fromJson(item, userFromId);
-  //           }).toList());
-  // }
   Stream<List<Message>> getMessages(String userFromId, String userToID) {
     return _supabase
         .from('message')
@@ -73,20 +21,14 @@ class ChatProvider extends ChangeNotifier {
               return Message.fromJson(item, userFromId);
             }).toList());
   }
-  // Stream<List<Message>> getMessages(String userToID) {
-  //   return _supabase
-  //       .from('message')
-  //       .stream(primaryKey: ['userId'])
-  //       .eq('userId', getCurrentUserId())
-  //       .eq('userTo', userToID)
-  //       .order('created_at', ascending: false)
-  //       .execute()
-  //       .map((maps) => maps
-  //           .map((item) => Message.fromJson(item, getCurrentUserId()))
-  //           .toList());
-  // }
 
-// Hàm lưu tin nhắn
+  Future<void> getUserListMessager() async {
+    final prefs = await SharedPreferences.getInstance();
+    // get lấy 1 list id của người nhắn tin
+    var _listToId = _supabase.from('message').select("user_to").execute();
+
+  }
+
   Future<void> saveMessage(String content, String userTo) async {
     final prefs = await SharedPreferences.getInstance();
 

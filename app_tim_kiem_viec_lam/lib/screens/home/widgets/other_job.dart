@@ -40,7 +40,7 @@ class _OtherJobsState extends State<OtherJobs> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Other Jobs",
+                "Khấc",
                 style: textTheme.sub16(),
               ),
               GestureDetector(
@@ -52,7 +52,7 @@ class _OtherJobsState extends State<OtherJobs> {
                               SeeAllScreen(styleJob: "Other Jobs")));
                 },
                 child: Text(
-                  "See all",
+                  "Xem thêm",
                   style: textTheme.regular13(color: "95969D"),
                 ),
               ),

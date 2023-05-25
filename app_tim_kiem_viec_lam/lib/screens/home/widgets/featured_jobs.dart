@@ -52,7 +52,7 @@ class _FeaturedJobsState extends State<FeaturedJobs> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Featured Jobs",
+                      "Công việc quan tâm",
                       style: textTheme.sub16(),
                     ),
                     GestureDetector(
@@ -64,7 +64,7 @@ class _FeaturedJobsState extends State<FeaturedJobs> {
                                     SeeAllScreen(styleJob: "Featured Jobs")));
                       },
                       child: Text(
-                        "See all",
+                        "Xem thêm",
                         style: textTheme.regular13(color: "95969D"),
                       ),
                     ),

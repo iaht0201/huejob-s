@@ -2,6 +2,7 @@ import 'package:app_tim_kiem_viec_lam/core/providers/chat_messager_provider.dart
 import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:app_tim_kiem_viec_lam/screens/chat/chatscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 
@@ -54,7 +55,8 @@ class _ChatPageState extends State<ChatPage> {
             Consumer<UserProvider>(
               builder: (context, userProvider, _) {
                 return Container(
-                    padding: EdgeInsets.symmetric(vertical: 25, horizontal: 30),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 25.h, horizontal: 30.w),
                     child: Row(
                       children: [
                         GestureDetector(
@@ -70,7 +72,7 @@ class _ChatPageState extends State<ChatPage> {
                         Text(
                           '${userProvider.userByID.name}',
                           style: TextStyle(
-                            fontSize: 28,
+                            fontSize: 28.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
@@ -81,13 +83,13 @@ class _ChatPageState extends State<ChatPage> {
             ),
             Expanded(
               child: Container(
-                padding: EdgeInsets.only(left: 25, right: 25, top: 25),
-                height: 300,
+                padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 5.h),
+                height: 300.h,
                 width: double.infinity,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(45),
-                        topRight: Radius.circular(45)),
+                        topLeft: Radius.circular(45.r),
+                        topRight: Radius.circular(45.r)),
                     color: Colors.white),
                 child: StreamBuilder<List<Message>>(
                   stream: appService.getMessages(
@@ -104,7 +106,7 @@ class _ChatPageState extends State<ChatPage> {
                                   message.userTo == widget.userFrom))
                           .toList();
                       return Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(0),
                         child: Column(
                           children: [
                             Expanded(
@@ -118,27 +120,42 @@ class _ChatPageState extends State<ChatPage> {
                                 },
                               ),
                             ),
-                            // SafeArea(
-                            //   child: Padding(
-                            //     padding: const EdgeInsets.all(8.0),
-                            //     child: Form(
-                            //       key: _formKey,
-                            //       child: TextFormField(
-                            //         controller: _msgController,
-                            //         decoration: InputDecoration(
-                            //             labelText: 'Message',
-                            //             suffixIcon: IconButton(
-                            //               onPressed: () => _submit(appService),
-                            //               icon: const Icon(
-                            //                 Icons.send_rounded,
-                            //                 color: Colors.grey,
-                            //               ),
-                            //             )),
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
-                            const SizedBox(height: 40.0)
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            SafeArea(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Form(
+                                  key: _formKey,
+                                  child: TextFormField(
+                                    controller: _msgController,
+                                    decoration: InputDecoration(
+                                        labelText: 'Gửi tin nhắn',
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: HexColor("#BB2649"),
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: HexColor("#BB2649"),
+                                          ),
+                                        ),
+                                        labelStyle: TextStyle(
+                                            color: HexColor("#000000")),
+                                        suffixIcon: IconButton(
+                                          onPressed: () => _submit(appService),
+                                          icon: Icon(
+                                            Icons.send_rounded,
+                                            color: HexColor("#BB2649"),
+                                          ),
+                                        )),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 40.0.h)
                           ],
                         ),
                       );

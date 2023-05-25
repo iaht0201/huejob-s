@@ -1,9 +1,11 @@
 // import 'package:app_tim_kiem_viec_lam/screens/home/widgets/post_widgets/postInteract_widget.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
 import 'package:app_tim_kiem_viec_lam/screens/home/widgets/post_widgets/postInteract_widget.dart';
 import 'package:app_tim_kiem_viec_lam/widgets/avatar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/models/post_model.dart';
 import '../../../../utils/constant.dart';
 import '../../../addPost/map.dart';
@@ -62,8 +64,15 @@ class _PostItemState extends State<PostItem> {
           SizedBox(
             height: 10.h,
           ),
-          PostInteract(
-            post: widget.post,
+          Consumer<UserProvider>(
+            builder: (context, userProvider, child) {
+              return PostInteract(
+                post: widget.post,
+                userTo: widget.post.userId,
+                userFrom: userProvider.user.userId,
+                postId: widget.post.postId,
+              );
+            },
           ),
           SizedBox(
             height: 15.h,
@@ -96,7 +105,7 @@ class _PostItemState extends State<PostItem> {
               },
             ),
             TextButton(
-              style: TextButton.styleFrom(  
+              style: TextButton.styleFrom(
                 textStyle: Theme.of(context).textTheme.labelLarge,
               ),
               child: const Text('Enable'),

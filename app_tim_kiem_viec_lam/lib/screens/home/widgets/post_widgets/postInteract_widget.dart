@@ -1,5 +1,8 @@
 import 'package:app_tim_kiem_viec_lam/core/models/bookmark_model.dart';
+import 'package:app_tim_kiem_viec_lam/core/models/comment.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/post_provider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
+import 'package:app_tim_kiem_viec_lam/screens/comment/comment.dart';
 import 'package:app_tim_kiem_viec_lam/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,12 +12,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/models/like_model.dart';
 import '../../../../core/models/post_model.dart';
+import '../../../../core/providers/comment.dart';
 import '../../../../core/supabase/supabase.dart';
 
 class PostInteract extends StatefulWidget {
-  PostInteract({super.key, this.post});
+  PostInteract({super.key, this.post, this.userFrom, this.userTo, this.postId});
   PostModel? post;
-
+  final String? userTo;
+  final String? userFrom;
+  final int? postId;
   @override
   State<PostInteract> createState() => _PostInteractState();
 }
@@ -26,7 +32,8 @@ class _PostInteractState extends State<PostInteract> {
   List listBookmark = [];
   late PostProvider postProvider;
   late List<PostModel> post;
-
+  final _formKey = GlobalKey<FormState>();
+  final _msgController = TextEditingController();
   @override
   void initState() {
     postProvider = Provider.of<PostProvider>(context, listen: false);
@@ -57,73 +64,22 @@ class _PostInteractState extends State<PostInteract> {
     super.initState();
   }
 
-  // Future<void> getBookMark() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   final response = await SupabaseBase.supabaseClient
-  //       .from('bookmarks')
-  //       .select("*")
-  //       .eq('userId', prefs.getString('id'))
-  //       .execute();
+  Future<void> _submit(CommentProvider appService) async {
+    final _text = _msgController.text;
 
-  //   if (response.data != null) {
-  //     final data = response.data;
-  //     for (var bookmark in data) {
-  //       listBookmark.add(BookMarkModel.fromMap(bookmark));
-  //     }
-  //   }
+    if (_text.isEmpty) {
+      return;
+    }
 
-  //   print(response.data);
-  // }
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
 
-  // Future<void> addLike() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await SupabaseBase.supabaseClient.from('likes').insert({
-  //     'post_id': widget.post!.postId,
-  //     'userId': prefs.getString('id'),
-  //   }).execute();
-  //   widget.post!.like_count += 1;
+      await appService.saveMessage(
+          _text, widget.userTo.toString(), widget.postId!.toInt());
 
-  //   // setState(() {
-  //   //   isLiked = true;
-  //   // });
-  // }
-
-  // Future<void> deleteLike() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await SupabaseBase.supabaseClient
-  //       .from('likes')
-  //       .delete()
-  //       .eq('post_id', widget.post!.postId)
-  //       .eq('userId', prefs.getString('id'))
-  //       .execute();
-  //   widget.post!.like_count -= 1;
-  // }
-
-  // Future<void> addBookMark() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await SupabaseBase.supabaseClient.from('bookmarks').insert({
-  //     'post_id': widget.post!.postId,
-  //     'userId': prefs.getString('id'),
-  //   }).execute();
-
-  //   setState(() {
-  //     isBookMarked = true;
-  //   });
-  // }
-
-  // Future<void> deleteBookMark() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await SupabaseBase.supabaseClient
-  //       .from('bookmarks')
-  //       .delete()
-  //       .eq('post_id', widget.post!.postId)
-  //       .eq('userId', prefs.getString('id'))
-  //       .execute();
-
-  //   setState(() {
-  //     isBookMarked = false;
-  //   });
-  // }
+      _msgController.text = '';
+    }
+  }
 
   Widget build(BuildContext context) {
     return Consumer<PostProvider>(
@@ -151,10 +107,15 @@ class _PostInteractState extends State<PostInteract> {
                     SizedBox(
                       width: 18.w,
                     ),
-                    Image.asset("assets/icons/comment.png"),
-                    // _InteracIcon(context, Icons.forum, () {
-                    //   print("message");
-                    // }),
+                    Consumer<UserProvider>(
+                      builder: (context, userProvider, _) {
+                        return GestureDetector(
+                            onTap: () {
+                              _showBottomSheet(context);
+                            },
+                            child: Image.asset("assets/icons/comment.png"));
+                      },
+                    ),
                     SizedBox(
                       width: 18.w,
                     ),
@@ -212,6 +173,127 @@ class _PostInteractState extends State<PostInteract> {
     return GestureDetector(
       onTap: onTap,
       child: Icon(icon, color: HexColor("#95969D")),
+    );
+  }
+
+  void _showBottomSheet(BuildContext context) {
+    final appService = context.read<CommentProvider>();
+    showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20.r),
+        ),
+      ),
+      isScrollControlled: true,
+      isDismissible: true,
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 0.8.sh,
+          child: Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Center(
+                  child: Text(
+                    'Bình luận',
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 15.h,
+                ),
+                Container(
+                  // padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 5.h),
+                  height: 0.72.sh,
+                  width: double.infinity,
+                  child: StreamBuilder<List<CommentModel>>(
+                    stream: appService.getCommentPost(
+                        widget.userFrom.toString(),
+                        widget.userTo.toString(),
+                        widget.postId!.toInt()),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final comment = snapshot.data!;
+
+                        List<CommentModel> filteredMessages = comment
+                            .where((item) => item.postId == widget.postId)
+                            .toList();
+
+                        return Column(
+                          children: [
+                            Container(
+                                height: 0.6.sh,
+                                child: filteredMessages.length != 0
+                                    ? ListView.builder(
+                                        // reverse: true,
+                                        itemCount: filteredMessages.length,
+                                        itemBuilder: (context, index) {
+                                          final comment =
+                                              filteredMessages[index];
+
+                                          return CommentBubble(
+                                              comment: comment);
+                                          ;
+                                        },
+                                      )
+                                    : Text(
+                                        "Hãy là người đầu tiên bình luận bài viết")),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            Spacer(),
+                            SafeArea(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Form(
+                                  key: _formKey,
+                                  child: TextFormField(
+                                    controller: _msgController,
+                                    decoration: InputDecoration(
+                                        labelText: 'Nhập bình luận',
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: HexColor("#BB2649"),
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: HexColor("#BB2649"),
+                                          ),
+                                        ),
+                                        labelStyle: TextStyle(
+                                            color: HexColor("#000000")),
+                                        suffixIcon: IconButton(
+                                          onPressed: () => _submit(appService),
+                                          icon: Icon(
+                                            Icons.send_rounded,
+                                            color: HexColor("#BB2649"),
+                                          ),
+                                        )),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

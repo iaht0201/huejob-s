@@ -30,7 +30,7 @@ class _ListChatScreenState extends State<ListChatScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Chat with \nwith your friends",
+            "Nhắn tin cùng với bạn bè",
             style: TextStyle(
                 fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
           ),

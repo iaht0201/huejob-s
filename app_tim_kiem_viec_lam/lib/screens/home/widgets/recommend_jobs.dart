@@ -43,7 +43,7 @@ class _RecommendJobsState extends State<RecommendJobs> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Recommended Jobs",
+                "công việc đề xuất",
                 style: textTheme.sub16(),
               ),
               GestureDetector(
@@ -55,7 +55,7 @@ class _RecommendJobsState extends State<RecommendJobs> {
                               SeeAllScreen(styleJob: "Recommended Jobs")));
                 },
                 child: Text(
-                  "See all",
+                  "Xem thêm",
                   style: textTheme.regular13(color: "95969D"),
                 ),
               ),

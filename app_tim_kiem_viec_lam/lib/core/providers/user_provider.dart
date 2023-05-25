@@ -152,7 +152,7 @@ class UserProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     try {
       final response = await SupabaseBase.supabaseClient
-          .from('users')
+          .from('users')  
           .update(newUser.toMap())
           .eq('userId', prefs.getString('id'))
           .execute();

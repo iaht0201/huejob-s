@@ -32,6 +32,7 @@ class _ListChatScreenState extends State<ChatScreen> {
   }
 
   Widget _top() {
+    // show ten cua nguoi dang nhan tin 
     return Container(
         padding: EdgeInsets.symmetric(vertical: 25, horizontal: 30),
         child: Row(
@@ -72,6 +73,7 @@ class _ListChatScreenState extends State<ChatScreen> {
           child: ListView(
             physics: BouncingScrollPhysics(),
             children: [
+              // Hien thi phan tu chat
               _itemChat(
                 avatar: '${userProvider.user.imageUrl}',
                 chat: widget.message.isMine == true ? 1 : 0,
@@ -88,6 +90,7 @@ class _ListChatScreenState extends State<ChatScreen> {
 
 _itemChat({int? chat, String? avatar, message, time}) {
   return Row(
+    // neu chat == 0 <=> la mine  
     mainAxisAlignment:
         chat == 0 ? MainAxisAlignment.end : MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.end,

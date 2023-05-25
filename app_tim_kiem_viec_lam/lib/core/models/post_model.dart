@@ -62,7 +62,7 @@ class PostModel {
   }
 
   factory PostModel.fromJson(String str) => PostModel.fromMap(json.decode(str));
-  factory PostModel.fromMap(Map<String, dynamic> json) => PostModel(
+  factory PostModel.fromMap(Map<String, dynamic> json, ) => PostModel(
       postId: json["post_id"],
       userId: json["userId"],
       createAt: DateTime.parse(json["create_at"]),

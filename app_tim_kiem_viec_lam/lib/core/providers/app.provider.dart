@@ -1,5 +1,6 @@
 import 'package:app_tim_kiem_viec_lam/core/models/chat_message.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/chat_messager_provider.dart';
+import 'package:app_tim_kiem_viec_lam/core/providers/comment.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/job_category_provider.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/jobs_provider.dart';
 import 'package:app_tim_kiem_viec_lam/core/providers/user_provider.dart';
@@ -15,6 +16,7 @@ class AppProvider {
     ChangeNotifierProvider(create: (_) => PostProvider()),
     ChangeNotifierProvider(create: (_) => UserProvider()),
     ChangeNotifierProvider(create: (_) => ChatProvider()),
-    ChangeNotifierProvider(create: (_) => JobsProvider())
+    ChangeNotifierProvider(create: (_) => JobsProvider()),
+    ChangeNotifierProvider(create: (_) => CommentProvider())
   ];
 }

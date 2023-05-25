@@ -441,27 +441,7 @@ class JobsProvider extends ChangeNotifier {
   List<JobModel> _listJobBookMark = [];
   get listBookmark => _listJobBookMark;
 
-  // Future<void> getBookMarkJob1() async {
-  //   _listJobBookMark.clear();
-
-  //   var jobIds = await getJobIdBookMark();
-
-  //   for (int i = 0; i < jobIds.length; i++) {
-  //     var respon = await _supbase
-  //         .from("jobs")
-  //         .select("*,users(*)")
-  //         .eq('job_id', jobIds[i])
-  //         .execute();
-  //     if (respon.data != null && respon.data.isNotEmpty) {
-  //       var data = respon.data;
-  //       for (int i = 0; i < data.length; i++) {
-  //         _listJobBookMark.add(JobModel.fromMap(data[i]));
-  //       }
-  //     }
-  //   }
-  //   print(_listJobBookMark);
-  //   notifyListeners();
-  // }
+  
 
   Future getBookMarkJob() async {
     List<JobModel> _listJob = [];
